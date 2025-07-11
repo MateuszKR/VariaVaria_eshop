@@ -46,7 +46,7 @@
   }
   
   .product-card {
-    @apply card overflow-hidden group cursor-pointer;
+    @apply card overflow-hidden cursor-pointer;
   }
   
   .section-padding {

@@ -12,6 +12,7 @@ const nextConfig = {
   },
   output: 'standalone',
   images: {
+    unoptimized: true, // Disable image optimization to avoid Docker networking issues
     remotePatterns: [
       {
         protocol: 'https',
@@ -20,6 +21,16 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'via.placeholder.com',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3002',
+      },
+      {
+        protocol: 'http',
+        hostname: 'products-service',
+        port: '3002',
       },
     ],
   },
