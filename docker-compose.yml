@@ -1,0 +1,172 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  database:
+    image: postgres:15-alpine
+    container_name: clover-database
+    environment:
+      POSTGRES_DB: four_leaf_clover_shop
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: clover_password_2024
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/sample-data.sql:/docker-entrypoint-initdb.d/02-sample-data.sql:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - clover-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d four_leaf_clover_shop"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Authentication Service
+  auth-service:
+    build:
+      context: ./backend/auth-service
+      dockerfile: Dockerfile
+    container_name: clover-auth-service
+    environment:
+      NODE_ENV: production
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_NAME: four_leaf_clover_shop
+      DB_USER: postgres
+      DB_PASSWORD: clover_password_2024
+      JWT_SECRET: clover-super-secret-jwt-key-for-production-2024
+      PORT: 3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - clover-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Products Service
+  products-service:
+    build:
+      context: ./backend/products-service
+      dockerfile: Dockerfile
+    container_name: clover-products-service
+    environment:
+      NODE_ENV: production
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_NAME: four_leaf_clover_shop
+      DB_USER: postgres
+      DB_PASSWORD: clover_password_2024
+      JWT_SECRET: clover-super-secret-jwt-key-for-production-2024
+      PORT: 3002
+    ports:
+      - "3002:3002"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - clover-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3002/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Orders Service
+  orders-service:
+    build:
+      context: ./backend/orders-service
+      dockerfile: Dockerfile
+    container_name: clover-orders-service
+    environment:
+      NODE_ENV: production
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_NAME: four_leaf_clover_shop
+      DB_USER: postgres
+      DB_PASSWORD: clover_password_2024
+      JWT_SECRET: clover-super-secret-jwt-key-for-production-2024
+      PORT: 3003
+    ports:
+      - "3003:3003"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - clover-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3003/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_AUTH_SERVICE_URL: http://localhost:3001
+        NEXT_PUBLIC_PRODUCTS_SERVICE_URL: http://localhost:3002
+        NEXT_PUBLIC_ORDERS_SERVICE_URL: http://localhost:3003
+    container_name: clover-frontend
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_AUTH_SERVICE_URL: http://localhost:3001
+      NEXT_PUBLIC_PRODUCTS_SERVICE_URL: http://localhost:3002
+      NEXT_PUBLIC_ORDERS_SERVICE_URL: http://localhost:3003
+    ports:
+      - "3000:3000"
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      products-service:
+        condition: service_healthy
+      orders-service:
+        condition: service_healthy
+    networks:
+      - clover-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx Reverse Proxy (Optional - for production)
+  nginx:
+    image: nginx:alpine
+    container_name: clover-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - auth-service
+      - products-service
+      - orders-service
+    networks:
+      - clover-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  clover-network:
+    driver: bridge 
