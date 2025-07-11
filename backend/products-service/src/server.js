@@ -6,6 +6,9 @@ const { body, validationResult, query } = require('express-validator');
 const { Pool } = require('pg');
 const morgan = require('morgan');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
@@ -20,11 +23,50 @@ const pool = new Pool({
   port: process.env.DB_PORT || 5432,
 });
 
+// Create uploads directory if it doesn't exist
+const uploadsDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadsDir);
+  },
+  filename: function (req, file, cb) {
+    // Generate unique filename
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const extension = path.extname(file.originalname);
+    cb(null, `product-${uniqueSuffix}${extension}`);
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  // Accept only image files
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only image files are allowed'), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  }
+});
+
 // Middleware
 app.use(helmet());
 app.use(cors());
 app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
+
+// Serve uploaded images statically
+app.use('/uploads', express.static(uploadsDir));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -92,6 +134,43 @@ const validateCategory = [
 ];
 
 // Routes
+
+// API Documentation root route
+app.get('/', (req, res) => {
+  res.json({
+    service: 'Four Leaf Clover - Products Service',
+    version: '1.0.0',
+    description: 'API service for managing jewelry products and categories',
+    endpoints: {
+      public: {
+        'GET /': 'API documentation',
+        'GET /health': 'Health check',
+        'GET /products': 'Get all products (with filtering, pagination)',
+        'GET /products/:id': 'Get specific product',
+        'GET /categories': 'Get all categories',
+        'GET /categories/:slug': 'Get category by slug'
+      },
+      admin: {
+        'GET /admin/products': 'Get all products including inactive ones (admin only)',
+        'POST /admin/products': 'Create new product (admin only)',
+        'PUT /admin/products/:id': 'Update product (admin only)',
+        'DELETE /admin/products/:id': 'Delete product (admin only)',
+        'POST /admin/products/:id/images': 'Upload product image file (admin only)',
+        'POST /admin/products/:id/images/url': 'Add product image by URL (admin only)',
+        'POST /admin/categories': 'Create new category (admin only)',
+        'PUT /admin/categories/:id': 'Update category (admin only)',
+        'DELETE /admin/categories/:id': 'Delete category (admin only)',
+        'PUT /admin/inventory/:productId': 'Update product inventory (admin only)'
+      }
+    },
+    examples: {
+      getAllProducts: '/products?page=1&limit=12',
+      searchProducts: '/products?search=clover&category=necklaces',
+      getProduct: '/products/1'
+    },
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Health check
 app.get('/health', (req, res) => {
@@ -399,6 +478,137 @@ app.get('/products/:id', async (req, res) => {
   }
 });
 
+// Admin: Get all products (including inactive ones)
+app.get('/admin/products', verifyToken, verifyAdmin, [
+  query('page').optional().isInt({ min: 1 }),
+  query('limit').optional().isInt({ min: 1, max: 1000 }),
+  query('search').optional().trim(),
+  query('category').optional().trim(),
+  query('status').optional().trim(),
+  query('sortBy').optional().isIn(['name', 'price', 'created_at']),
+  query('sortOrder').optional().isIn(['asc', 'desc'])
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 100;
+    const offset = (page - 1) * limit;
+    const search = req.query.search;
+    const category = req.query.category;
+    const status = req.query.status;
+    const sortBy = req.query.sortBy || 'created_at';
+    const sortOrder = req.query.sortOrder || 'desc';
+
+    let whereConditions = []; // No active filter for admin
+    let params = [];
+    let paramCount = 1;
+
+    if (search) {
+      whereConditions.push(`(p.name ILIKE $${paramCount} OR p.description ILIKE $${paramCount} OR p.short_description ILIKE $${paramCount} OR p.sku ILIKE $${paramCount})`);
+      params.push(`%${search}%`);
+      paramCount++;
+    }
+
+    if (category) {
+      whereConditions.push(`c.slug = $${paramCount}`);
+      params.push(category);
+      paramCount++;
+    }
+
+    if (status) {
+      if (status === 'active') {
+        whereConditions.push('p.is_active = true');
+      } else if (status === 'inactive') {
+        whereConditions.push('p.is_active = false');
+      }
+    }
+
+    const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+    
+    // Get products with category info and primary image
+    const productsQuery = `
+      SELECT 
+        p.id, p.name, p.description, p.short_description, p.sku, p.price, 
+        p.category_id, p.material, p.weight_grams, p.dimensions, p.care_instructions,
+        p.is_active, p.is_featured, p.created_at, p.updated_at,
+        c.name as category_name, c.slug as category_slug,
+        pi.image_url as primary_image_url, pi.alt_text as primary_image_alt,
+        i.quantity_available
+      FROM products p
+      LEFT JOIN categories c ON p.category_id = c.id
+      LEFT JOIN product_images pi ON p.id = pi.product_id AND pi.is_primary = true
+      LEFT JOIN inventory i ON p.id = i.product_id
+      ${whereClause}
+      ORDER BY p.${sortBy} ${sortOrder.toUpperCase()}
+      LIMIT $${paramCount} OFFSET $${paramCount + 1}
+    `;
+
+    params.push(limit, offset);
+    const result = await pool.query(productsQuery, params);
+
+    // Get total count for pagination
+    const countQuery = `
+      SELECT COUNT(DISTINCT p.id) 
+      FROM products p
+      LEFT JOIN categories c ON p.category_id = c.id
+      ${whereClause}
+    `;
+    const countResult = await pool.query(countQuery, params.slice(0, -2));
+    const totalProducts = parseInt(countResult.rows[0].count);
+
+    res.json({
+      products: result.rows.map(product => ({
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        shortDescription: product.short_description,
+        sku: product.sku,
+        price: parseFloat(product.price),
+        categoryId: product.category_id,
+        categoryName: product.category_name, // Added for admin convenience
+        material: product.material,
+        weightGrams: product.weight_grams ? parseFloat(product.weight_grams) : null,
+        dimensions: product.dimensions,
+        careInstructions: product.care_instructions,
+        isActive: product.is_active,
+        isFeatured: product.is_featured,
+        category: product.category_name ? {
+          name: product.category_name,
+          slug: product.category_slug
+        } : null,
+        primaryImage: product.primary_image_url ? {
+          url: product.primary_image_url,
+          alt: product.primary_image_alt
+        } : null,
+        quantityAvailable: product.quantity_available || 0,
+        createdAt: product.created_at,
+        updatedAt: product.updated_at
+      })),
+      pagination: {
+        page,
+        limit,
+        total: totalProducts,
+        pages: Math.ceil(totalProducts / limit)
+      },
+      filters: {
+        search,
+        category,
+        status,
+        sortBy,
+        sortOrder
+      }
+    });
+
+  } catch (error) {
+    console.error('Get admin products error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Admin: Create new product
 app.post('/admin/products', verifyToken, verifyAdmin, validateProduct, async (req, res) => {
   try {
@@ -630,6 +840,122 @@ app.post('/admin/categories', verifyToken, verifyAdmin, validateCategory, async 
 
   } catch (error) {
     console.error('Create category error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Admin: Upload product image
+app.post('/admin/products/:id/images', verifyToken, verifyAdmin, upload.single('image'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { altText, isPrimary = false } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    // Check if product exists
+    const productCheck = await pool.query('SELECT id FROM products WHERE id = $1', [id]);
+    if (productCheck.rows.length === 0) {
+      // Delete uploaded file if product doesn't exist
+      fs.unlinkSync(req.file.path);
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // If this is set as primary, remove primary flag from other images
+    if (isPrimary === 'true' || isPrimary === true) {
+      await pool.query('UPDATE product_images SET is_primary = false WHERE product_id = $1', [id]);
+    }
+
+    // Get next sort order
+    const sortResult = await pool.query('SELECT COALESCE(MAX(sort_order), -1) + 1 as next_order FROM product_images WHERE product_id = $1', [id]);
+    const sortOrder = sortResult.rows[0].next_order;
+
+    // Construct image URL (relative to the service)
+    const imageUrl = `/uploads/${req.file.filename}`;
+
+    // Insert image record
+    const result = await pool.query(`
+      INSERT INTO product_images (product_id, image_url, alt_text, sort_order, is_primary)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *
+    `, [id, imageUrl, altText || req.file.originalname, sortOrder, isPrimary === 'true' || isPrimary === true]);
+
+    const image = result.rows[0];
+
+    res.status(201).json({
+      message: 'Image uploaded successfully',
+      image: {
+        id: image.id,
+        url: image.image_url,
+        alt: image.alt_text,
+        sortOrder: image.sort_order,
+        isPrimary: image.is_primary
+      }
+    });
+
+  } catch (error) {
+    // Clean up uploaded file on error
+    if (req.file) {
+      fs.unlinkSync(req.file.path);
+    }
+    console.error('Upload image error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Admin: Add product image by URL
+app.post('/admin/products/:id/images/url', verifyToken, verifyAdmin, [
+  body('imageUrl').isURL().withMessage('Valid image URL is required'),
+  body('altText').optional().trim(),
+  body('isPrimary').optional().isBoolean()
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { id } = req.params;
+    const { imageUrl, altText, isPrimary = false } = req.body;
+
+    // Check if product exists
+    const productCheck = await pool.query('SELECT id FROM products WHERE id = $1', [id]);
+    if (productCheck.rows.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // If this is set as primary, remove primary flag from other images
+    if (isPrimary) {
+      await pool.query('UPDATE product_images SET is_primary = false WHERE product_id = $1', [id]);
+    }
+
+    // Get next sort order
+    const sortResult = await pool.query('SELECT COALESCE(MAX(sort_order), -1) + 1 as next_order FROM product_images WHERE product_id = $1', [id]);
+    const sortOrder = sortResult.rows[0].next_order;
+
+    // Insert image record
+    const result = await pool.query(`
+      INSERT INTO product_images (product_id, image_url, alt_text, sort_order, is_primary)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *
+    `, [id, imageUrl, altText || 'Product image', sortOrder, isPrimary]);
+
+    const image = result.rows[0];
+
+    res.status(201).json({
+      message: 'Image added successfully',
+      image: {
+        id: image.id,
+        url: image.image_url,
+        alt: image.alt_text,
+        sortOrder: image.sort_order,
+        isPrimary: image.is_primary
+      }
+    });
+
+  } catch (error) {
+    console.error('Add image URL error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

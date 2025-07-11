@@ -65,7 +65,7 @@ INSERT INTO product_images (product_id, image_url, alt_text, sort_order, is_prim
 
 -- Create a default admin user
 INSERT INTO users (email, password_hash, first_name, last_name, phone, role) VALUES
-('admin@fourleafclover.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewHBEnoYYqVs5H8u', 'Admin', 'User', '+1-555-0123', 'admin');
+('admin@fourleafclover.com', '$2a$12$ywR2IDLBt5jAz7eAN5q6UOhHHGIIQjetW4RA9lyJWXMcxb8QQR3.O', 'Admin', 'User', '+1-555-0123', 'admin');
 -- Password is: admin123456
 
 -- Create sample customer users
@@ -101,7 +101,7 @@ INSERT INTO order_items (order_id, product_id, quantity, unit_price, total_price
 
 -- Order 3 items  
 (3, 3, 1, 79.99, 79.99),
-(4, 4, 1, 79.99, 79.99);
+(3, 4, 1, 79.99, 79.99);
 
 -- Insert sample reviews
 INSERT INTO reviews (product_id, user_id, rating, title, comment, is_verified_purchase, is_approved) VALUES

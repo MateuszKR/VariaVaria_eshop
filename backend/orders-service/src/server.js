@@ -104,6 +104,42 @@ const calculateTotals = (items, taxRate = 0.08, shippingRate = 9.99) => {
 
 // Routes
 
+// API Documentation root route
+app.get('/', (req, res) => {
+  res.json({
+    service: 'Four Leaf Clover - Orders Service',
+    version: '1.0.0',
+    description: 'API service for managing shopping cart, orders, and customer transactions',
+    endpoints: {
+      cart: {
+        'GET /cart': 'Get user cart (auth required)',
+        'POST /cart/items': 'Add item to cart (auth required)',
+        'PUT /cart/items/:itemId': 'Update cart item quantity (auth required)',
+        'DELETE /cart/items/:itemId': 'Remove item from cart (auth required)',
+        'DELETE /cart': 'Clear entire cart (auth required)'
+      },
+      orders: {
+        'GET /orders': 'Get user orders (auth required)',
+        'GET /orders/:id': 'Get specific order (auth required)',
+        'POST /orders': 'Create new order/checkout (auth required)',
+        'PUT /orders/:id/status': 'Update order status (admin only)',
+        'GET /orders/:id/receipt': 'Get order receipt (auth required)'
+      },
+      admin: {
+        'GET /admin/orders': 'Get all orders (admin only)',
+        'GET /admin/orders/stats': 'Get order statistics (admin only)'
+      }
+    },
+    examples: {
+      addToCart: 'POST /cart/items { "productId": 1, "quantity": 2 }',
+      viewCart: '/cart',
+      checkout: 'POST /orders { "shippingAddress": {...}, "paymentMethod": "card" }',
+      viewOrders: '/orders'
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'orders-service', timestamp: new Date().toISOString() });
