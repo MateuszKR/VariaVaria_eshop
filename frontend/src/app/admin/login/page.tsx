@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -54,7 +55,16 @@ export default function AdminLoginPage() {
       <div className="max-w-md w-full mx-4">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="text-4xl mb-4">🍀</div>
+          <div className="flex justify-center mb-4">
+            <div className="relative w-16 h-16">
+              <Image
+                src="/varia-varia-logo.jpg"
+                alt="VariaVaria Logo"
+                fill
+                className="object-contain"
+              />
+            </div>
+          </div>
           <h1 className="text-3xl font-bold text-neutral-900 mb-2">Admin Login</h1>
           <p className="text-neutral-600">Sign in to access the admin dashboard</p>
         </div>

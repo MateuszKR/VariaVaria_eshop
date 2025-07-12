@@ -147,7 +147,7 @@ function ProductsContent() {
         <div className="container-max section-padding py-16">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-neutral-900 mb-6">
-              Four Leaf Clover Jewelry
+              VariaVaria Jewelry
             </h1>
             <p className="text-xl text-neutral-600 max-w-3xl mx-auto">
               Discover our complete collection of handcrafted jewelry featuring the lucky four-leaf clover symbol.

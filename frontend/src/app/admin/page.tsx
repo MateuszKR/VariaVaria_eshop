@@ -660,7 +660,7 @@ export default function AdminDashboard() {
                 Admin Dashboard
               </h1>
               <span className="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-medium">
-                Four Leaf Clover Jewelry
+                VariaVaria Jewelry
               </span>
             </div>
             <div className="flex items-center space-x-4">

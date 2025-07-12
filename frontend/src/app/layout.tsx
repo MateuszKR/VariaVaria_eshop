@@ -7,16 +7,16 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' })
 
 export const metadata: Metadata = {
-  title: 'Four Leaf Clover Jewelry | Handcrafted Lucky Jewelry',
+  title: 'VariaVaria Jewelry | Handcrafted Lucky Jewelry',
   description: 'Discover beautiful handcrafted jewelry featuring four-leaf clovers. Each piece is carefully made to bring you luck and style.',
   keywords: ['jewelry', 'four-leaf clover', 'handcrafted', 'lucky jewelry', 'rings', 'necklaces', 'earrings', 'bracelets'],
-  authors: [{ name: 'Four Leaf Clover Jewelry' }],
-  creator: 'Four Leaf Clover Jewelry',
+  authors: [{ name: 'VariaVaria Jewelry' }],
+  creator: 'VariaVaria Jewelry',
   openGraph: {
-    title: 'Four Leaf Clover Jewelry | Handcrafted Lucky Jewelry',
+    title: 'VariaVaria Jewelry | Handcrafted Lucky Jewelry',
     description: 'Discover beautiful handcrafted jewelry featuring four-leaf clovers. Each piece is carefully made to bring you luck and style.',
-    url: 'https://fourleafcloverjewelry.com',
-    siteName: 'Four Leaf Clover Jewelry',
+    url: 'https://variavariajewelry.com',
+    siteName: 'VariaVaria Jewelry',
     locale: 'en_US',
     type: 'website',
     images: [
@@ -24,13 +24,13 @@ export const metadata: Metadata = {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Four Leaf Clover Jewelry',
+        alt: 'VariaVaria Jewelry',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Four Leaf Clover Jewelry | Handcrafted Lucky Jewelry',
+    title: 'VariaVaria Jewelry | Handcrafted Lucky Jewelry',
     description: 'Discover beautiful handcrafted jewelry featuring four-leaf clovers.',
     images: ['/twitter-image.jpg'],
   },

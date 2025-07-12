@@ -78,10 +78,18 @@ function Header() {
       <div className="container-max section-padding">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <SparklesIcon className="h-8 w-8 clover-icon" />
+          <Link href="/" className="flex items-center space-x-3">
+            <div className="relative w-10 h-10">
+              <Image
+                src="/varia-varia-logo.jpg"
+                alt="VariaVaria Logo"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
             <span className="text-xl font-serif font-semibold text-gradient">
-              Four Leaf Clover
+              VariaVaria
             </span>
           </Link>
 
@@ -436,10 +444,17 @@ function Footer() {
       <div className="container-max section-padding py-16">
         <div className="grid md:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <SparklesIcon className="h-6 w-6 text-primary-500" />
+            <div className="flex items-center space-x-3">
+              <div className="relative w-8 h-8">
+                <Image
+                  src="/varia-varia-logo.jpg"
+                  alt="VariaVaria Logo"
+                  fill
+                  className="object-contain"
+                />
+              </div>
               <span className="text-lg font-serif font-semibold text-white">
-                Four Leaf Clover
+                VariaVaria
               </span>
             </div>
             <p className="text-neutral-400">
@@ -480,7 +495,7 @@ function Footer() {
         </div>
 
         <div className="border-t border-neutral-800 mt-12 pt-8 text-center text-neutral-400">
-          <p>&copy; 2024 Four Leaf Clover Jewelry. All rights reserved.</p>
+          <p>&copy; 2024 VariaVaria Jewelry. All rights reserved.</p>
         </div>
       </div>
     </footer>

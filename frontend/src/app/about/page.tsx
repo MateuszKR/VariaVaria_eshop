@@ -10,9 +10,18 @@ export default function AboutPage() {
       <div className="bg-white shadow-soft">
         <div className="container-max section-padding py-16">
           <div className="text-center">
-            <div className="text-6xl mb-6">🍀</div>
+            <div className="flex justify-center mb-6">
+              <div className="relative w-20 h-20">
+                <Image
+                  src="/varia-varia-logo.jpg"
+                  alt="VariaVaria Logo"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </div>
             <h1 className="text-4xl md:text-5xl font-bold text-neutral-900 mb-6">
-              About Four Leaf Clover
+              About VariaVaria
             </h1>
             <p className="text-xl text-neutral-600 max-w-3xl mx-auto">
               Crafting luck, love, and timeless beauty through handmade jewelry 
