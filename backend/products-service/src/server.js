@@ -345,7 +345,7 @@ app.get('/products', [
           slug: product.category_slug
         } : null,
         primaryImage: product.primary_image_url ? {
-          url: product.primary_image_url,
+          url: product.primary_image_url.startsWith('http') ? product.primary_image_url : `http://${req.get('host') || 'localhost:3002'}${product.primary_image_url}`,
           alt: product.primary_image_alt
         } : null,
         quantityAvailable: product.quantity_available || 0,
@@ -445,7 +445,7 @@ app.get('/products/:id', async (req, res) => {
         } : null,
         images: imagesResult.rows.map(image => ({
           id: image.id,
-          url: image.image_url,
+          url: image.image_url.startsWith('http') ? image.image_url : `http://${req.get('host') || 'localhost:3002'}${image.image_url}`,
           alt: image.alt_text,
           sortOrder: image.sort_order,
           isPrimary: image.is_primary
@@ -560,6 +560,16 @@ app.get('/admin/products', verifyToken, verifyAdmin, [
     const countResult = await pool.query(countQuery, params.slice(0, -2));
     const totalProducts = parseInt(countResult.rows[0].count);
 
+    // Helper function to get full image URL
+    const getFullImageUrl = (imageUrl) => {
+      if (!imageUrl) return null;
+      if (imageUrl.startsWith('http')) {
+        return imageUrl; // Already a full URL
+      }
+      // Convert relative URL to full URL
+      return `${req.protocol}://${req.get('host')}${imageUrl}`;
+    };
+
     res.json({
       products: result.rows.map(product => ({
         id: product.id,
@@ -581,7 +591,7 @@ app.get('/admin/products', verifyToken, verifyAdmin, [
           slug: product.category_slug
         } : null,
         primaryImage: product.primary_image_url ? {
-          url: product.primary_image_url,
+          url: getFullImageUrl(product.primary_image_url),
           alt: product.primary_image_alt
         } : null,
         quantityAvailable: product.quantity_available || 0,

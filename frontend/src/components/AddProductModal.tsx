@@ -215,13 +215,27 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded }: Add
       }
 
       // Prepare the data for submission
-      const productData = {
-        ...formData,
+      const productData: any = {
+        name: formData.name,
+        description: formData.description,
+        shortDescription: formData.shortDescription,
+        sku: formData.sku,
         price: parseFloat(formData.price),
-        categoryId: formData.categoryId ? parseInt(formData.categoryId) : null,
-        weightGrams: formData.weightGrams ? parseFloat(formData.weightGrams) : null,
+        material: formData.material,
+        dimensions: formData.dimensions,
+        careInstructions: formData.careInstructions,
         quantityAvailable: parseInt(formData.quantityAvailable),
+        isActive: formData.isActive,
+        isFeatured: formData.isFeatured,
       };
+
+      // Only add optional fields if they have values
+      if (formData.categoryId) {
+        productData.categoryId = parseInt(formData.categoryId);
+      }
+      if (formData.weightGrams) {
+        productData.weightGrams = parseFloat(formData.weightGrams);
+      }
 
       // Create the product first
       const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/admin/products`, {
@@ -619,10 +633,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded }: Add
                         >
                           <div className="w-16 h-16 relative rounded-lg overflow-hidden bg-neutral-100">
                             <img
-                              src={image.url.startsWith('/') 
-                                ? `${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}${image.url}`
-                                : image.url
-                              }
+                              src={image.url}
                               alt={image.alt}
                               className="w-full h-full object-cover"
                               onError={(e) => {

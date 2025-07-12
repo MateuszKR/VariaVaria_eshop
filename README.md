@@ -1,343 +1,214 @@
-# Four Leaf Clover Jewelry Shop
+# 🍀 Four Leaf Clover Jewelry Shop - E-Commerce Platform
 
-A professional e-commerce platform for handcrafted four-leaf clover jewelry, built with modern web technologies and microservices architecture.
-
-## 🍀 Features
-
-### Customer Features
-- **Beautiful Product Catalog** - Browse handcrafted four-leaf clover jewelry
-- **Advanced Search & Filtering** - Find products by category, price, material, etc.
-- **Shopping Cart & Checkout** - Secure ordering process with multiple payment options
-- **User Accounts** - Registration, login, order history, and profile management
-- **Product Reviews & Ratings** - Customer feedback and testimonials
-- **Wishlist** - Save favorite items for later
-- **Responsive Design** - Works perfectly on desktop, tablet, and mobile
-- **PWA Support** - Install as a mobile app with offline capabilities
-
-### Admin Features
-- **Product Management** - Add, edit, delete products with rich media support
-- **Inventory Control** - Real-time stock tracking with low stock alerts
-- **Order Management** - View, process, and update order statuses
-- **Customer Management** - View customer details and order history
-- **Analytics Dashboard** - Sales metrics, popular products, and insights
-- **Category Management** - Organize products into categories
-
-## 🏗️ Architecture
-
-### Technology Stack
-- **Frontend**: Next.js 14, React 18, TypeScript, Tailwind CSS
-- **Backend**: Node.js microservices with Express.js
-- **Database**: PostgreSQL with optimized schema
-- **Authentication**: JWT tokens with secure password hashing
-- **PWA**: Service workers, offline support, installable app
-- **State Management**: Zustand for client-side state
-- **API Integration**: Axios with SWR for data fetching
-- **UI Components**: Headless UI, Heroicons, Framer Motion
-
-### Microservices
-1. **Authentication Service** (Port 3001) - User management and JWT authentication
-2. **Products Service** (Port 3002) - Product catalog and inventory management
-3. **Orders Service** (Port 3003) - Shopping cart, orders, and checkout
+A complete e-commerce platform built with microservices architecture, featuring a Next.js frontend and Node.js backend services.
 
 ## 🚀 Quick Start
 
-### Option 1: Docker Setup (Recommended) 🐳
+### Option 1: Automated Startup (Recommended)
 
-**Prerequisites:**
-- Docker Desktop (20.10+)
-- 4GB+ RAM, 2GB disk space
+For Windows users:
+```powershell
+.\scripts\start-eshop.ps1
+```
 
-**One Command Setup:**
+For Linux/macOS users:
 ```bash
-git clone https://github.com/your-username/four-leaf-clover-jewelry-shop.git
-cd four-leaf-clover-jewelry-shop
-docker-compose up --build
+./scripts/start-eshop.sh
 ```
 
-**Access your shop:**
-- 🌐 Frontend: http://localhost:3000
-- 🔧 Admin: http://localhost:3000/admin (admin@fourleafclover.com / admin123456)
+### Option 2: Manual Startup
 
-**Easy Management:**
+1. **Start Database First**
+   ```bash
+   docker-compose up -d database
+   ```
+
+2. **Start Backend Services**
+   ```bash
+   docker-compose up -d auth-service products-service orders-service
+   ```
+
+3. **Start Frontend**
+   ```bash
+   docker-compose up -d frontend
+   ```
+
+4. **Start Nginx (Optional)**
+   ```bash
+   docker-compose up -d nginx
+   ```
+
+## 🏥 Health Check
+
+To verify all services are running properly:
+
 ```bash
-# Make scripts executable
-chmod +x scripts/*.sh
+# Linux/macOS
+./scripts/health-check.sh
 
-# Use the manager script
-./scripts/docker-manager.sh start    # Start all services
-./scripts/docker-manager.sh test     # Test everything is working
-./scripts/docker-manager.sh stop     # Stop services
-./scripts/docker-manager.sh help     # See all options
+# Windows PowerShell
+# Check services manually or use the startup script
 ```
 
-📖 **Detailed Docker Guide:** See [DOCKER_SETUP.md](DOCKER_SETUP.md)
+## 🌐 Access URLs
 
----
+- **Main Store**: http://localhost:3000
+- **Admin Panel**: http://localhost:3000/admin
+- **Auth API**: http://localhost:3001
+- **Products API**: http://localhost:3002
+- **Orders API**: http://localhost:3003
+- **Nginx Proxy**: http://localhost:80
 
-### Option 2: Local Development Setup
+## 🔑 Default Admin Credentials
 
-**Prerequisites:**
-- Node.js 18+ and npm
-- PostgreSQL 12+
-- Git
+- **Email**: admin@fourleafclover.com
+- **Password**: admin123456
 
-**1. Clone the Repository**
+## 🏗️ Architecture
+
+### Services Overview
+- **Database**: PostgreSQL with pre-populated sample data
+- **Auth Service**: User authentication and authorization
+- **Products Service**: Product catalog management
+- **Orders Service**: Order processing and management
+- **Frontend**: Next.js React application
+- **Nginx**: Reverse proxy and load balancer
+
+### Service Dependencies
+```
+Database → Backend Services → Frontend → Nginx
+```
+
+## 📋 Prerequisites
+
+- Docker (20.10+)
+- Docker Compose (2.0+)
+- 4GB+ RAM
+- 2GB+ free disk space
+
+## 🔧 Development
+
+### Environment Variables
+All services are pre-configured with production-ready environment variables in `docker-compose.yml`.
+
+### Database Access
 ```bash
-git clone https://github.com/your-username/four-leaf-clover-jewelry-shop.git
-cd four-leaf-clover-jewelry-shop
+# Connect to database
+docker exec -it clover-database psql -U postgres -d four_leaf_clover_shop
+
+# View tables
+\dt
+
+# Exit
+\q
 ```
 
-### 2. Install Dependencies
+### Service Logs
 ```bash
-# Install root dependencies
-npm install
+# View logs for all services
+docker-compose logs -f
 
-# Install frontend dependencies
-cd frontend && npm install && cd ..
-
-# Install backend dependencies
-cd backend/auth-service && npm install && cd ../..
-cd backend/products-service && npm install && cd ../..
-cd backend/orders-service && npm install && cd ../..
+# View logs for specific service
+docker-compose logs -f auth-service
+docker-compose logs -f products-service
+docker-compose logs -f orders-service
+docker-compose logs -f frontend
 ```
 
-### 3. Database Setup
+## 🛠️ Troubleshooting
+
+### Common Issues
+
+1. **Port Conflicts**
+   - Ensure ports 3000-3003, 5432, and 80 are available
+   - Stop conflicting services: `docker-compose down`
+
+2. **Database Connection Issues**
+   - Always start database first
+   - Wait for database to be healthy before starting backend services
+   - Use the automated startup scripts to ensure proper initialization
+
+3. **Login Issues**
+   - Verify database is running and healthy
+   - Check that all backend services are on the same network
+   - Restart services if needed: `docker-compose restart`
+
+### Clean Restart
 ```bash
-# Create PostgreSQL database
-createdb four_leaf_clover_shop
+# Stop all services and remove containers
+docker-compose down --remove-orphans
 
-# Import the schema
-psql four_leaf_clover_shop < database/schema.sql
+# Remove volumes (will delete database data)
+docker-compose down -v
+
+# Start fresh
+./scripts/start-eshop.sh  # or start-eshop.ps1 on Windows
 ```
 
-### 4. Environment Configuration
-Create `.env` files in each service directory:
+## 📦 Sample Data
 
-**backend/auth-service/.env**
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=four_leaf_clover_shop
-DB_USER=postgres
-DB_PASSWORD=your_password
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
-PORT=3001
-```
+The database is automatically populated with:
+- 10 sample jewelry products
+- 6 product categories
+- Admin and customer test accounts
+- Sample orders and reviews
 
-**backend/products-service/.env**
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=four_leaf_clover_shop
-DB_USER=postgres
-DB_PASSWORD=your_password
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
-PORT=3002
-```
+## 🔐 Security Features
 
-**backend/orders-service/.env**
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=four_leaf_clover_shop
-DB_USER=postgres
-DB_PASSWORD=your_password
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
-PORT=3003
-```
+- JWT token authentication
+- Rate limiting on API endpoints
+- Input validation and sanitization
+- CORS protection
+- Helmet security headers
 
-**frontend/.env.local**
-```env
-NEXT_PUBLIC_AUTH_SERVICE_URL=http://localhost:3001
-NEXT_PUBLIC_PRODUCTS_SERVICE_URL=http://localhost:3002
-NEXT_PUBLIC_ORDERS_SERVICE_URL=http://localhost:3003
-```
+## 🎯 Features
 
-### 5. Start the Development Environment
-```bash
-# Start all services (frontend + all microservices)
-npm run dev
+- **User Management**: Registration, login, profile management
+- **Product Catalog**: Browse, search, filter products
+- **Shopping Cart**: Add, remove, update quantities
+- **Order Processing**: Checkout, order tracking
+- **Admin Panel**: Product management, order management
+- **Responsive Design**: Mobile-friendly interface
 
-# Or start services individually:
-npm run dev:frontend    # Next.js frontend on http://localhost:3000
-npm run dev:auth       # Auth service on http://localhost:3001
-npm run dev:products   # Products service on http://localhost:3002
-npm run dev:orders     # Orders service on http://localhost:3003
-```
+## 📝 API Documentation
 
-### 6. Create Admin User
-Use the auth service to create an admin user:
-```bash
-curl -X POST http://localhost:3001/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "admin@fourleafclover.com",
-    "password": "admin123",
-    "firstName": "Admin",
-    "lastName": "User"
-  }'
-
-# Then manually update the user role in the database:
-# UPDATE users SET role = 'admin' WHERE email = 'admin@fourleafclover.com';
-```
-
-## 📱 PWA Features
-
-The application includes Progressive Web App capabilities:
-
-- **Installable**: Users can install the app on their devices
-- **Offline Support**: Basic functionality works without internet
-- **Push Notifications**: Order updates and promotional messages
-- **App-like Experience**: Native mobile app feel
-
-To test PWA features:
-1. Open the app in Chrome/Edge
-2. Look for the "Install" prompt in the address bar
-3. Install the app to your device
-4. Test offline functionality by disconnecting from internet
-
-## 🔧 API Documentation
-
-### Authentication Service (Port 3001)
-- `POST /register` - Register new user
+### Authentication Endpoints
 - `POST /login` - User login
-- `GET /verify` - Verify JWT token
+- `POST /register` - User registration
+- `GET /verify` - Token verification
 - `PUT /profile` - Update user profile
-- `PUT /change-password` - Change password
-- `GET /admin/users` - Get all users (admin only)
 
-### Products Service (Port 3002)
-- `GET /products` - Get products with filtering and pagination
-- `GET /products/:id` - Get single product details
-- `GET /categories` - Get all categories
-- `GET /categories/:slug` - Get category by slug
-- `POST /admin/products` - Create product (admin only)
-- `PUT /admin/products/:id` - Update product (admin only)
-- `DELETE /admin/products/:id` - Delete product (admin only)
-- `PUT /admin/inventory/:productId` - Update inventory (admin only)
+### Products Endpoints
+- `GET /products` - List all products
+- `GET /products/:id` - Get single product
+- `POST /products` - Create product (admin)
+- `PUT /products/:id` - Update product (admin)
+- `DELETE /products/:id` - Delete product (admin)
 
-### Orders Service (Port 3003)
-- `GET /cart` - Get user's cart
-- `POST /cart/items` - Add item to cart
-- `PUT /cart/items/:itemId` - Update cart item
-- `DELETE /cart/items/:itemId` - Remove item from cart
-- `DELETE /cart` - Clear cart
-- `POST /orders` - Create order from cart
-- `GET /orders` - Get user's orders
-- `GET /orders/:orderId` - Get order details
-- `GET /admin/orders` - Get all orders (admin only)
-- `PUT /admin/orders/:orderId/status` - Update order status (admin only)
-
-## 🎨 Design System
-
-### Color Palette
-- **Primary Green**: #22c55e (Four-leaf clover theme)
-- **Accent Gold**: #f59e0b (Jewelry accent)
-- **Neutral Grays**: #f5f5f5 to #171717
-
-### Typography
-- **Headings**: Playfair Display (serif)
-- **Body Text**: Inter (sans-serif)
-
-### Components
-- Consistent button styles with hover states
-- Card-based layouts with soft shadows
-- Responsive grid systems
-- Form components with validation
-- Loading states and animations
-
-## 🚢 Deployment
-
-### Production Build
-```bash
-# Build all services
-npm run build
-
-# Start production servers
-npm run start
-```
-
-### Docker Deployment
-```dockerfile
-# Example Dockerfile for frontend
-FROM node:18-alpine
-WORKDIR /app
-COPY frontend/package*.json ./
-RUN npm ci --only=production
-COPY frontend/ .
-RUN npm run build
-EXPOSE 3000
-CMD ["npm", "start"]
-```
-
-### Environment Variables for Production
-- Update all JWT secrets
-- Configure production database credentials
-- Set proper CORS origins
-- Enable SSL/HTTPS
-- Configure CDN for static assets
-
-## 🔒 Security Features
-
-- **Password Hashing**: Bcrypt with salt rounds
-- **JWT Authentication**: Secure token-based auth
-- **Rate Limiting**: Prevents brute force attacks
-- **Input Validation**: Server-side validation for all inputs
-- **SQL Injection Prevention**: Parameterized queries
-- **CORS Configuration**: Proper cross-origin resource sharing
-- **Helmet.js**: Security headers for Express apps
-
-## 🧪 Testing
-
-```bash
-# Run tests (when implemented)
-npm test
-
-# Run frontend tests
-cd frontend && npm test
-
-# Run backend tests
-cd backend/auth-service && npm test
-```
-
-## 📈 Performance Optimization
-
-- **Next.js Optimizations**: Image optimization, code splitting, SSR
-- **Database Indexing**: Optimized queries with proper indexes
-- **Caching**: API response caching with SWR
-- **Bundle Optimization**: Tree shaking and minimal bundles
-- **Image Optimization**: Next.js Image component with lazy loading
+### Orders Endpoints
+- `GET /orders` - List user orders
+- `POST /orders` - Create new order
+- `GET /orders/:id` - Get single order
+- `PUT /orders/:id/status` - Update order status (admin)
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/new-feature`
-3. Commit your changes: `git commit -am 'Add new feature'`
-4. Push to the branch: `git push origin feature/new-feature`
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
 5. Submit a pull request
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License.
 
-## 🆘 Support
+## 🎉 Acknowledgments
 
-For support and questions:
-- Email: support@fourleafcloverjewelry.com
-- Documentation: See `/docs` folder for detailed guides
-- Issues: Use GitHub Issues for bug reports
-
-## 🔮 Roadmap
-
-- [ ] Payment gateway integration (Stripe, PayPal)
-- [ ] Email notifications and newsletters
-- [ ] Advanced analytics and reporting
-- [ ] Multi-language support
-- [ ] Social media integration
-- [ ] Advanced product customization
-- [ ] Loyalty program and rewards
-- [ ] Mobile app (React Native)
-
----
-
-**Built with 🍀 for Four Leaf Clover Jewelry** 
+Built with modern web technologies:
+- Next.js 13+ with App Router
+- Node.js and Express
+- PostgreSQL
+- Docker and Docker Compose
+- Tailwind CSS
+- JWT Authentication 

@@ -194,7 +194,7 @@ function ProductManagement({
 
   useEffect(() => {
     fetchProducts()
-  }, [])
+  }, []) // This will be triggered by the key prop change
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -360,12 +360,13 @@ function ProductManagement({
                         <div className="w-10 h-10 relative rounded-lg overflow-hidden bg-neutral-100 flex-shrink-0">
                           {product.primaryImage ? (
                             <img
-                              src={product.primaryImage.url.startsWith('/') 
-                                ? `${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}${product.primaryImage.url}`
-                                : product.primaryImage.url
-                              }
+                              src={product.primaryImage.url}
                               alt={product.primaryImage.alt}
                               className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                              }}
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-neutral-400">

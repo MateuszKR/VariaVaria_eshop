@@ -862,10 +862,7 @@ export default function EditProductModal({ isOpen, onClose, onProductUpdated, pr
                         >
                           <div className="w-16 h-16 relative rounded-lg overflow-hidden bg-neutral-100">
                             <img
-                              src={image.url.startsWith('/') 
-                                ? `${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}${image.url}`
-                                : image.url
-                              }
+                              src={image.url}
                               alt={image.alt}
                               className="w-full h-full object-cover"
                               onError={(e) => {
