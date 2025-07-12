@@ -217,9 +217,12 @@ function Hero() {
                 priority
               />
             </div>
-            <div className="absolute -top-4 -left-4 bg-accent-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+            <Link 
+              href="/products?featured=true" 
+              className="absolute -top-4 -left-4 bg-accent-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-accent-600 transition-colors cursor-pointer"
+            >
               ✨ Featured
-            </div>
+            </Link>
           </div>
         </div>
       </div>

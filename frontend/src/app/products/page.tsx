@@ -45,6 +45,7 @@ function ProductsContent() {
   // Search and filters
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
+  const [featuredOnly, setFeaturedOnly] = useState(searchParams.get('featured') === 'true');
   const [sortBy, setSortBy] = useState(searchParams.get('sortBy') || 'created_at');
   const [sortOrder, setSortOrder] = useState(searchParams.get('sortOrder') || 'desc');
   const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
@@ -68,6 +69,7 @@ function ProductsContent() {
       
       if (searchTerm) params.append('search', searchTerm);
       if (selectedCategory) params.append('category', selectedCategory);
+      if (featuredOnly) params.append('featured', 'true');
       if (minPrice) params.append('minPrice', minPrice);
       if (maxPrice) params.append('maxPrice', maxPrice);
       
@@ -84,7 +86,7 @@ function ProductsContent() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, searchTerm, selectedCategory, sortBy, sortOrder, minPrice, maxPrice]);
+  }, [currentPage, searchTerm, selectedCategory, featuredOnly, sortBy, sortOrder, minPrice, maxPrice]);
 
   const fetchCategories = async () => {
     try {
@@ -120,6 +122,7 @@ function ProductsContent() {
   const clearFilters = () => {
     setSearchTerm('');
     setSelectedCategory('');
+    setFeaturedOnly(false);
     setMinPrice('');
     setMaxPrice('');
     setSortBy('created_at');
@@ -178,6 +181,21 @@ function ProductsContent() {
             
             {/* Filters */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div className="flex items-center">
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={featuredOnly}
+                    onChange={(e) => {
+                      setFeaturedOnly(e.target.checked);
+                      handleFilterChange();
+                    }}
+                    className="rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
+                  />
+                  <span className="text-sm font-medium text-neutral-700">Featured Only</span>
+                </label>
+              </div>
+              
               <select
                 value={selectedCategory}
                 onChange={(e) => {
