@@ -7,9 +7,6 @@ const withPWA = require('next-pwa')({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
   output: 'standalone',
   images: {
     unoptimized: true, // Disable image optimization to avoid Docker networking issues
@@ -21,6 +18,14 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'via.placeholder.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'variavaria.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 's1.apart.pl',
       },
       {
         protocol: 'http',

@@ -2,7 +2,8 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { 
   ShoppingBagIcon, 
   UserIcon, 
@@ -17,51 +18,31 @@ import {
 } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
 
-// Sample data - would come from API in real implementation
-const featuredProducts = [
-  {
-    id: 1,
-    name: 'Sterling Silver Four-Leaf Clover Ring',
-    price: 89.99,
-    originalPrice: 119.99,
-    image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400',
-    rating: 4.8,
-    reviews: 124,
-    isNew: true,
-    isSale: true
-  },
-  {
-    id: 2,
-    name: 'Rose Gold Clover Necklace',
-    price: 129.99,
-    image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400',
-    rating: 4.9,
-    reviews: 89,
-    isNew: false,
-    isSale: false
-  },
-  {
-    id: 3,
-    name: 'Gold-Filled Clover Earrings',
-    price: 79.99,
-    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400',
-    rating: 4.7,
-    reviews: 67,
-    isNew: true,
-    isSale: false
-  },
-  {
-    id: 4,
-    name: 'Silver Clover Charm Bracelet',
-    price: 99.99,
-    originalPrice: 139.99,
-    image: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400',
-    rating: 4.8,
-    reviews: 156,
-    isNew: false,
-    isSale: true
-  }
-]
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  shortDescription: string;
+  sku: string;
+  price: number;
+  material: string;
+  weightGrams: number | null;
+  dimensions: string;
+  careInstructions: string;
+  isActive: boolean;
+  isFeatured: boolean;
+  category: {
+    name: string;
+    slug: string;
+  } | null;
+  primaryImage: {
+    url: string;
+    alt: string;
+  } | null;
+  quantityAvailable: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const categories = [
   { name: 'Rings', slug: 'rings', image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=300' },
@@ -230,37 +211,72 @@ function Hero() {
   )
 }
 
-function ProductCard({ product }: { product: any }) {
+function ProductCard({ product }: { product: Product }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
+  const [imageError, setImageError] = useState(false)
+  const router = useRouter()
+
+  const getImageSrc = (imageUrl: string) => {
+    const src = imageUrl.startsWith('/') 
+      ? `${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}${imageUrl}`
+      : imageUrl;
+    return src;
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsWishlisted(!isWishlisted);
+  };
+
+  const handleCardClick = () => {
+    router.push(`/products/${product.id}`);
+  };
 
   return (
-    <div className="product-card hover-lift">
-      <div className="aspect-square relative overflow-hidden">
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
-        />
+    <div 
+      className="product-card hover-lift cursor-pointer group" 
+      onClick={handleCardClick}
+    >
+      {/* Image Section - About half height */}
+      <div className="h-48 relative overflow-hidden bg-neutral-100">
+        {product.primaryImage && !imageError ? (
+          <img
+            src={getImageSrc(product.primaryImage.url)}
+            alt={product.primaryImage.alt || product.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={handleImageError}
+          />
+        ) : (
+          <div className="w-full h-full bg-neutral-200 flex items-center justify-center">
+            <span className="text-neutral-500 text-sm">
+              {imageError ? 'Image failed to load' : 'No image'}
+            </span>
+          </div>
+        )}
         
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {product.isNew && (
-            <span className="bg-primary-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-              New
+          {product.isFeatured && (
+            <span className="bg-accent-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+              Featured
             </span>
           )}
-          {product.isSale && (
+          {product.quantityAvailable === 0 && (
             <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-              Sale
+              Out of Stock
             </span>
           )}
         </div>
 
         {/* Wishlist Button */}
         <button 
-          className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors"
-          onClick={() => setIsWishlisted(!isWishlisted)}
+          className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors z-10"
+          onClick={handleWishlistClick}
         >
           {isWishlisted ? (
             <HeartSolidIcon className="h-5 w-5 text-red-500" />
@@ -269,49 +285,35 @@ function ProductCard({ product }: { product: any }) {
           )}
         </button>
 
-        {/* Quick Actions */}
-        <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button className="w-full btn-primary py-2 text-sm">
-            Quick Add to Cart
-          </button>
+        {/* Hover overlay with "View Details" text */}
+        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+          <span className="text-white font-medium bg-black/50 px-4 py-2 rounded-full">
+            View Details
+          </span>
         </div>
       </div>
 
-      <div className="p-4 space-y-3">
+      {/* Content Section */}
+      <div className="p-4 space-y-2">
         <h3 className="font-medium text-neutral-900 line-clamp-2">
           {product.name}
         </h3>
         
-        <div className="flex items-center space-x-2">
-          <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              <StarIcon
-                key={i}
-                className={`h-4 w-4 ${
-                  i < Math.floor(product.rating) 
-                    ? 'text-accent-500 fill-current' 
-                    : 'text-neutral-300'
-                }`}
-              />
-            ))}
-          </div>
-          <span className="text-sm text-neutral-500">({product.reviews})</span>
-        </div>
+        {product.category && (
+          <p className="text-sm text-neutral-500">
+            {product.category.name}
+          </p>
+        )}
 
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <span className="text-lg font-bold text-neutral-900">
-              ${product.price}
+              ${product.price.toFixed(2)}
             </span>
-            {product.originalPrice && (
-              <span className="text-sm text-neutral-500 line-through">
-                ${product.originalPrice}
-              </span>
-            )}
           </div>
-          {product.isSale && product.originalPrice && (
-            <span className="text-sm font-medium text-red-600">
-              Save ${(product.originalPrice - product.price).toFixed(2)}
+          {product.quantityAvailable > 0 && product.quantityAvailable <= 5 && (
+            <span className="text-sm font-medium text-orange-600">
+              Only {product.quantityAvailable} left
             </span>
           )}
         </div>
@@ -321,6 +323,80 @@ function ProductCard({ product }: { product: any }) {
 }
 
 function FeaturedProducts() {
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchFeaturedProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/products?featured=true&limit=4`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch featured products');
+        }
+        
+        const data = await response.json();
+        setFeaturedProducts(data.products || []);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load featured products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedProducts();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20">
+        <div className="container-max section-padding">
+          <div className="text-center space-y-4 mb-12">
+            <h2 className="text-3xl lg:text-4xl font-serif font-bold text-neutral-900">
+              Featured Products
+            </h2>
+            <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
+              Discover our most popular four-leaf clover jewelry pieces, 
+              each one handcrafted with love and attention to detail.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-square bg-neutral-200 rounded-lg mb-4"></div>
+                <div className="h-4 bg-neutral-200 rounded mb-2"></div>
+                <div className="h-4 bg-neutral-200 rounded w-3/4"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-20">
+        <div className="container-max section-padding">
+          <div className="text-center space-y-4 mb-12">
+            <h2 className="text-3xl lg:text-4xl font-serif font-bold text-neutral-900">
+              Featured Products
+            </h2>
+            <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
+              Discover our most popular four-leaf clover jewelry pieces, 
+              each one handcrafted with love and attention to detail.
+            </p>
+          </div>
+          <div className="text-center text-neutral-600">
+            <p>Unable to load featured products. Please try again later.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-20">
       <div className="container-max section-padding">
@@ -334,17 +410,30 @@ function FeaturedProducts() {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {featuredProducts.length > 0 ? (
+          <>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {featuredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
 
-        <div className="text-center mt-12">
-          <Link href="/products" className="btn-secondary">
-            View All Products
-          </Link>
-        </div>
+            <div className="text-center mt-12">
+              <Link href="/products" className="btn-secondary">
+                View All Products
+              </Link>
+            </div>
+          </>
+        ) : (
+          <div className="text-center text-neutral-600">
+            <p>No featured products available at the moment.</p>
+            <div className="mt-6">
+              <Link href="/products" className="btn-secondary">
+                Browse All Products
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )
