@@ -31,6 +31,7 @@ interface Product {
   weightGrams?: number;
   dimensions?: string;
   careInstructions?: string;
+  quantityAvailable?: number;
   isActive: boolean;
   isFeatured?: boolean;
   images?: ProductImage[];
@@ -60,6 +61,7 @@ export default function EditProductModal({ isOpen, onClose, onProductUpdated, pr
     weightGrams: '',
     dimensions: '',
     careInstructions: '',
+    quantityAvailable: '0',
     isActive: true,
     isFeatured: false,
   });
@@ -85,6 +87,7 @@ export default function EditProductModal({ isOpen, onClose, onProductUpdated, pr
         weightGrams: product.weightGrams?.toString() || '',
         dimensions: product.dimensions || '',
         careInstructions: product.careInstructions || '',
+        quantityAvailable: product.quantityAvailable?.toString() || '0',
         isActive: product.isActive,
         isFeatured: product.isFeatured || false,
       });
@@ -468,6 +471,29 @@ export default function EditProductModal({ isOpen, onClose, onProductUpdated, pr
         throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
 
+      // Update inventory quantity
+      const quantityAvailable = parseInt(formData.quantityAvailable);
+      if (!isNaN(quantityAvailable) && quantityAvailable >= 0) {
+        try {
+          const inventoryResponse = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/admin/inventory/${product.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              quantityAvailable: quantityAvailable
+            }),
+          });
+
+          if (!inventoryResponse.ok) {
+            console.error('Failed to update inventory');
+          }
+        } catch (inventoryError) {
+          console.error('Error updating inventory:', inventoryError);
+        }
+      }
+
       // Handle image updates
       for (const image of images) {
         if (!image.isExisting) {
@@ -510,6 +536,7 @@ export default function EditProductModal({ isOpen, onClose, onProductUpdated, pr
       weightGrams: '',
       dimensions: '',
       careInstructions: '',
+      quantityAvailable: '0',
       isActive: true,
       isFeatured: false,
     });
@@ -720,6 +747,23 @@ export default function EditProductModal({ isOpen, onClose, onProductUpdated, pr
                     className="input-field"
                     placeholder="How to care for this product..."
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Stock Quantity *
+                  </label>
+                  <input
+                    type="number"
+                    name="quantityAvailable"
+                    required
+                    min="0"
+                    value={formData.quantityAvailable}
+                    onChange={handleInputChange}
+                    className="input-field"
+                    placeholder="0"
+                  />
+                  <p className="text-xs text-neutral-500 mt-1">Number of items available in stock</p>
                 </div>
               </div>
 

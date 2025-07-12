@@ -403,6 +403,7 @@ function ProductManagement({
                     <td className="py-4 px-4 w-32">
                       <div className="flex items-center space-x-1">
                         <button 
+                          onClick={() => window.open(`/products/${product.id}`, '_blank')}
                           className="p-1.5 text-neutral-600 hover:text-blue-600 transition-colors rounded hover:bg-blue-50"
                           title="View Details"
                         >

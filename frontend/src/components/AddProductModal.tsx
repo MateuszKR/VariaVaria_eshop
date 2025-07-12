@@ -41,6 +41,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded }: Add
     weightGrams: '',
     dimensions: '',
     careInstructions: '',
+    quantityAvailable: '0',
     isActive: true,
     isFeatured: false,
   });
@@ -219,6 +220,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded }: Add
         price: parseFloat(formData.price),
         categoryId: formData.categoryId ? parseInt(formData.categoryId) : null,
         weightGrams: formData.weightGrams ? parseFloat(formData.weightGrams) : null,
+        quantityAvailable: parseInt(formData.quantityAvailable),
       };
 
       // Create the product first
@@ -269,6 +271,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded }: Add
         weightGrams: '',
         dimensions: '',
         careInstructions: '',
+        quantityAvailable: '0',
         isActive: true,
         isFeatured: false,
       });
@@ -298,6 +301,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded }: Add
       weightGrams: '',
       dimensions: '',
       careInstructions: '',
+      quantityAvailable: '0',
       isActive: true,
       isFeatured: false,
     });
@@ -507,6 +511,23 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded }: Add
                     className="input-field"
                     placeholder="How to care for this product..."
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Initial Stock Quantity *
+                  </label>
+                  <input
+                    type="number"
+                    name="quantityAvailable"
+                    required
+                    min="0"
+                    value={formData.quantityAvailable}
+                    onChange={handleInputChange}
+                    className="input-field"
+                    placeholder="0"
+                  />
+                  <p className="text-xs text-neutral-500 mt-1">Number of items available in stock</p>
                 </div>
               </div>
 

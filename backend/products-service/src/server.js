@@ -620,7 +620,7 @@ app.post('/admin/products', verifyToken, verifyAdmin, validateProduct, async (re
     const {
       name, description, shortDescription, sku, price, categoryId,
       material, weightGrams, dimensions, careInstructions,
-      isActive = true, isFeatured = false
+      isActive = true, isFeatured = false, quantityAvailable = 0
     } = req.body;
 
     // Check if SKU already exists
@@ -639,10 +639,10 @@ app.post('/admin/products', verifyToken, verifyAdmin, validateProduct, async (re
 
     const product = result.rows[0];
 
-    // Initialize inventory
+    // Initialize inventory with specified quantity
     await pool.query(
-      'INSERT INTO inventory (product_id, quantity_available, quantity_reserved) VALUES ($1, 0, 0)',
-      [product.id]
+      'INSERT INTO inventory (product_id, quantity_available, quantity_reserved) VALUES ($1, $2, 0)',
+      [product.id, quantityAvailable]
     );
 
     res.status(201).json({
