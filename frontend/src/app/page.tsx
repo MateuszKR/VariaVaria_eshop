@@ -217,10 +217,7 @@ function ProductCard({ product }: { product: Product }) {
   const router = useRouter()
 
   const getImageSrc = (imageUrl: string) => {
-    const src = imageUrl.startsWith('/') 
-      ? `${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}${imageUrl}`
-      : imageUrl;
-    return src;
+    return imageUrl;
   };
 
   const handleImageError = () => {
@@ -331,7 +328,7 @@ function FeaturedProducts() {
     const fetchFeaturedProducts = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/products?featured=true&limit=4`);
+        const response = await fetch(`/api/products?featured=true&limit=4`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch featured products');

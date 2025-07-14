@@ -106,7 +106,7 @@ export default function EditProductModal({ isOpen, onClose, onProductUpdated, pr
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/categories`);
+      const response = await fetch(`/api/categories`);
       if (response.ok) {
         const data = await response.json();
         setCategories(data.categories || []);
@@ -118,7 +118,7 @@ export default function EditProductModal({ isOpen, onClose, onProductUpdated, pr
 
   const fetchProductDetails = async (productId: number) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/products/${productId}`);
+      const response = await fetch(`/api/products/${productId}`);
       if (response.ok) {
         const data = await response.json();
         const productDetails = data.product;
@@ -127,7 +127,7 @@ export default function EditProductModal({ isOpen, onClose, onProductUpdated, pr
         if (productDetails.images && productDetails.images.length > 0) {
           setImages(productDetails.images.map((img: any) => ({
             id: img.id,
-            url: `${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}${img.url}`,
+            url: img.url,
             alt: img.alt,
             isPrimary: img.isPrimary,
             isExisting: true
@@ -253,7 +253,7 @@ export default function EditProductModal({ isOpen, onClose, onProductUpdated, pr
       try {
         const token = localStorage.getItem('adminToken');
         if (token) {
-          await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/admin/products/${product.id}/images/${imageToRemove.id}`, {
+          await fetch(`/api/admin/products/${product.id}/images/${imageToRemove.id}`, {
             method: 'DELETE',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -296,7 +296,7 @@ export default function EditProductModal({ isOpen, onClose, onProductUpdated, pr
       formData.append('altText', image.alt);
       formData.append('isPrimary', image.isPrimary.toString());
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/admin/products/${productId}/images`, {
+      const response = await fetch(`/api/admin/products/${productId}/images`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -308,7 +308,7 @@ export default function EditProductModal({ isOpen, onClose, onProductUpdated, pr
         throw new Error('Failed to upload image');
       }
     } else {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/admin/products/${productId}/images/url`, {
+      const response = await fetch(`/api/admin/products/${productId}/images/url`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -332,7 +332,7 @@ export default function EditProductModal({ isOpen, onClose, onProductUpdated, pr
     if (!token || !product) return;
 
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/admin/products/${product.id}/images/${imageId}`, {
+      await fetch(`/api/admin/products/${product.id}/images/${imageId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -450,7 +450,7 @@ export default function EditProductModal({ isOpen, onClose, onProductUpdated, pr
       // Data ready for submission
 
       // Update the product
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/admin/products/${product.id}`, {
+      const response = await fetch(`/api/admin/products/${product.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -475,7 +475,7 @@ export default function EditProductModal({ isOpen, onClose, onProductUpdated, pr
       const quantityAvailable = parseInt(formData.quantityAvailable);
       if (!isNaN(quantityAvailable) && quantityAvailable >= 0) {
         try {
-          const inventoryResponse = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/admin/inventory/${product.id}`, {
+          const inventoryResponse = await fetch(`/api/admin/inventory/${product.id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',

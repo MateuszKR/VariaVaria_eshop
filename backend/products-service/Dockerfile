@@ -19,11 +19,14 @@ RUN npm install --omit=dev && npm cache clean --force
 # Copy source code
 COPY src/ ./src/
 
+# Create uploads directory and set permissions
+RUN mkdir -p /app/uploads
+
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodeuser -u 1001
 
-# Change ownership of app directory
+# Change ownership of app directory and uploads
 RUN chown -R nodeuser:nodejs /app
 USER nodeuser
 

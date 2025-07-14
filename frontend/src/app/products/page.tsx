@@ -58,39 +58,25 @@ function ProductsContent() {
   const limit = 12;
 
   const fetchProducts = useCallback(async () => {
-    setLoading(true);
     try {
-      const params = new URLSearchParams({
-        page: currentPage.toString(),
-        limit: limit.toString(),
-        sortBy,
-        sortOrder,
-      });
-      
-      if (searchTerm) params.append('search', searchTerm);
-      if (selectedCategory) params.append('category', selectedCategory);
-      if (featuredOnly) params.append('featured', 'true');
-      if (minPrice) params.append('minPrice', minPrice);
-      if (maxPrice) params.append('maxPrice', maxPrice);
-      
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/products?${params}`);
+      setLoading(true);
+      const response = await fetch('/api/products');
       if (!response.ok) {
         throw new Error('Failed to fetch products');
       }
       const data = await response.json();
-      setProducts(data.products || []);
-      setTotalPages(data.pagination?.pages || 1);
-      setTotalProducts(data.pagination?.total || 0);
+      setProducts(data.products);
+      setTotalProducts(data.total);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
-  }, [currentPage, searchTerm, selectedCategory, featuredOnly, sortBy, sortOrder, minPrice, maxPrice]);
+  }, []);
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/categories`);
+      const response = await fetch(`/api/categories`);
       if (response.ok) {
         const data = await response.json();
         setCategories(data.categories || []);
@@ -98,11 +84,11 @@ function ProductsContent() {
     } catch (err) {
       console.error('Failed to fetch categories:', err);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [fetchCategories]);
 
   useEffect(() => {
     fetchProducts();
@@ -301,10 +287,7 @@ function ProductsContent() {
                   <div className="aspect-w-1 aspect-h-1 bg-neutral-100 overflow-hidden">
                     {product.primaryImage?.url ? (
                       <img
-                        src={product.primaryImage.url.startsWith('/') 
-                          ? `${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}${product.primaryImage.url}`
-                          : product.primaryImage.url
-                        }
+                        src={product.primaryImage.url}
                         alt={product.primaryImage.alt || product.name}
                         className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                       />

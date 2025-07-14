@@ -65,8 +65,25 @@ app.use(cors());
 app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
 
-// Serve uploaded images statically
-app.use('/uploads', express.static(uploadsDir));
+// Serve uploaded images statically with CORS headers
+app.use('/uploads', (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  
+  next();
+}, express.static(uploadsDir, {
+  setHeaders: (res, path) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cache-Control', 'public, max-age=31536000');
+  }
+}));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -406,6 +423,19 @@ app.get('/products/:id', async (req, res) => {
       [id]
     );
 
+    // Find the primary image (if any)
+    const primaryImageRow = imagesResult.rows.find(img => img.is_primary);
+    const getFullImageUrl = (imageUrl) => {
+      if (!imageUrl) return null;
+      if (imageUrl.startsWith('http')) return imageUrl;
+      // Force localhost:3002 for all image URLs to avoid CORS issues
+      return `http://localhost:3002${imageUrl}`;
+    };
+    const primaryImage = primaryImageRow ? {
+      url: getFullImageUrl(primaryImageRow.image_url),
+      alt: primaryImageRow.alt_text
+    } : null;
+
     // Get product reviews
     const reviewsResult = await pool.query(`
       SELECT 
@@ -445,11 +475,12 @@ app.get('/products/:id', async (req, res) => {
         } : null,
         images: imagesResult.rows.map(image => ({
           id: image.id,
-          url: image.image_url.startsWith('http') ? image.image_url : `http://${req.get('host') || 'localhost:3002'}${image.image_url}`,
+          url: getFullImageUrl(image.image_url),
           alt: image.alt_text,
           sortOrder: image.sort_order,
           isPrimary: image.is_primary
         })),
+        primaryImage, // <-- add this field
         inventory: {
           quantityAvailable: product.quantity_available || 0,
           quantityReserved: product.quantity_reserved || 0
@@ -566,8 +597,8 @@ app.get('/admin/products', verifyToken, verifyAdmin, [
       if (imageUrl.startsWith('http')) {
         return imageUrl; // Already a full URL
       }
-      // Convert relative URL to full URL
-      return `${req.protocol}://${req.get('host')}${imageUrl}`;
+      // Force localhost:3002 for all image URLs to avoid CORS issues
+      return `http://localhost:3002${imageUrl}`;
     };
 
     res.json({

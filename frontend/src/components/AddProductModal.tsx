@@ -55,7 +55,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded }: Add
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/categories`);
+      const response = await fetch(`/api/categories`);
       if (response.ok) {
         const data = await response.json();
         setCategories(data.categories || []);
@@ -171,7 +171,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded }: Add
       formData.append('altText', image.alt);
       formData.append('isPrimary', image.isPrimary.toString());
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/admin/products/${productId}/images`, {
+      const response = await fetch(`/api/admin/products/${productId}/images`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -184,7 +184,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded }: Add
       }
     } else {
       // Add by URL
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/admin/products/${productId}/images/url`, {
+      const response = await fetch(`/api/admin/products/${productId}/images/url`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -238,7 +238,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded }: Add
       }
 
       // Create the product first
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/admin/products`, {
+      const response = await fetch(`/api/admin/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

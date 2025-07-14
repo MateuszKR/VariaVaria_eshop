@@ -66,6 +66,7 @@ interface Product {
   };
   createdAt: string;
   updatedAt: string;
+  primaryImage?: ProductImage;
 }
 
 export default function ProductDetailPage() {
@@ -88,7 +89,7 @@ export default function ProductDetailPage() {
   const fetchProduct = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/products/${productId}`);
+      const response = await fetch(`/api/products/${productId}`);
       
       if (!response.ok) {
         if (response.status === 404) {
@@ -119,9 +120,10 @@ export default function ProductDetailPage() {
   };
 
   const getImageSrc = (imageUrl: string) => {
-    return imageUrl.startsWith('/') 
-      ? `${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}${imageUrl}`
-      : imageUrl;
+    if (imageUrl.startsWith('http://localhost:3002')) {
+      return imageUrl.replace('http://localhost:3002', '');
+    }
+    return imageUrl;
   };
 
   const isOutOfStock = product && product.inventory.quantityAvailable === 0;
@@ -181,10 +183,10 @@ export default function ProductDetailPage() {
           <div className="space-y-4">
             {/* Main Image */}
             <div className="aspect-square bg-neutral-100 rounded-xl overflow-hidden">
-              {product.images.length > 0 ? (
+              {product.primaryImage?.url || product.images.length > 0 ? (
                 <img
-                  src={getImageSrc(product.images[selectedImageIndex]?.url || product.images[0].url)}
-                  alt={product.images[selectedImageIndex]?.alt || product.name}
+                  src={getImageSrc(product.primaryImage?.url || product.images[selectedImageIndex]?.url || product.images[0]?.url)}
+                  alt={product.primaryImage?.alt || product.images[selectedImageIndex]?.alt || product.name}
                   className="w-full h-full object-cover"
                 />
               ) : (

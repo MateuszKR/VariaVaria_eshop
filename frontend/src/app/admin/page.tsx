@@ -172,7 +172,7 @@ function ProductManagement({
         throw new Error('Authentication required')
       }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/admin/products?limit=1000`, {
+      const response = await fetch(`/api/admin/products?limit=1000`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -242,7 +242,7 @@ function ProductManagement({
         throw new Error('Authentication required')
       }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/admin/products/${productId}`, {
+      const response = await fetch(`/api/admin/products/${productId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -591,7 +591,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchProductsCount = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/products?limit=1`)
+        const response = await fetch(`/api/products?limit=1`)
         if (response.ok) {
           const data = await response.json()
           setProductsCount(data.pagination?.totalItems || 0)

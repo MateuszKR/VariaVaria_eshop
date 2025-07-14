@@ -24,7 +24,7 @@ export default function CategoriesPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL}/categories`);
+      const response = await fetch(`/api/categories`);
       if (!response.ok) {
         throw new Error('Failed to fetch categories');
       }

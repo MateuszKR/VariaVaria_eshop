@@ -68,6 +68,8 @@ services:
       PORT: 3002
     ports:
       - "3002:3002"
+    volumes:
+      - product_uploads:/app/uploads
     depends_on:
       database:
         condition: service_healthy
@@ -163,6 +165,8 @@ services:
 
 volumes:
   postgres_data:
+    driver: local
+  product_uploads:
     driver: local
 
 networks:
