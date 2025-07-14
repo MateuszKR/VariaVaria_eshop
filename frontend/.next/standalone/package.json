@@ -1,0 +1,48 @@
+{
+  "name": "four-leaf-clover-jewelry-shop",
+  "version": "1.0.0",
+  "description": "Professional online jewelry shop for handcrafted four-leaf clover jewelry",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend/auth-service",
+    "backend/products-service",
+    "backend/orders-service"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:auth\" \"npm run dev:products\" \"npm run dev:orders\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:auth": "cd backend/auth-service && npm run dev",
+    "dev:products": "cd backend/products-service && npm run dev",
+    "dev:orders": "cd backend/orders-service && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "npm run build:auth && npm run build:products && npm run build:orders",
+    "build:auth": "cd backend/auth-service && npm run build",
+    "build:products": "cd backend/products-service && npm run build",
+    "build:orders": "cd backend/orders-service && npm run build",
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:auth\" \"npm run start:products\" \"npm run start:orders\"",
+    "start:frontend": "cd frontend && npm run start",
+    "start:auth": "cd backend/auth-service && npm run start",
+    "start:products": "cd backend/products-service && npm run start",
+    "start:orders": "cd backend/orders-service && npm run start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": [
+    "jewelry",
+    "e-commerce",
+    "four-leaf-clover",
+    "handcrafted",
+    "react",
+    "nextjs",
+    "nodejs",
+    "microservices"
+  ],
+  "author": "Four Leaf Clover Jewelry",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}

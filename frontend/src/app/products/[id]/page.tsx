@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useCart } from '@/contexts/CartContext';
+import { toast } from 'react-hot-toast';
 import { 
   ArrowLeftIcon, 
   ShoppingCartIcon, 
@@ -73,6 +75,7 @@ export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
   const productId = params.id as string;
+  const { addItem } = useCart();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -110,13 +113,29 @@ export default function ProductDetailPage() {
   };
 
   const handleAddToCart = async () => {
+    if (!product) return;
+    
     setAddingToCart(true);
-    // TODO: Implement add to cart functionality
-    // This would typically call the cart/orders service
-    setTimeout(() => {
+    
+    try {
+      // Add item to cart
+      addItem({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: quantity,
+        image: product.primaryImage?.url || product.images[0]?.url,
+        category: product.category?.name,
+        sku: product.sku,
+        maxQuantity: product.inventory.quantityAvailable
+      });
+      
+      toast.success(`Added ${quantity} ${quantity === 1 ? 'item' : 'items'} to cart! 🍀`);
+    } catch (error) {
+      toast.error('Failed to add item to cart');
+    } finally {
       setAddingToCart(false);
-      // Show success message
-    }, 1000);
+    }
   };
 
   const getImageSrc = (imageUrl: string) => {

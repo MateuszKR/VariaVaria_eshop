@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
+import { CartProvider } from '@/contexts/CartContext'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -74,29 +75,31 @@ export default function RootLayout({
         <meta name="msapplication-tap-highlight" content="no" />
       </head>
       <body className="font-sans antialiased">
-        <div className="min-h-screen bg-neutral-50">
-          {children}
-        </div>
-        <Toaster 
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: '#363636',
-              color: '#fff',
-            },
-            success: {
+        <CartProvider>
+          <div className="min-h-screen bg-neutral-50">
+            {children}
+          </div>
+          <Toaster 
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
               style: {
-                background: '#22c55e',
+                background: '#363636',
+                color: '#fff',
               },
-            },
-            error: {
-              style: {
-                background: '#ef4444',
+              success: {
+                style: {
+                  background: '#22c55e',
+                },
               },
-            },
-          }}
-        />
+              error: {
+                style: {
+                  background: '#ef4444',
+                },
+              },
+            }}
+          />
+        </CartProvider>
       </body>
     </html>
   )

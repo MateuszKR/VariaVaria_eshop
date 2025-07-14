@@ -68,6 +68,38 @@
   .clover-icon {
     @apply text-primary-500 animate-bounce-gentle;
   }
+  
+  .cart-item-card {
+    @apply bg-white rounded-xl p-6 shadow-soft hover:shadow-lg transition-all duration-300;
+  }
+  
+  .cart-summary-card {
+    @apply bg-white rounded-xl p-6 shadow-soft sticky top-8;
+  }
+  
+  .cart-widget {
+    @apply bg-white rounded-xl shadow-soft border border-neutral-200 overflow-hidden;
+  }
+  
+  .cart-badge {
+    @apply absolute -top-2 -right-2 bg-primary-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-medium;
+  }
+  
+  .cart-item-enter {
+    @apply opacity-0 transform scale-95;
+  }
+  
+  .cart-item-enter-active {
+    @apply opacity-100 transform scale-100 transition-all duration-300;
+  }
+  
+  .cart-item-exit {
+    @apply opacity-100 transform scale-100;
+  }
+  
+  .cart-item-exit-active {
+    @apply opacity-0 transform scale-95 transition-all duration-300;
+  }
 }
 
 @layer utilities {
@@ -93,6 +125,14 @@
   
   .slide-up {
     @apply animate-slide-up;
+  }
+  
+  .shadow-soft {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+  
+  .animate-bounce-gentle {
+    animation: bounce-gentle 2s infinite;
   }
 }
 
@@ -125,6 +165,15 @@
   }
   100% {
     background-position: calc(200px + 100%) 0;
+  }
+}
+
+@keyframes bounce-gentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
   }
 }
 

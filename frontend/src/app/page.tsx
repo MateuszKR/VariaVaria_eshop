@@ -17,6 +17,7 @@ import {
   SparklesIcon
 } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
+import CartWidget, { CartIcon } from '@/components/CartWidget'
 
 interface Product {
   id: number;
@@ -54,6 +55,7 @@ interface Category {
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isCartOpen, setIsCartOpen] = useState(false)
 
   return (
     <header className="sticky top-0 z-50 glass-effect border-b border-neutral-200">
@@ -92,19 +94,21 @@ function Header() {
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-4 relative">
             <button className="p-2 text-neutral-700 hover:text-primary-600 transition-colors">
               <MagnifyingGlassIcon className="h-5 w-5" />
             </button>
             <Link href="/account" className="p-2 text-neutral-700 hover:text-primary-600 transition-colors">
               <UserIcon className="h-5 w-5" />
             </Link>
-            <Link href="/cart" className="p-2 text-neutral-700 hover:text-primary-600 transition-colors relative">
-              <ShoppingBagIcon className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 bg-primary-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                0
-              </span>
-            </Link>
+            <div className="relative">
+              <CartIcon onClick={() => setIsCartOpen(!isCartOpen)} />
+              <CartWidget 
+                isOpen={isCartOpen} 
+                onClose={() => setIsCartOpen(false)}
+                className="absolute right-0 top-12 z-50"
+              />
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
