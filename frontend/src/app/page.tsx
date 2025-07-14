@@ -44,12 +44,13 @@ interface Product {
   updatedAt: string;
 }
 
-const categories = [
-  { name: 'Rings', slug: 'rings', image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=300' },
-  { name: 'Necklaces', slug: 'necklaces', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300' },
-  { name: 'Earrings', slug: 'earrings', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=300' },
-  { name: 'Bracelets', slug: 'bracelets', image: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=300' }
-]
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  imageUrl?: string;
+}
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -437,9 +438,81 @@ function FeaturedProducts() {
 }
 
 function Categories() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/categories`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch categories');
+        }
+        
+        const data = await response.json();
+        setCategories(data.categories || []);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load categories');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20">
+        <div className="container-max section-padding">
+          <div className="text-center space-y-4 mb-12">
+            <h2 className="text-3xl lg:text-4xl font-serif font-bold text-neutral-900">
+              Shop by Category
+            </h2>
+            <p className="text-lg text-neutral-600">
+              Finding the perfect four-leaf clover jewelry for every occasion
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-square bg-neutral-200 rounded-lg mb-4"></div>
+                <div className="h-4 bg-neutral-200 rounded mb-2"></div>
+                <div className="h-4 bg-neutral-200 rounded w-3/4"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-20">
+        <div className="container-max section-padding">
+          <div className="text-center space-y-4 mb-12">
+            <h2 className="text-3xl lg:text-4xl font-serif font-bold text-neutral-900">
+              Shop by Category
+            </h2>
+            <p className="text-lg text-neutral-600">
+              Finding the perfect four-leaf clover jewelry for every occasion
+            </p>
+          </div>
+          <div className="text-center text-neutral-600">
+            <p>Unable to load categories. Please try again later.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-20 bg-white">
-      <div className="container-max section-padding">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="text-center space-y-4 mb-12">
           <h2 className="text-3xl lg:text-4xl font-serif font-bold text-neutral-900">
             Shop by Category
@@ -449,32 +522,59 @@ function Categories() {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {categories.map((category) => (
-            <Link 
-              key={category.slug} 
-              href={`/categories/${category.slug}`}
-              className="group"
-            >
-              <div className="card hover-lift overflow-hidden">
-                <div className="aspect-square relative">
-                  <Image
-                    src={category.image}
-                    alt={category.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <h3 className="text-white text-xl font-serif font-semibold">
-                      {category.name}
-                    </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {categories.map((category) => {
+            
+            // Fallback images for each category type
+            const getFallbackImage = (slug: string) => {
+              const fallbacks: Record<string, string> = {
+                'rings': 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=300&h=300&fit=crop',
+                'necklaces': 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&h=300&fit=crop',
+                'earrings': 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=300&h=300&fit=crop',
+                'bracelets': 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=300&h=300&fit=crop',
+                'pendants': 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=300&h=300&fit=crop',
+                'sets': 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&h=300&fit=crop&sepia=20'
+              };
+              return fallbacks[slug] || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&h=300&fit=crop';
+            };
+
+            const imageUrl = category.imageUrl || getFallbackImage(category.slug);
+
+            return (
+              <Link 
+                key={category.slug} 
+                href={`/products?category=${category.slug}`}
+                className="block group"
+              >
+                <div 
+                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                  style={{ minHeight: '300px' }}
+                >
+                  <div className="relative w-full h-48">
+                    <Image
+                      src={imageUrl}
+                      alt={category.name}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-opacity duration-300" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <h3 className="text-white text-xl font-bold text-center px-4">
+                        {category.name}
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <p className="text-gray-600 text-sm text-center">
+                      {category.description || `Browse ${category.name.toLowerCase()}`}
+                    </p>
                   </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
+        
       </div>
     </section>
   )
