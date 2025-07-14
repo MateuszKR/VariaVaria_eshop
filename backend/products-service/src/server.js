@@ -362,7 +362,7 @@ app.get('/products', [
           slug: product.category_slug
         } : null,
         primaryImage: product.primary_image_url ? {
-          url: product.primary_image_url.startsWith('http') ? product.primary_image_url : `http://${req.get('host') || 'localhost:3002'}${product.primary_image_url}`,
+          url: product.primary_image_url.startsWith('http') ? product.primary_image_url : `http://localhost${product.primary_image_url}`,
           alt: product.primary_image_alt
         } : null,
         quantityAvailable: product.quantity_available || 0,
@@ -428,8 +428,8 @@ app.get('/products/:id', async (req, res) => {
     const getFullImageUrl = (imageUrl) => {
       if (!imageUrl) return null;
       if (imageUrl.startsWith('http')) return imageUrl;
-      // Force localhost:3002 for all image URLs to avoid CORS issues
-      return `http://localhost:3002${imageUrl}`;
+      // Route through nginx at localhost instead of directly to products service
+      return `http://localhost${imageUrl}`;
     };
     const primaryImage = primaryImageRow ? {
       url: getFullImageUrl(primaryImageRow.image_url),
@@ -597,8 +597,8 @@ app.get('/admin/products', verifyToken, verifyAdmin, [
       if (imageUrl.startsWith('http')) {
         return imageUrl; // Already a full URL
       }
-      // Force localhost:3002 for all image URLs to avoid CORS issues
-      return `http://localhost:3002${imageUrl}`;
+      // Route through nginx at localhost instead of directly to products service
+      return `http://localhost${imageUrl}`;
     };
 
     res.json({
