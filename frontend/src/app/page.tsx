@@ -18,6 +18,8 @@ import {
 } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
 import CartWidget, { CartIcon } from '@/components/CartWidget'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+import { useI18n } from '@/lib/i18n'
 
 interface Product {
   id: number;
@@ -54,6 +56,7 @@ interface Category {
 }
 
 function Header() {
+  const { t } = useI18n()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
 
@@ -80,27 +83,35 @@ function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link href="/products" className="text-neutral-700 hover:text-primary-600 transition-colors">
-              Products
+              {t('nav.products')}
             </Link>
             <Link href="/categories" className="text-neutral-700 hover:text-primary-600 transition-colors">
-              Categories
+              {t('nav.categories')}
             </Link>
             <Link href="/about" className="text-neutral-700 hover:text-primary-600 transition-colors">
-              About
+              {t('nav.about')}
             </Link>
             <Link href="/contact" className="text-neutral-700 hover:text-primary-600 transition-colors">
-              Contact
+              {t('nav.contact')}
             </Link>
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4 relative">
-            <button className="p-2 text-neutral-700 hover:text-primary-600 transition-colors">
+          <div className="hidden md:flex items-center space-x-2 relative">
+            <button 
+              className="p-2 text-neutral-700 hover:text-primary-600 transition-colors"
+              title={t('nav.search')}
+            >
               <MagnifyingGlassIcon className="h-5 w-5" />
             </button>
-            <Link href="/account" className="p-2 text-neutral-700 hover:text-primary-600 transition-colors">
+            <Link 
+              href="/account" 
+              className="p-2 text-neutral-700 hover:text-primary-600 transition-colors"
+              title={t('nav.account')}
+            >
               <UserIcon className="h-5 w-5" />
             </Link>
+            <LanguageSwitcher />
             <div className="relative">
               <CartIcon onClick={() => setIsCartOpen(!isCartOpen)} />
               <CartWidget 
@@ -125,24 +136,28 @@ function Header() {
           <div className="md:hidden py-4 border-t border-neutral-200 mt-4">
             <nav className="flex flex-col space-y-3">
               <Link href="/products" className="text-neutral-700 hover:text-primary-600 transition-colors">
-                Products
+                {t('nav.products')}
               </Link>
               <Link href="/categories" className="text-neutral-700 hover:text-primary-600 transition-colors">
-                Categories
+                {t('nav.categories')}
               </Link>
               <Link href="/about" className="text-neutral-700 hover:text-primary-600 transition-colors">
-                About
+                {t('nav.about')}
               </Link>
               <Link href="/contact" className="text-neutral-700 hover:text-primary-600 transition-colors">
-                Contact
+                {t('nav.contact')}
               </Link>
               <hr className="border-neutral-200" />
               <Link href="/account" className="text-neutral-700 hover:text-primary-600 transition-colors">
-                My Account
+                {t('nav.account')}
               </Link>
               <Link href="/cart" className="text-neutral-700 hover:text-primary-600 transition-colors">
-                Shopping Cart
+                {t('nav.cart')}
               </Link>
+              <hr className="border-neutral-200" />
+              <div className="px-2">
+                <LanguageSwitcher variant="inline" />
+              </div>
             </nav>
           </div>
         )}
@@ -152,6 +167,8 @@ function Header() {
 }
 
 function Hero() {
+  const { t } = useI18n()
+  
   return (
     <section className="hero-gradient py-20 lg:py-32">
       <div className="container-max section-padding">
@@ -159,36 +176,35 @@ function Hero() {
           <div className="space-y-8">
             <div className="space-y-4">
               <h1 className="text-4xl lg:text-6xl font-serif font-bold text-neutral-900 leading-tight">
-                Handcrafted 
-                <span className="text-gradient block">Lucky Jewelry</span>
+                {t('hero.title').split(' ').slice(0, -2).join(' ')} 
+                <span className="text-gradient block">{t('hero.subtitle')}</span>
               </h1>
               <p className="text-xl text-neutral-600 leading-relaxed">
-                Discover our beautiful collection of four-leaf clover jewelry, 
-                carefully handcrafted to bring you luck, style, and elegance.
+                {t('hero.description')}
               </p>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/products" className="btn-primary">
-                Shop Now
+                {t('hero.shopNow')}
               </Link>
               <Link href="/about" className="btn-secondary">
-                Our Story
+                {t('hero.ourStory')}
               </Link>
             </div>
 
             <div className="flex items-center space-x-8 pt-8">
               <div className="text-center">
                 <div className="text-2xl font-bold text-neutral-900">500+</div>
-                <div className="text-sm text-neutral-600">Happy Customers</div>
+                <div className="text-sm text-neutral-600">{t('hero.customers')}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-neutral-900">4.9</div>
-                <div className="text-sm text-neutral-600">Average Rating</div>
+                <div className="text-sm text-neutral-600">{t('hero.rating')}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-neutral-900">100%</div>
-                <div className="text-sm text-neutral-600">Handcrafted</div>
+                <div className="text-sm text-neutral-600">{t('hero.handcrafted')}</div>
               </div>
             </div>
           </div>
@@ -217,6 +233,7 @@ function Hero() {
 }
 
 function ProductCard({ product }: { product: Product }) {
+  const { t } = useI18n()
   const [isWishlisted, setIsWishlisted] = useState(false)
   const [imageError, setImageError] = useState(false)
   const router = useRouter()
@@ -256,7 +273,7 @@ function ProductCard({ product }: { product: Product }) {
         ) : (
           <div className="w-full h-full bg-neutral-200 flex items-center justify-center">
             <span className="text-neutral-500 text-sm">
-              {imageError ? 'Image failed to load' : 'No image'}
+              {imageError ? t('products.imageError') : t('products.noImage')}
             </span>
           </div>
         )}
@@ -265,12 +282,12 @@ function ProductCard({ product }: { product: Product }) {
         <div className="absolute top-3 left-3 flex flex-col gap-2">
           {product.isFeatured && (
             <span className="bg-accent-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-              Featured
+              {t('products.featured.badge')}
             </span>
           )}
           {product.quantityAvailable === 0 && (
             <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-              Out of Stock
+              {t('products.outOfStock')}
             </span>
           )}
         </div>
@@ -290,7 +307,7 @@ function ProductCard({ product }: { product: Product }) {
         {/* Hover overlay with "View Details" text */}
         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
           <span className="text-white font-medium bg-black/50 px-4 py-2 rounded-full">
-            View Details
+            {t('products.viewDetails')}
           </span>
         </div>
       </div>
@@ -310,12 +327,12 @@ function ProductCard({ product }: { product: Product }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <span className="text-lg font-bold text-neutral-900">
-              ${product.price.toFixed(2)}
+              {product.price.toFixed(2)} {t('common.currency')}
             </span>
           </div>
           {product.quantityAvailable > 0 && product.quantityAvailable <= 5 && (
             <span className="text-sm font-medium text-orange-600">
-              Only {product.quantityAvailable} left
+              {t('products.onlyLeft').replace('{count}', product.quantityAvailable.toString())}
             </span>
           )}
         </div>
@@ -325,6 +342,7 @@ function ProductCard({ product }: { product: Product }) {
 }
 
 function FeaturedProducts() {
+  const { t } = useI18n()
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -357,11 +375,10 @@ function FeaturedProducts() {
         <div className="container-max section-padding">
           <div className="text-center space-y-4 mb-12">
             <h2 className="text-3xl lg:text-4xl font-serif font-bold text-neutral-900">
-              Featured Products
+              {t('products.featured.title')}
             </h2>
             <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
-              Discover our most popular four-leaf clover jewelry pieces, 
-              each one handcrafted with love and attention to detail.
+              {t('products.featured.subtitle')}
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -384,15 +401,14 @@ function FeaturedProducts() {
         <div className="container-max section-padding">
           <div className="text-center space-y-4 mb-12">
             <h2 className="text-3xl lg:text-4xl font-serif font-bold text-neutral-900">
-              Featured Products
+              {t('products.featured.title')}
             </h2>
             <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
-              Discover our most popular four-leaf clover jewelry pieces, 
-              each one handcrafted with love and attention to detail.
+              {t('products.featured.subtitle')}
             </p>
           </div>
           <div className="text-center text-neutral-600">
-            <p>Unable to load featured products. Please try again later.</p>
+            <p>{t('products.loadError')}</p>
           </div>
         </div>
       </section>
@@ -404,11 +420,10 @@ function FeaturedProducts() {
       <div className="container-max section-padding">
         <div className="text-center space-y-4 mb-12">
           <h2 className="text-3xl lg:text-4xl font-serif font-bold text-neutral-900">
-            Featured Products
+            {t('products.featured.title')}
           </h2>
           <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
-            Discover our most popular four-leaf clover jewelry pieces, 
-            each one handcrafted with love and attention to detail.
+            {t('products.featured.subtitle')}
           </p>
         </div>
 
@@ -422,16 +437,16 @@ function FeaturedProducts() {
 
             <div className="text-center mt-12">
               <Link href="/products" className="btn-secondary">
-                View All Products
+                {t('products.featured.viewAll')}
               </Link>
             </div>
           </>
         ) : (
           <div className="text-center text-neutral-600">
-            <p>No featured products available at the moment.</p>
+            <p>{t('products.featured.noProducts')}</p>
             <div className="mt-6">
               <Link href="/products" className="btn-secondary">
-                Browse All Products
+                {t('products.featured.browseAll')}
               </Link>
             </div>
           </div>
@@ -442,6 +457,7 @@ function FeaturedProducts() {
 }
 
 function Categories() {
+  const { t } = useI18n()
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -474,10 +490,10 @@ function Categories() {
         <div className="container-max section-padding">
           <div className="text-center space-y-4 mb-12">
             <h2 className="text-3xl lg:text-4xl font-serif font-bold text-neutral-900">
-              Shop by Category
+              {t('categories.title')}
             </h2>
             <p className="text-lg text-neutral-600">
-              Finding the perfect four-leaf clover jewelry for every occasion
+              {t('categories.subtitle')}
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -500,10 +516,10 @@ function Categories() {
         <div className="container-max section-padding">
           <div className="text-center space-y-4 mb-12">
             <h2 className="text-3xl lg:text-4xl font-serif font-bold text-neutral-900">
-              Shop by Category
+              {t('categories.title')}
             </h2>
             <p className="text-lg text-neutral-600">
-              Finding the perfect four-leaf clover jewelry for every occasion
+              {t('categories.subtitle')}
             </p>
           </div>
           <div className="text-center text-neutral-600">
@@ -519,10 +535,10 @@ function Categories() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center space-y-4 mb-12">
           <h2 className="text-3xl lg:text-4xl font-serif font-bold text-neutral-900">
-            Shop by Category
+            {t('categories.title')}
           </h2>
           <p className="text-lg text-neutral-600">
-            Find the perfect four-leaf clover jewelry for every occasion
+            {t('categories.subtitle')}
           </p>
         </div>
 
@@ -585,26 +601,28 @@ function Categories() {
 }
 
 function Features() {
+  const { t } = useI18n()
+  
   const features = [
     {
       icon: ShieldCheckIcon,
-      title: 'Quality Guarantee',
-      description: 'All our jewelry comes with a lifetime quality guarantee'
+      title: t('features.quality.title'),
+      description: t('features.quality.description')
     },
     {
       icon: TruckIcon,
-      title: 'Free Shipping',
-      description: 'Free shipping on orders over $100 worldwide'
+      title: t('features.shipping.title'),
+      description: t('features.shipping.description')
     },
     {
       icon: HeartIcon,
-      title: 'Handcrafted',
-      description: 'Each piece is carefully handcrafted by skilled artisans'
+      title: t('features.handcrafted.title'),
+      description: t('features.handcrafted.description')
     },
     {
       icon: SparklesIcon,
-      title: 'Lucky Charm',
-      description: 'Authentic four-leaf clover designs for good luck'
+      title: t('features.lucky.title'),
+      description: t('features.lucky.description')
     }
   ]
 

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
 import { useRouter } from 'next/navigation';
+import { useI18n } from '@/lib/i18n';
 import { 
   PlusIcon, 
   MinusIcon, 
@@ -20,6 +21,8 @@ import {
 import { toast } from 'react-hot-toast';
 
 function Header() {
+  const { t } = useI18n()
+  
   return (
     <header className="sticky top-0 z-50 glass-effect border-b border-neutral-200">
       <div className="container-max section-padding">
@@ -41,7 +44,7 @@ function Header() {
           
           <nav className="flex items-center space-x-6">
             <Link href="/products" className="text-neutral-700 hover:text-primary-600 transition-colors">
-              Continue Shopping
+              {t('cart.continueShopping')}
             </Link>
           </nav>
         </div>
