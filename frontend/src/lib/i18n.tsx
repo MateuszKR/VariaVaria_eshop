@@ -45,6 +45,29 @@ export interface TranslationKeys {
   'products.loadError': string;
   'products.imageError': string;
   'products.noImage': string;
+  'products.page.title': string;
+  'products.page.subtitle': string;
+  'products.searchPlaceholder': string;
+  'products.searchButton': string;
+  'products.featuredOnly': string;
+  'products.allCategories': string;
+  'products.minPrice': string;
+  'products.maxPrice': string;
+  'products.sort.newest': string;
+  'products.sort.name': string;
+  'products.sort.price': string;
+  'products.sort.descending': string;
+  'products.sort.ascending': string;
+  'products.clearFilters': string;
+  'products.productsFound': string;
+  'products.productsFoundPlural': string;
+  'products.errorTitle': string;
+  'products.tryAgain': string;
+  'products.noProductsTitle': string;
+  'products.noProductsMessage': string;
+  'products.viewAllProducts': string;
+  'products.previous': string;
+  'products.next': string;
   
   // Categories
   'categories.title': string;
@@ -146,6 +169,29 @@ const translations: Record<Language, TranslationKeys> = {
     'products.loadError': 'Unable to load featured products. Please try again later.',
     'products.imageError': 'Image failed to load',
     'products.noImage': 'No image',
+    'products.page.title': 'VariaVaria Jewelry',
+    'products.page.subtitle': 'Discover our complete collection of handcrafted jewelry featuring the lucky four-leaf clover symbol.',
+    'products.searchPlaceholder': 'Search products...',
+    'products.searchButton': 'Search',
+    'products.featuredOnly': 'Featured Only',
+    'products.allCategories': 'All Categories',
+    'products.minPrice': 'Min Price',
+    'products.maxPrice': 'Max Price',
+    'products.sort.newest': 'Newest',
+    'products.sort.name': 'Name',
+    'products.sort.price': 'Price',
+    'products.sort.descending': 'Descending',
+    'products.sort.ascending': 'Ascending',
+    'products.clearFilters': 'Clear Filters',
+    'products.productsFound': '{count} product found',
+    'products.productsFoundPlural': '{count} products found',
+    'products.errorTitle': 'Error Loading Products',
+    'products.tryAgain': 'Try Again',
+    'products.noProductsTitle': 'No Products Found',
+    'products.noProductsMessage': 'Try adjusting your search terms or filters to find what you\'re looking for.',
+    'products.viewAllProducts': 'View All Products',
+    'products.previous': 'Previous',
+    'products.next': 'Next',
     
     // Categories
     'categories.title': 'Shop by Category',
@@ -245,6 +291,29 @@ const translations: Record<Language, TranslationKeys> = {
     'products.loadError': 'Nie można załadować polecanych produktów. Spróbuj ponownie później.',
     'products.imageError': 'Nie udało się załadować obrazu',
     'products.noImage': 'Brak obrazu',
+    'products.page.title': 'Biżuteria VariaVaria',
+    'products.page.subtitle': 'Odkryj naszą kompletną kolekcję ręcznie robionych biżuterii z symbolem szczęśliwej czterolistnej koniczyny.',
+    'products.searchPlaceholder': 'Szukaj produktów...',
+    'products.searchButton': 'Szukaj',
+    'products.featuredOnly': 'Tylko polecane',
+    'products.allCategories': 'Wszystkie kategorie',
+    'products.minPrice': 'Cena min',
+    'products.maxPrice': 'Cena max',
+    'products.sort.newest': 'Najnowsze',
+    'products.sort.name': 'Nazwa',
+    'products.sort.price': 'Cena',
+    'products.sort.descending': 'Malejąco',
+    'products.sort.ascending': 'Rosnąco',
+    'products.clearFilters': 'Wyczyść filtry',
+    'products.productsFound': 'Znaleziono {count} produkt',
+    'products.productsFoundPlural': 'Znaleziono {count} produktów',
+    'products.errorTitle': 'Błąd ładowania produktów',
+    'products.tryAgain': 'Spróbuj ponownie',
+    'products.noProductsTitle': 'Nie znaleziono produktów',
+    'products.noProductsMessage': 'Spróbuj dostosować wyszukiwane hasła lub filtry, aby znaleźć to, czego szukasz.',
+    'products.viewAllProducts': 'Zobacz wszystkie produkty',
+    'products.previous': 'Poprzednia',
+    'products.next': 'Następna',
     
     // Categories
     'categories.title': 'Kupuj według kategorii',

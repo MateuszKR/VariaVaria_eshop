@@ -237,6 +237,87 @@ function ProductCard({ product }: { product: Product }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
   const [imageError, setImageError] = useState(false)
   const router = useRouter()
+  
+  // Translation system for category names
+  const [translationsReady, setTranslationsReady] = useState(false);
+  const [translations, setTranslations] = useState<any>({});
+  
+  // Initialize translations safely
+  useEffect(() => {
+    try {
+      const loadTranslations = async () => {
+        try {
+          const savedLang = localStorage.getItem('variavaria-language') || 'en';
+          
+          const staticTranslations = {
+            en: {
+              'category.Rings': 'Rings',
+              'category.Necklaces': 'Necklaces',
+              'category.Earrings': 'Earrings',
+              'category.Bracelets': 'Bracelets',
+              'category.Pendants': 'Pendants',
+              'category.Sets': 'Sets'
+            },
+            pl: {
+              'category.Rings': 'Pierścionki',
+              'category.Necklaces': 'Naszyjniki',
+              'category.Earrings': 'Kolczyki',
+              'category.Bracelets': 'Bransoletki',
+              'category.Pendants': 'Wisiorki',
+              'category.Sets': 'Komplety'
+            }
+          };
+          
+          setTranslations(staticTranslations[savedLang as keyof typeof staticTranslations] || staticTranslations.en);
+          setTranslationsReady(true);
+        } catch (error) {
+          setTranslations({});
+          setTranslationsReady(true);
+        }
+      };
+      
+      loadTranslations();
+      
+      const handleStorageChange = (e: StorageEvent) => {
+        if (e.key === 'variavaria-language') {
+          loadTranslations();
+        }
+      };
+      
+      window.addEventListener('storage', handleStorageChange);
+      
+      let currentLang = localStorage.getItem('variavaria-language') || 'en';
+      const checkLanguage = () => {
+        const newLang = localStorage.getItem('variavaria-language') || 'en';
+        if (newLang !== currentLang) {
+          currentLang = newLang;
+          loadTranslations();
+        }
+      };
+      
+      const interval = setInterval(checkLanguage, 1000);
+      
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+        clearInterval(interval);
+      };
+    } catch (error) {
+      setTranslations({});
+      setTranslationsReady(true);
+    }
+  }, []);
+  
+  // Helper function for category name translation
+  const translateCategoryName = (categoryName: string) => {
+    if (!translationsReady) return categoryName;
+    try {
+      const key = `category.${categoryName}`;
+      const translation = translations[key];
+      return translation || categoryName;
+    } catch (error) {
+      return categoryName;
+    }
+  };
 
   const getImageSrc = (imageUrl: string) => {
     return imageUrl;
@@ -320,7 +401,7 @@ function ProductCard({ product }: { product: Product }) {
         
         {product.category && (
           <p className="text-sm text-neutral-500">
-            {product.category.name}
+            {translateCategoryName(product.category.name)}
           </p>
         )}
 
@@ -332,7 +413,14 @@ function ProductCard({ product }: { product: Product }) {
           </div>
           {product.quantityAvailable > 0 && product.quantityAvailable <= 5 && (
             <span className="text-sm font-medium text-orange-600">
-              {t('products.onlyLeft').replace('{count}', product.quantityAvailable.toString())}
+              {(() => {
+                try {
+                  const translation = t('products.onlyLeft') || 'Only {count} left';
+                  return translation.replace('{count}', product.quantityAvailable?.toString() || '0');
+                } catch (error) {
+                  return `Only ${product.quantityAvailable || 0} left`;
+                }
+              })()}
             </span>
           )}
         </div>
@@ -461,6 +549,116 @@ function Categories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Translation system for category names and descriptions
+  const [translationsReady, setTranslationsReady] = useState(false);
+  const [translations, setTranslations] = useState<any>({});
+  
+  // Initialize translations safely
+  useEffect(() => {
+    try {
+      const loadTranslations = async () => {
+        try {
+          const savedLang = localStorage.getItem('variavaria-language') || 'en';
+          
+          const staticTranslations = {
+            en: {
+              'category.Rings': 'Rings',
+              'category.Necklaces': 'Necklaces',
+              'category.Earrings': 'Earrings',
+              'category.Bracelets': 'Bracelets',
+              'category.Pendants': 'Pendants',
+              'category.Sets': 'Sets',
+              'category.desc.Rings': 'Four-leaf clover rings for luck and style',
+              'category.desc.Necklaces': 'Beautiful four-leaf clover necklaces',
+              'category.desc.Earrings': 'Elegant four-leaf clover earrings',
+              'category.desc.Bracelets': 'Charming four-leaf clover bracelets',
+              'category.desc.Pendants': 'Lucky four-leaf clover pendants',
+              'category.desc.Sets': 'Complete four-leaf clover jewelry sets'
+            },
+            pl: {
+              'category.Rings': 'Pierścionki',
+              'category.Necklaces': 'Naszyjniki',
+              'category.Earrings': 'Kolczyki',
+              'category.Bracelets': 'Bransoletki',
+              'category.Pendants': 'Wisiorki',
+              'category.Sets': 'Komplety',
+              'category.desc.Rings': 'Pierścionki z czterolistną koniczyną na szczęście i styl',
+              'category.desc.Necklaces': 'Piękne naszyjniki z czterolistną koniczyną',
+              'category.desc.Earrings': 'Eleganckie kolczyki z czterolistną koniczyną',
+              'category.desc.Bracelets': 'Urocze bransoletki z czterolistną koniczyną',
+              'category.desc.Pendants': 'Szczęśliwe wisiorki z czterolistną koniczyną',
+              'category.desc.Sets': 'Kompletne zestawy biżuterii z czterolistną koniczyną'
+            }
+          };
+          
+          setTranslations(staticTranslations[savedLang as keyof typeof staticTranslations] || staticTranslations.en);
+          setTranslationsReady(true);
+        } catch (error) {
+          setTranslations({});
+          setTranslationsReady(true);
+        }
+      };
+      
+      loadTranslations();
+      
+      const handleStorageChange = (e: StorageEvent) => {
+        if (e.key === 'variavaria-language') {
+          loadTranslations();
+        }
+      };
+      
+      window.addEventListener('storage', handleStorageChange);
+      
+      let currentLang = localStorage.getItem('variavaria-language') || 'en';
+      const checkLanguage = () => {
+        const newLang = localStorage.getItem('variavaria-language') || 'en';
+        if (newLang !== currentLang) {
+          currentLang = newLang;
+          loadTranslations();
+        }
+      };
+      
+      const interval = setInterval(checkLanguage, 1000);
+      
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+        clearInterval(interval);
+      };
+    } catch (error) {
+      setTranslations({});
+      setTranslationsReady(true);
+    }
+  }, []);
+  
+  // Helper functions for translation
+  const tr = (key: string, fallback: string) => {
+    if (!translationsReady) return fallback;
+    try {
+      const translation = translations[key];
+      return translation || fallback;
+    } catch (error) {
+      return fallback;
+    }
+  };
+
+  const translateCategoryName = (categoryName: string) => {
+    try {
+      const key = `category.${categoryName}`;
+      return tr(key, categoryName);
+    } catch (error) {
+      return categoryName;
+    }
+  };
+
+  const translateCategoryDescription = (categoryName: string, originalDescription: string) => {
+    try {
+      const key = `category.desc.${categoryName}`;
+      return tr(key, originalDescription || `Browse ${categoryName.toLowerCase()}`);
+    } catch (error) {
+      return originalDescription || `Browse ${categoryName.toLowerCase()}`;
+    }
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -580,13 +778,13 @@ function Categories() {
                     <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-opacity duration-300" />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <h3 className="text-white text-xl font-bold text-center px-4">
-                        {category.name}
+                        {translateCategoryName(category.name)}
                       </h3>
                     </div>
                   </div>
                   <div className="p-4">
                     <p className="text-gray-600 text-sm text-center">
-                      {category.description || `Browse ${category.name.toLowerCase()}`}
+                      {translateCategoryDescription(category.name, category.description || '')}
                     </p>
                   </div>
                 </div>
@@ -650,6 +848,83 @@ function Features() {
 }
 
 function Footer() {
+  // Translation system for category names in footer
+  const [translationsReady, setTranslationsReady] = useState(false);
+  const [translations, setTranslations] = useState<any>({});
+  
+  // Initialize translations safely
+  useEffect(() => {
+    try {
+      const loadTranslations = async () => {
+        try {
+          const savedLang = localStorage.getItem('variavaria-language') || 'en';
+          
+          const staticTranslations = {
+            en: {
+              'category.Rings': 'Rings',
+              'category.Necklaces': 'Necklaces',
+              'category.Earrings': 'Earrings',
+              'category.Bracelets': 'Bracelets'
+            },
+            pl: {
+              'category.Rings': 'Pierścionki',
+              'category.Necklaces': 'Naszyjniki',
+              'category.Earrings': 'Kolczyki',
+              'category.Bracelets': 'Bransoletki'
+            }
+          };
+          
+          setTranslations(staticTranslations[savedLang as keyof typeof staticTranslations] || staticTranslations.en);
+          setTranslationsReady(true);
+        } catch (error) {
+          setTranslations({});
+          setTranslationsReady(true);
+        }
+      };
+      
+      loadTranslations();
+      
+      const handleStorageChange = (e: StorageEvent) => {
+        if (e.key === 'variavaria-language') {
+          loadTranslations();
+        }
+      };
+      
+      window.addEventListener('storage', handleStorageChange);
+      
+      let currentLang = localStorage.getItem('variavaria-language') || 'en';
+      const checkLanguage = () => {
+        const newLang = localStorage.getItem('variavaria-language') || 'en';
+        if (newLang !== currentLang) {
+          currentLang = newLang;
+          loadTranslations();
+        }
+      };
+      
+      const interval = setInterval(checkLanguage, 1000);
+      
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+        clearInterval(interval);
+      };
+    } catch (error) {
+      setTranslations({});
+      setTranslationsReady(true);
+    }
+  }, []);
+  
+  // Helper function for category name translation
+  const translateCategoryName = (categoryName: string) => {
+    if (!translationsReady) return categoryName;
+    try {
+      const key = `category.${categoryName}`;
+      const translation = translations[key];
+      return translation || categoryName;
+    } catch (error) {
+      return categoryName;
+    }
+  };
+
   return (
     <footer className="bg-neutral-900 text-neutral-300">
       <div className="container-max section-padding py-16">
@@ -678,9 +953,9 @@ function Footer() {
             <h3 className="text-lg font-semibold text-white mb-4">Shop</h3>
             <ul className="space-y-2">
               <li><Link href="/products" className="hover:text-white transition-colors">All Products</Link></li>
-              <li><Link href="/categories/rings" className="hover:text-white transition-colors">Rings</Link></li>
-              <li><Link href="/categories/necklaces" className="hover:text-white transition-colors">Necklaces</Link></li>
-              <li><Link href="/categories/earrings" className="hover:text-white transition-colors">Earrings</Link></li>
+              <li><Link href="/categories/rings" className="hover:text-white transition-colors">{translateCategoryName('Rings')}</Link></li>
+              <li><Link href="/categories/necklaces" className="hover:text-white transition-colors">{translateCategoryName('Necklaces')}</Link></li>
+              <li><Link href="/categories/earrings" className="hover:text-white transition-colors">{translateCategoryName('Earrings')}</Link></li>
             </ul>
           </div>
 

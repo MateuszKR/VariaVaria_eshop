@@ -37,6 +37,152 @@ interface Category {
 
 function ProductsContent() {
   const searchParams = useSearchParams();
+  
+  // Ultra-safe translation system with complete isolation
+  const [translationsReady, setTranslationsReady] = useState(false);
+  const [translations, setTranslations] = useState<any>({});
+  
+  // Initialize translations safely
+  useEffect(() => {
+    try {
+      // Try to get translations without using the hook directly in render
+      const loadTranslations = async () => {
+        try {
+          // Get the current language from localStorage
+          const savedLang = localStorage.getItem('variavaria-language') || 'en';
+          
+          // Static translations object
+          const staticTranslations = {
+            en: {
+              'products.page.title': 'VariaVaria Jewelry',
+              'products.page.subtitle': 'Discover our complete collection of handcrafted jewelry featuring the lucky four-leaf clover symbol.',
+              'products.searchPlaceholder': 'Search products...',
+              'products.searchButton': 'Search',
+              'products.featuredOnly': 'Featured Only',
+              'products.allCategories': 'All Categories',
+              'products.clearFilters': 'Clear Filters',
+              'products.productsFound': '{count} product found',
+              'products.productsFoundPlural': '{count} products found',
+              'products.errorTitle': 'Error Loading Products',
+              'products.tryAgain': 'Try Again',
+              'products.noProductsTitle': 'No Products Found',
+              'products.noProductsMessage': 'Try adjusting your search terms or filters to find what you\'re looking for.',
+              'products.viewAllProducts': 'View All Products',
+              'products.loading': 'Loading products...',
+              'products.onlyLeft': 'Only {count} left',
+              'products.outOfStock': 'Out of Stock',
+              'common.currency': '$'
+            },
+            pl: {
+              'products.page.title': 'Biżuteria VariaVaria',
+              'products.page.subtitle': 'Odkryj naszą kompletną kolekcję ręcznie robionych biżuterii z symbolem szczęśliwej czterolistnej koniczyny.',
+              'products.searchPlaceholder': 'Szukaj produktów...',
+              'products.searchButton': 'Szukaj',
+              'products.featuredOnly': 'Tylko polecane',
+              'products.allCategories': 'Wszystkie kategorie',
+              'products.clearFilters': 'Wyczyść filtry',
+              'products.productsFound': 'Znaleziono {count} produkt',
+              'products.productsFoundPlural': 'Znaleziono {count} produktów',
+              'products.errorTitle': 'Błąd ładowania produktów',
+              'products.tryAgain': 'Spróbuj ponownie',
+              'products.noProductsTitle': 'Nie znaleziono produktów',
+              'products.noProductsMessage': 'Spróbuj dostosować wyszukiwane hasła lub filtry, aby znaleźć to, czego szukasz.',
+              'products.viewAllProducts': 'Zobacz wszystkie produkty',
+              'products.loading': 'Ładowanie produktów...',
+              'products.onlyLeft': 'Tylko {count} sztuk',
+              'products.outOfStock': 'Brak w magazynie',
+              'common.currency': 'zł'
+            }
+          };
+          
+          setTranslations(staticTranslations[savedLang as keyof typeof staticTranslations] || staticTranslations.en);
+          setTranslationsReady(true);
+        } catch (error) {
+          console.warn('Error loading translations:', error);
+          setTranslations({}); // Empty object as fallback
+          setTranslationsReady(true); // Still mark as ready to proceed
+        }
+      };
+      
+      loadTranslations();
+      
+      // Listen for language changes in localStorage
+      const handleStorageChange = (e: StorageEvent) => {
+        if (e.key === 'variavaria-language') {
+          loadTranslations();
+        }
+      };
+      
+      window.addEventListener('storage', handleStorageChange);
+      
+      // Also listen for manual language changes within the same window
+      let currentLang = localStorage.getItem('variavaria-language') || 'en';
+      const checkLanguage = () => {
+        const newLang = localStorage.getItem('variavaria-language') || 'en';
+        if (newLang !== currentLang) {
+          currentLang = newLang;
+          loadTranslations();
+        }
+      };
+      
+      const interval = setInterval(checkLanguage, 1000); // Check every second
+      
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+        clearInterval(interval);
+      };
+    } catch (error) {
+      console.warn('Critical translation error:', error);
+      setTranslations({});
+      setTranslationsReady(true);
+    }
+  }, []);
+  
+  // Safe translation function with fallback
+  const tr = (key: string, fallback: string) => {
+    if (!translationsReady) return fallback;
+    try {
+      const translation = translations[key];
+      return translation || fallback;
+    } catch (error) {
+      console.warn('Translation lookup error:', key, error);
+      return fallback;
+    }
+  };
+  
+  // Ultra-safe string replacement function
+  const trWithReplace = (key: string, fallback: string, replacements: Record<string, string | number>) => {
+    try {
+      let text = tr(key, fallback);
+      if (!text || typeof text !== 'string') {
+        text = fallback || '';
+      }
+      
+      // Ultra-safe replacement
+      if (replacements && typeof replacements === 'object') {
+        Object.entries(replacements).forEach(([placeholder, value]) => {
+          try {
+            if (text && typeof text === 'string' && placeholder && (value !== undefined && value !== null)) {
+              const safeValue = String(value);
+              const searchPattern = `{${placeholder}}`;
+              if (text.includes(searchPattern)) {
+                text = text.replace(searchPattern, safeValue);
+              }
+            }
+          } catch (replaceError) {
+            console.warn('String replacement error:', placeholder, value, replaceError);
+            // Continue with original text
+          }
+        });
+      }
+      
+      return text || fallback || '';
+    } catch (error) {
+      console.warn('Translation with replacement error:', key, error);
+      return fallback || '';
+    }
+  };
+  
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -122,7 +268,7 @@ function ProductsContent() {
         <div className="container-max section-padding py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"></div>
-            <p className="mt-4 text-neutral-600">Loading products...</p>
+            <p className="mt-4 text-neutral-600">{tr('products.loading', 'Loading products...')}</p>
           </div>
         </div>
       </div>
@@ -136,10 +282,10 @@ function ProductsContent() {
         <div className="container-max section-padding py-16">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-neutral-900 mb-6">
-              VariaVaria Jewelry
+              {tr('products.page.title', 'VariaVaria Jewelry')}
             </h1>
             <p className="text-xl text-neutral-600 max-w-3xl mx-auto">
-              Discover our complete collection of handcrafted jewelry featuring the lucky four-leaf clover symbol.
+              {tr('products.page.subtitle', 'Discover our complete collection of handcrafted jewelry featuring the lucky four-leaf clover symbol.')}
             </p>
           </div>
         </div>
@@ -154,14 +300,14 @@ function ProductsContent() {
               <div className="flex-1">
                 <input
                   type="text"
-                  placeholder="Search products..."
+                  placeholder={tr('products.searchPlaceholder', 'Search products...')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="input-field"
                 />
               </div>
               <button type="submit" className="btn-primary px-8">
-                Search
+                {tr('products.searchButton', 'Search')}
               </button>
             </div>
             
@@ -178,7 +324,7 @@ function ProductsContent() {
                     }}
                     className="rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
                   />
-                  <span className="text-sm font-medium text-neutral-700">Featured Only</span>
+                  <span className="text-sm font-medium text-neutral-700">{tr('products.featuredOnly', 'Featured Only')}</span>
                 </label>
               </div>
               
@@ -190,55 +336,12 @@ function ProductsContent() {
                 }}
                 className="input-field"
               >
-                <option value="">All Categories</option>
+                <option value="">{tr('products.allCategories', 'All Categories')}</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.slug}>
                     {category.name}
                   </option>
                 ))}
-              </select>
-              
-              <input
-                type="number"
-                placeholder="Min Price"
-                value={minPrice}
-                onChange={(e) => setMinPrice(e.target.value)}
-                onBlur={handleFilterChange}
-                className="input-field"
-              />
-              
-              <input
-                type="number"
-                placeholder="Max Price"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value)}
-                onBlur={handleFilterChange}
-                className="input-field"
-              />
-              
-              <select
-                value={sortBy}
-                onChange={(e) => {
-                  setSortBy(e.target.value);
-                  handleFilterChange();
-                }}
-                className="input-field"
-              >
-                <option value="created_at">Newest</option>
-                <option value="name">Name</option>
-                <option value="price">Price</option>
-              </select>
-              
-              <select
-                value={sortOrder}
-                onChange={(e) => {
-                  setSortOrder(e.target.value);
-                  handleFilterChange();
-                }}
-                className="input-field"
-              >
-                <option value="desc">Descending</option>
-                <option value="asc">Ascending</option>
               </select>
             </div>
             
@@ -248,10 +351,13 @@ function ProductsContent() {
                 onClick={clearFilters}
                 className="text-neutral-600 hover:text-neutral-900 underline"
               >
-                Clear Filters
+                {tr('products.clearFilters', 'Clear Filters')}
               </button>
               <p className="text-neutral-600">
-                {totalProducts} product{totalProducts !== 1 ? 's' : ''} found
+                {totalProducts === 1 
+                  ? trWithReplace('products.productsFound', '{count} product found', { count: String(totalProducts || 0) })
+                  : trWithReplace('products.productsFoundPlural', '{count} products found', { count: String(totalProducts || 0) })
+                }
               </p>
             </div>
           </form>
@@ -260,10 +366,10 @@ function ProductsContent() {
         {/* Error State */}
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
-            <h2 className="text-lg font-semibold text-red-800 mb-2">Error Loading Products</h2>
+            <h2 className="text-lg font-semibold text-red-800 mb-2">{tr('products.errorTitle', 'Error Loading Products')}</h2>
             <p className="text-red-600 mb-4">{error}</p>
             <button onClick={fetchProducts} className="btn-primary">
-              Try Again
+              {tr('products.tryAgain', 'Try Again')}
             </button>
           </div>
         )}
@@ -271,12 +377,12 @@ function ProductsContent() {
         {/* Products Grid */}
         {products.length === 0 && !loading ? (
           <div className="text-center py-16">
-            <h2 className="text-2xl font-semibold text-neutral-900 mb-4">No Products Found</h2>
+            <h2 className="text-2xl font-semibold text-neutral-900 mb-4">{tr('products.noProductsTitle', 'No Products Found')}</h2>
             <p className="text-neutral-600 mb-8">
-              Try adjusting your search terms or filters to find what you're looking for.
+              {tr('products.noProductsMessage', 'Try adjusting your search terms or filters to find what you\'re looking for.')}
             </p>
             <button onClick={clearFilters} className="btn-primary">
-              View All Products
+              {tr('products.viewAllProducts', 'View All Products')}
             </button>
           </div>
         ) : (
@@ -308,16 +414,16 @@ function ProductsContent() {
                     )}
                     <div className="flex items-center justify-between">
                       <span className="text-lg font-bold text-primary-600">
-                        ${product.price.toFixed(2)}
+                        {product.price.toFixed(2)} {tr('common.currency', '$')}
                       </span>
                       {product.quantityAvailable <= 5 && product.quantityAvailable > 0 && (
                         <span className="text-xs text-amber-600 font-medium">
-                          Only {product.quantityAvailable} left
+                          {trWithReplace('products.onlyLeft', 'Only {count} left', { count: String(product.quantityAvailable || 0) })}
                         </span>
                       )}
                       {product.quantityAvailable === 0 && (
                         <span className="text-xs text-red-600 font-medium">
-                          Out of Stock
+                          {tr('products.outOfStock', 'Out of Stock')}
                         </span>
                       )}
                     </div>
@@ -332,63 +438,28 @@ function ProductsContent() {
             ))}
           </div>
         )}
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center space-x-2">
-            <button
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Previous
-            </button>
-            
-            <div className="flex space-x-1">
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                const page = i + Math.max(1, currentPage - 2);
-                return page <= totalPages ? (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`px-3 py-2 rounded-lg ${
-                      currentPage === page
-                        ? 'bg-primary-500 text-white'
-                        : 'bg-white text-neutral-900 hover:bg-primary-50'
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ) : null;
-              })}
-            </div>
-            
-            <button
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Next
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
 }
 
-export default function ProductsPage() {
+function LoadingFallback() {
+  // Safe fallback for Suspense that doesn't use translations
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50">
-        <div className="container-max section-padding py-12">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"></div>
-            <p className="mt-4 text-neutral-600">Loading products...</p>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50">
+      <div className="container-max section-padding py-12">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"></div>
+          <p className="mt-4 text-neutral-600">Loading products...</p>
         </div>
       </div>
-    }>
+    </div>
+  );
+}
+
+export default function ProductsPageSimple() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
       <ProductsContent />
     </Suspense>
   );
