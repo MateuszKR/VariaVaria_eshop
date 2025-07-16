@@ -125,6 +125,71 @@ export interface TranslationKeys {
   'common.yes': string;
   'common.no': string;
   'common.currency': string;
+  
+  // Footer
+  'footer.description': string;
+  'footer.shop': string;
+  'footer.allProducts': string;
+  'footer.customerCare': string;
+  'footer.contactUs': string;
+  'footer.shippingInfo': string;
+  'footer.returns': string;
+  'footer.sizeGuide': string;
+  'footer.company': string;
+  'footer.aboutUs': string;
+  'footer.careers': string;
+  'footer.privacyPolicy': string;
+  'footer.termsOfService': string;
+  'footer.copyright': string;
+  
+  // Hero
+  'hero.featured': string;
+  
+  // About Page
+  'about.title': string;
+  'about.subtitle': string;
+  'about.ourStory.title': string;
+  'about.ourStory.paragraph1': string;
+  'about.ourStory.paragraph2': string;
+  'about.ourStory.paragraph3': string;
+  'about.ourStory.quote': string;
+  'about.ourStory.team': string;
+  'about.values.title': string;
+  'about.values.subtitle': string;
+  'about.values.quality.title': string;
+  'about.values.quality.description': string;
+  'about.values.authenticity.title': string;
+  'about.values.authenticity.description': string;
+  'about.values.sustainability.title': string;
+  'about.values.sustainability.description': string;
+  'about.values.meaning.title': string;
+  'about.values.meaning.description': string;
+  'about.craftsmanship.title': string;
+  'about.craftsmanship.paragraph1': string;
+  'about.craftsmanship.paragraph2': string;
+  'about.craftsmanship.paragraph3': string;
+  'about.craftsmanship.excellence.title': string;
+  'about.craftsmanship.excellence.description': string;
+  'about.statistics.title': string;
+  'about.statistics.subtitle': string;
+  'about.statistics.customers': string;
+  'about.statistics.designs': string;
+  'about.statistics.years': string;
+  'about.statistics.craftspeople': string;
+  'about.symbolism.title': string;
+  'about.symbolism.subtitle': string;
+  'about.symbolism.faith.title': string;
+  'about.symbolism.faith.description': string;
+  'about.symbolism.hope.title': string;
+  'about.symbolism.hope.description': string;
+  'about.symbolism.love.title': string;
+  'about.symbolism.love.description': string;
+  'about.symbolism.luck.title': string;
+  'about.symbolism.luck.description': string;
+  'about.cta.title': string;
+  'about.cta.subtitle': string;
+  'about.cta.shopCollection': string;
+  'about.cta.browseCategories': string;
 }
 
 const translations: Record<Language, TranslationKeys> = {
@@ -147,6 +212,53 @@ const translations: Record<Language, TranslationKeys> = {
     'hero.customers': 'Happy Customers',
     'hero.rating': 'Average Rating',
     'hero.handcrafted': 'Handcrafted',
+    'hero.featured': 'Featured',
+    
+    // About Page
+    'about.title': 'About VariaVaria',
+    'about.subtitle': 'Crafting luck, love, and timeless beauty through handmade jewelry featuring the enchanting four-leaf clover symbol.',
+    'about.ourStory.title': 'Our Story',
+    'about.ourStory.paragraph1': 'Founded with a passion for bringing luck and beauty into everyday life, Four Leaf Clover Jewelry began as a small artisan workshop dedicated to creating unique, handcrafted pieces that celebrate the magic of the legendary four-leaf clover.',
+    'about.ourStory.paragraph2': 'Each piece in our collection is meticulously crafted by skilled artisans who understand that jewelry is more than just an accessory—it\'s a symbol of hope, love, and the extraordinary moments that make life special.',
+    'about.ourStory.paragraph3': 'The four-leaf clover has been a symbol of good luck for centuries, with each leaf representing faith, hope, love, and luck. We\'ve woven this timeless symbolism into every design, creating jewelry that not only looks beautiful but also carries deep meaning.',
+    'about.ourStory.quote': 'Every piece we create is infused with intention, crafted with care, and designed to bring a touch of magic to your everyday life.',
+    'about.ourStory.team': '— The Four Leaf Clover Team',
+    'about.values.title': 'Our Values',
+    'about.values.subtitle': 'The principles that guide everything we do',
+    'about.values.quality.title': 'Quality',
+    'about.values.quality.description': 'We use only the finest materials and traditional craftsmanship techniques to ensure each piece is built to last.',
+    'about.values.authenticity.title': 'Authenticity',
+    'about.values.authenticity.description': 'Every piece is genuinely handcrafted, making each item unique and special to its owner.',
+    'about.values.sustainability.title': 'Sustainability',
+    'about.values.sustainability.description': 'We\'re committed to ethical sourcing and environmentally responsible practices in all aspects of our business.',
+    'about.values.meaning.title': 'Meaning',
+    'about.values.meaning.description': 'Each design carries symbolism and intention, creating jewelry that tells a story and holds personal significance.',
+    'about.craftsmanship.title': 'The Art of Craftsmanship',
+    'about.craftsmanship.paragraph1': 'Our jewelry is created using time-honored techniques passed down through generations of skilled artisans. From the initial design sketch to the final polish, every step is performed with meticulous attention to detail.',
+    'about.craftsmanship.paragraph2': 'We source our materials from trusted suppliers who share our commitment to quality and ethical practices. Whether it\'s sterling silver, gold, or precious gemstones, we ensure that every component meets our high standards.',
+    'about.craftsmanship.paragraph3': 'The four-leaf clover motif is carefully incorporated into each design, whether subtly engraved, prominently featured, or artfully integrated into the overall composition. This attention to symbolic detail is what makes our jewelry truly special.',
+    'about.craftsmanship.excellence.title': 'Handcrafted Excellence',
+    'about.craftsmanship.excellence.description': 'Our master craftspeople spend years perfecting their techniques, ensuring that every piece meets our exacting standards for beauty and durability.',
+    'about.statistics.title': 'Our Journey in Numbers',
+    'about.statistics.subtitle': 'A testament to our commitment to excellence',
+    'about.statistics.customers': 'Happy Customers',
+    'about.statistics.designs': 'Unique Designs',
+    'about.statistics.years': 'Years of Excellence',
+    'about.statistics.craftspeople': 'Master Craftspeople',
+    'about.symbolism.title': 'The Four-Leaf Clover Legend',
+    'about.symbolism.subtitle': 'Understanding the deep symbolism behind our signature motif',
+    'about.symbolism.faith.title': 'Faith',
+    'about.symbolism.faith.description': 'The first leaf represents faith in oneself and in the journey ahead.',
+    'about.symbolism.hope.title': 'Hope',
+    'about.symbolism.hope.description': 'The second leaf symbolizes hope for a bright and prosperous future.',
+    'about.symbolism.love.title': 'Love',
+    'about.symbolism.love.description': 'The third leaf represents love in all its forms—romantic, familial, and self-love.',
+    'about.symbolism.luck.title': 'Luck',
+    'about.symbolism.luck.description': 'The fourth leaf brings good fortune and positive energy to the wearer.',
+    'about.cta.title': 'Ready to Find Your Lucky Piece?',
+    'about.cta.subtitle': 'Explore our collection and discover the perfect piece of jewelry to bring luck, love, and beauty into your life.',
+    'about.cta.shopCollection': 'Shop Our Collection',
+    'about.cta.browseCategories': 'Browse Categories',
     
     // Products
     'products.title': 'VariaVaria Jewelry',
@@ -249,6 +361,22 @@ const translations: Record<Language, TranslationKeys> = {
     'common.yes': 'Yes',
     'common.no': 'No',
     'common.currency': '$',
+    
+    // Footer
+    'footer.description': 'Handcrafted jewelry with four-leaf clover designs, bringing luck and elegance to your style.',
+    'footer.shop': 'Shop',
+    'footer.allProducts': 'All Products',
+    'footer.customerCare': 'Customer Care',
+    'footer.contactUs': 'Contact Us',
+    'footer.shippingInfo': 'Shipping Info',
+    'footer.returns': 'Returns',
+    'footer.sizeGuide': 'Size Guide',
+    'footer.company': 'Company',
+    'footer.aboutUs': 'About Us',
+    'footer.careers': 'Careers',
+    'footer.privacyPolicy': 'Privacy Policy',
+    'footer.termsOfService': 'Terms of Service',
+    'footer.copyright': '© 2024 VariaVaria Jewelry. All rights reserved.',
   },
   pl: {
     // Navigation
@@ -269,6 +397,53 @@ const translations: Record<Language, TranslationKeys> = {
     'hero.customers': 'Zadowoleni klienci',
     'hero.rating': 'Średnia ocena',
     'hero.handcrafted': 'Ręcznie robione',
+    'hero.featured': 'Polecane',
+    
+    // About Page
+    'about.title': 'O VariaVaria',
+    'about.subtitle': 'Tworzenie szczęścia, miłości i ponadczasowego piękna poprzez ręcznie robioną biżuterię z motywem czarującej czterolistnej koniczyny.',
+    'about.ourStory.title': 'Nasza historia',
+    'about.ourStory.paragraph1': 'Założona z pasją do przynoszenia szczęścia i piękna do codziennego życia, Biżuteria Czterolistnej Koniczyny rozpoczęła się jako mały warsztat rzemieślniczy poświęcony tworzeniu unikalnych, ręcznie robionych elementów, które celebrują magię legendarnej czterolistnej koniczyny.',
+    'about.ourStory.paragraph2': 'Każda sztuka w naszej kolekcji jest starannie wykonana przez doświadczonych rzemieślników, którzy rozumieją, że biżuteria to coś więcej niż tylko dodatek — to symbol nadziei, miłości i niezwykłych chwil, które czynią życie wyjątkowym.',
+    'about.ourStory.paragraph3': 'Czterolistna koniczyna była symbolem szczęścia przez wieki, przy czym każdy liść reprezentuje wiarę, nadzieję, miłość i szczęście. Wpleliśmy ten ponadczasowy symbolizm w każdy projekt, tworząc biżuterię, która nie tylko wygląda pięknie, ale także niesie głębokie znaczenie.',
+    'about.ourStory.quote': 'Każda sztuka, którą tworzymy, jest nasycona intencją, wykonana z troską i zaprojektowana, aby przynieść odrobinę magii do Twojego codziennego życia.',
+    'about.ourStory.team': '— Zespół Czterolistnej Koniczyny',
+    'about.values.title': 'Nasze wartości',
+    'about.values.subtitle': 'Zasady, które kierują wszystkim, co robimy',
+    'about.values.quality.title': 'Jakość',
+    'about.values.quality.description': 'Używamy tylko najwyższej jakości materiałów i tradycyjnych technik rzemieślniczych, aby zapewnić, że każda sztuka jest zbudowana na długie lata.',
+    'about.values.authenticity.title': 'Autentyczność',
+    'about.values.authenticity.description': 'Każda sztuka jest prawdziwie ręcznie robiona, czyniąc każdy element unikalnym i specjalnym dla jego właściciela.',
+    'about.values.sustainability.title': 'Zrównoważony rozwój',
+    'about.values.sustainability.description': 'Jesteśmy zaangażowani w etyczne pozyskiwanie i odpowiedzialne praktyki środowiskowe we wszystkich aspektach naszej działalności.',
+    'about.values.meaning.title': 'Znaczenie',
+    'about.values.meaning.description': 'Każdy projekt niesie symbolizm i intencję, tworząc biżuterię, która opowiada historię i ma osobiste znaczenie.',
+    'about.craftsmanship.title': 'Sztuka rzemiosła',
+    'about.craftsmanship.paragraph1': 'Nasza biżuteria jest tworzona przy użyciu sprawdzonych technik przekazywanych przez pokolenia doświadczonych rzemieślników. Od początkowego szkicu projektu do końcowego polerowania, każdy krok jest wykonywany z drobiazgową dbałością o szczegóły.',
+    'about.craftsmanship.paragraph2': 'Pozyskujemy nasze materiały od zaufanych dostawców, którzy dzielą nasze zaangażowanie w jakość i etyczne praktyki. Czy to srebro próby 925, złoto czy kamienie szlachetne, zapewniamy, że każdy komponent spełnia nasze wysokie standardy.',
+    'about.craftsmanship.paragraph3': 'Motyw czterolistnej koniczyny jest starannie włączany w każdy projekt, czy to subtelnie grawerowany, prominentnie prezentowany, czy artystycznie zintegrowany w ogólnej kompozycji. Ta dbałość o symboliczne szczegóły jest tym, co czyni naszą biżuterię naprawdę wyjątkową.',
+    'about.craftsmanship.excellence.title': 'Ręcznie robiona doskonałość',
+    'about.craftsmanship.excellence.description': 'Nasi mistrzowie rzemieślnicy spędzają lata doskonaląc swoje techniki, zapewniając, że każda sztuka spełnia nasze wymagające standardy piękna i trwałości.',
+    'about.statistics.title': 'Nasza podróż w liczbach',
+    'about.statistics.subtitle': 'Świadectwo naszego zaangażowania w doskonałość',
+    'about.statistics.customers': 'Zadowoleni klienci',
+    'about.statistics.designs': 'Unikalne projekty',
+    'about.statistics.years': 'Lat doskonałości',
+    'about.statistics.craftspeople': 'Mistrzowie rzemieślnicy',
+    'about.symbolism.title': 'Legenda czterolistnej koniczyny',
+    'about.symbolism.subtitle': 'Zrozumienie głębokiego symbolizmu za naszym charakterystycznym motywem',
+    'about.symbolism.faith.title': 'Wiara',
+    'about.symbolism.faith.description': 'Pierwszy liść reprezentuje wiarę w siebie i w podróż, która przed nami.',
+    'about.symbolism.hope.title': 'Nadzieja',
+    'about.symbolism.hope.description': 'Drugi liść symbolizuje nadzieję na jasną i prosperującą przyszłość.',
+    'about.symbolism.love.title': 'Miłość',
+    'about.symbolism.love.description': 'Trzeci liść reprezentuje miłość we wszystkich jej formach — romantyczną, rodzinną i miłość do siebie.',
+    'about.symbolism.luck.title': 'Szczęście',
+    'about.symbolism.luck.description': 'Czwarty liść przynosi dobre szczęście i pozytywną energię noszącemu.',
+    'about.cta.title': 'Gotowy znaleźć swój szczęśliwy element?',
+    'about.cta.subtitle': 'Odkryj naszą kolekcję i znajdź idealną biżuterię, która przyniesie szczęście, miłość i piękno do Twojego życia.',
+    'about.cta.shopCollection': 'Kup naszą kolekcję',
+    'about.cta.browseCategories': 'Przeglądaj kategorie',
     
     // Products
     'products.title': 'Biżuteria VariaVaria',
@@ -371,6 +546,22 @@ const translations: Record<Language, TranslationKeys> = {
     'common.yes': 'Tak',
     'common.no': 'Nie',
     'common.currency': 'zł',
+    
+    // Footer
+    'footer.description': 'Ręcznie robiona biżuteria z motywami czterolistnej koniczyny, przynosząca szczęście i elegancję do Twojego stylu.',
+    'footer.shop': 'Sklep',
+    'footer.allProducts': 'Wszystkie produkty',
+    'footer.customerCare': 'Obsługa klienta',
+    'footer.contactUs': 'Skontaktuj się z nami',
+    'footer.shippingInfo': 'Informacje o wysyłce',
+    'footer.returns': 'Zwroty',
+    'footer.sizeGuide': 'Przewodnik rozmiarów',
+    'footer.company': 'Firma',
+    'footer.aboutUs': 'O nas',
+    'footer.careers': 'Kariera',
+    'footer.privacyPolicy': 'Polityka prywatności',
+    'footer.termsOfService': 'Warunki korzystania',
+    'footer.copyright': '© 2024 Biżuteria VariaVaria. Wszystkie prawa zastrzeżone.',
   }
 };
 

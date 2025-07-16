@@ -223,7 +223,7 @@ function Hero() {
               href="/products?featured=true" 
               className="absolute -top-4 -left-4 bg-accent-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-accent-600 transition-colors cursor-pointer"
             >
-              ✨ Featured
+              ✨ {t('hero.featured')}
             </Link>
           </div>
         </div>
@@ -848,6 +848,8 @@ function Features() {
 }
 
 function Footer() {
+  const { t } = useI18n();
+  
   // Translation system for category names in footer
   const [translationsReady, setTranslationsReady] = useState(false);
   const [translations, setTranslations] = useState<any>({});
@@ -944,15 +946,14 @@ function Footer() {
               </span>
             </div>
             <p className="text-neutral-400">
-              Handcrafted jewelry with four-leaf clover designs, 
-              bringing luck and elegance to your style.
+              {t('footer.description')}
             </p>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">Shop</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">{t('footer.shop')}</h3>
             <ul className="space-y-2">
-              <li><Link href="/products" className="hover:text-white transition-colors">All Products</Link></li>
+              <li><Link href="/products" className="hover:text-white transition-colors">{t('footer.allProducts')}</Link></li>
               <li><Link href="/categories/rings" className="hover:text-white transition-colors">{translateCategoryName('Rings')}</Link></li>
               <li><Link href="/categories/necklaces" className="hover:text-white transition-colors">{translateCategoryName('Necklaces')}</Link></li>
               <li><Link href="/categories/earrings" className="hover:text-white transition-colors">{translateCategoryName('Earrings')}</Link></li>
@@ -960,28 +961,28 @@ function Footer() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">Customer Care</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">{t('footer.customerCare')}</h3>
             <ul className="space-y-2">
-              <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
-              <li><Link href="/shipping" className="hover:text-white transition-colors">Shipping Info</Link></li>
-              <li><Link href="/returns" className="hover:text-white transition-colors">Returns</Link></li>
-              <li><Link href="/size-guide" className="hover:text-white transition-colors">Size Guide</Link></li>
+              <li><Link href="/contact" className="hover:text-white transition-colors">{t('footer.contactUs')}</Link></li>
+              <li><Link href="/shipping" className="hover:text-white transition-colors">{t('footer.shippingInfo')}</Link></li>
+              <li><Link href="/returns" className="hover:text-white transition-colors">{t('footer.returns')}</Link></li>
+              <li><Link href="/size-guide" className="hover:text-white transition-colors">{t('footer.sizeGuide')}</Link></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">Company</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">{t('footer.company')}</h3>
             <ul className="space-y-2">
-              <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
-              <li><Link href="/careers" className="hover:text-white transition-colors">Careers</Link></li>
-              <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+              <li><Link href="/about" className="hover:text-white transition-colors">{t('footer.aboutUs')}</Link></li>
+              <li><Link href="/careers" className="hover:text-white transition-colors">{t('footer.careers')}</Link></li>
+              <li><Link href="/privacy" className="hover:text-white transition-colors">{t('footer.privacyPolicy')}</Link></li>
+              <li><Link href="/terms" className="hover:text-white transition-colors">{t('footer.termsOfService')}</Link></li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-neutral-800 mt-12 pt-8 text-center text-neutral-400">
-          <p>&copy; 2024 VariaVaria Jewelry. All rights reserved.</p>
+          <p>{t('footer.copyright')}</p>
         </div>
       </div>
     </footer>

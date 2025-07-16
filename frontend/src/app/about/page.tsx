@@ -2,8 +2,11 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useI18n } from '@/lib/i18n';
 
 export default function AboutPage() {
+  const { t } = useI18n();
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50">
       {/* Hero Section */}
@@ -21,11 +24,10 @@ export default function AboutPage() {
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-neutral-900 mb-6">
-              About VariaVaria
+              {t('about.title')}
             </h1>
             <p className="text-xl text-neutral-600 max-w-3xl mx-auto">
-              Crafting luck, love, and timeless beauty through handmade jewelry 
-              featuring the enchanting four-leaf clover symbol.
+              {t('about.subtitle')}
             </p>
           </div>
         </div>
@@ -35,34 +37,25 @@ export default function AboutPage() {
       <section className="container-max section-padding py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-3xl font-bold text-neutral-900 mb-6">Our Story</h2>
+            <h2 className="text-3xl font-bold text-neutral-900 mb-6">{t('about.ourStory.title')}</h2>
             <div className="space-y-4 text-neutral-600">
               <p>
-                Founded with a passion for bringing luck and beauty into everyday life, 
-                Four Leaf Clover Jewelry began as a small artisan workshop dedicated to 
-                creating unique, handcrafted pieces that celebrate the magic of the 
-                legendary four-leaf clover.
+                {t('about.ourStory.paragraph1')}
               </p>
               <p>
-                Each piece in our collection is meticulously crafted by skilled artisans 
-                who understand that jewelry is more than just an accessory—it's a symbol 
-                of hope, love, and the extraordinary moments that make life special.
+                {t('about.ourStory.paragraph2')}
               </p>
               <p>
-                The four-leaf clover has been a symbol of good luck for centuries, with 
-                each leaf representing faith, hope, love, and luck. We've woven this 
-                timeless symbolism into every design, creating jewelry that not only 
-                looks beautiful but also carries deep meaning.
+                {t('about.ourStory.paragraph3')}
               </p>
             </div>
           </div>
           <div className="bg-gradient-to-br from-primary-100 to-accent-100 rounded-xl p-8 text-center">
             <div className="text-8xl mb-4">🍀</div>
             <blockquote className="text-lg italic text-neutral-700">
-              "Every piece we create is infused with intention, crafted with care, 
-              and designed to bring a touch of magic to your everyday life."
+              "{t('about.ourStory.quote')}"
             </blockquote>
-            <p className="text-neutral-600 mt-4">— The Four Leaf Clover Team</p>
+            <p className="text-neutral-600 mt-4">{t('about.ourStory.team')}</p>
           </div>
         </div>
       </section>
@@ -71,9 +64,9 @@ export default function AboutPage() {
       <section className="bg-white">
         <div className="container-max section-padding py-16">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-neutral-900 mb-4">Our Values</h2>
+            <h2 className="text-3xl font-bold text-neutral-900 mb-4">{t('about.values.title')}</h2>
             <p className="text-xl text-neutral-600 max-w-2xl mx-auto">
-              The principles that guide everything we do
+              {t('about.values.subtitle')}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -81,40 +74,36 @@ export default function AboutPage() {
               <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">✨</span>
               </div>
-              <h3 className="text-xl font-semibold text-neutral-900 mb-2">Quality</h3>
+              <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.values.quality.title')}</h3>
               <p className="text-neutral-600">
-                We use only the finest materials and traditional craftsmanship 
-                techniques to ensure each piece is built to last.
+                {t('about.values.quality.description')}
               </p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🤝</span>
               </div>
-              <h3 className="text-xl font-semibold text-neutral-900 mb-2">Authenticity</h3>
+              <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.values.authenticity.title')}</h3>
               <p className="text-neutral-600">
-                Every piece is genuinely handcrafted, making each item unique 
-                and special to its owner.
+                {t('about.values.authenticity.description')}
               </p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🌱</span>
               </div>
-              <h3 className="text-xl font-semibold text-neutral-900 mb-2">Sustainability</h3>
+              <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.values.sustainability.title')}</h3>
               <p className="text-neutral-600">
-                We're committed to ethical sourcing and environmentally 
-                responsible practices in all aspects of our business.
+                {t('about.values.sustainability.description')}
               </p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">💝</span>
               </div>
-              <h3 className="text-xl font-semibold text-neutral-900 mb-2">Meaning</h3>
+              <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.values.meaning.title')}</h3>
               <p className="text-neutral-600">
-                Each design carries symbolism and intention, creating jewelry 
-                that tells a story and holds personal significance.
+                {t('about.values.meaning.description')}
               </p>
             </div>
           </div>
@@ -126,30 +115,22 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="bg-gradient-to-br from-accent-100 to-primary-100 rounded-xl p-8 text-center order-2 lg:order-1">
             <div className="text-8xl mb-4">⚒️</div>
-            <h3 className="text-2xl font-bold text-neutral-900 mb-4">Handcrafted Excellence</h3>
+            <h3 className="text-2xl font-bold text-neutral-900 mb-4">{t('about.craftsmanship.excellence.title')}</h3>
             <p className="text-neutral-600">
-              Our master craftspeople spend years perfecting their techniques, 
-              ensuring that every piece meets our exacting standards for beauty and durability.
+              {t('about.craftsmanship.excellence.description')}
             </p>
           </div>
           <div className="order-1 lg:order-2">
-            <h2 className="text-3xl font-bold text-neutral-900 mb-6">The Art of Craftsmanship</h2>
+            <h2 className="text-3xl font-bold text-neutral-900 mb-6">{t('about.craftsmanship.title')}</h2>
             <div className="space-y-4 text-neutral-600">
               <p>
-                Our jewelry is created using time-honored techniques passed down through 
-                generations of skilled artisans. From the initial design sketch to the 
-                final polish, every step is performed with meticulous attention to detail.
+                {t('about.craftsmanship.paragraph1')}
               </p>
               <p>
-                We source our materials from trusted suppliers who share our commitment 
-                to quality and ethical practices. Whether it's sterling silver, gold, 
-                or precious gemstones, we ensure that every component meets our high standards.
+                {t('about.craftsmanship.paragraph2')}
               </p>
               <p>
-                The four-leaf clover motif is carefully incorporated into each design, 
-                whether subtly engraved, prominently featured, or artfully integrated 
-                into the overall composition. This attention to symbolic detail is what 
-                makes our jewelry truly special.
+                {t('about.craftsmanship.paragraph3')}
               </p>
             </div>
           </div>
@@ -160,27 +141,27 @@ export default function AboutPage() {
       <section className="bg-gradient-to-r from-primary-600 to-accent-500 text-white">
         <div className="container-max section-padding py-16">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Our Journey in Numbers</h2>
+            <h2 className="text-3xl font-bold mb-4">{t('about.statistics.title')}</h2>
             <p className="text-xl opacity-90">
-              A testament to our commitment to excellence
+              {t('about.statistics.subtitle')}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="text-4xl font-bold mb-2">5000+</div>
-              <div className="text-lg opacity-90">Happy Customers</div>
+              <div className="text-lg opacity-90">{t('about.statistics.customers')}</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold mb-2">500+</div>
-              <div className="text-lg opacity-90">Unique Designs</div>
+              <div className="text-lg opacity-90">{t('about.statistics.designs')}</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold mb-2">10+</div>
-              <div className="text-lg opacity-90">Years of Excellence</div>
+              <div className="text-lg opacity-90">{t('about.statistics.years')}</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold mb-2">15</div>
-              <div className="text-lg opacity-90">Master Craftspeople</div>
+              <div className="text-lg opacity-90">{t('about.statistics.craftspeople')}</div>
             </div>
           </div>
         </div>
@@ -189,38 +170,38 @@ export default function AboutPage() {
       {/* Symbolism */}
       <section className="container-max section-padding py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-neutral-900 mb-4">The Four-Leaf Clover Legend</h2>
+          <h2 className="text-3xl font-bold text-neutral-900 mb-4">{t('about.symbolism.title')}</h2>
           <p className="text-xl text-neutral-600 max-w-3xl mx-auto">
-            Understanding the deep symbolism behind our signature motif
+            {t('about.symbolism.subtitle')}
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="text-center card p-6">
             <div className="text-4xl mb-4">🙏</div>
-            <h3 className="text-xl font-semibold text-neutral-900 mb-2">Faith</h3>
+            <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.symbolism.faith.title')}</h3>
             <p className="text-neutral-600">
-              The first leaf represents faith in oneself and in the journey ahead.
+              {t('about.symbolism.faith.description')}
             </p>
           </div>
           <div className="text-center card p-6">
             <div className="text-4xl mb-4">🌅</div>
-            <h3 className="text-xl font-semibold text-neutral-900 mb-2">Hope</h3>
+            <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.symbolism.hope.title')}</h3>
             <p className="text-neutral-600">
-              The second leaf symbolizes hope for a bright and prosperous future.
+              {t('about.symbolism.hope.description')}
             </p>
           </div>
           <div className="text-center card p-6">
             <div className="text-4xl mb-4">💕</div>
-            <h3 className="text-xl font-semibold text-neutral-900 mb-2">Love</h3>
+            <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.symbolism.love.title')}</h3>
             <p className="text-neutral-600">
-              The third leaf represents love in all its forms—romantic, familial, and self-love.
+              {t('about.symbolism.love.description')}
             </p>
           </div>
           <div className="text-center card p-6">
             <div className="text-4xl mb-4">🌟</div>
-            <h3 className="text-xl font-semibold text-neutral-900 mb-2">Luck</h3>
+            <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.symbolism.luck.title')}</h3>
             <p className="text-neutral-600">
-              The fourth leaf brings good fortune and positive energy to the wearer.
+              {t('about.symbolism.luck.description')}
             </p>
           </div>
         </div>
@@ -231,18 +212,17 @@ export default function AboutPage() {
         <div className="container-max section-padding py-16">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-neutral-900 mb-6">
-              Ready to Find Your Lucky Piece?
+              {t('about.cta.title')}
             </h2>
             <p className="text-xl text-neutral-600 mb-8 max-w-2xl mx-auto">
-              Explore our collection and discover the perfect piece of jewelry 
-              to bring luck, love, and beauty into your life.
+              {t('about.cta.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/products" className="btn-primary">
-                Shop Our Collection
+                {t('about.cta.shopCollection')}
               </Link>
               <Link href="/categories" className="btn-secondary">
-                Browse Categories
+                {t('about.cta.browseCategories')}
               </Link>
             </div>
           </div>
