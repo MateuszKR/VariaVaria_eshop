@@ -19,6 +19,7 @@ import {
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
 import CartWidget, { CartIcon } from '@/components/CartWidget'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
+import SearchModal from '@/components/SearchModal'
 import { useI18n } from '@/lib/i18n'
 
 interface Product {
@@ -59,6 +60,7 @@ function Header() {
   const { t } = useI18n()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
 
   return (
     <header className="sticky top-0 z-50 glass-effect border-b border-neutral-200">
@@ -101,6 +103,7 @@ function Header() {
             <button 
               className="p-2 text-neutral-700 hover:text-primary-600 transition-colors"
               title={t('nav.search')}
+              onClick={() => setIsSearchOpen(true)}
             >
               <MagnifyingGlassIcon className="h-5 w-5" />
             </button>
@@ -148,6 +151,15 @@ function Header() {
                 {t('nav.contact')}
               </Link>
               <hr className="border-neutral-200" />
+              <button 
+                onClick={() => {
+                  setIsSearchOpen(true);
+                  setIsMenuOpen(false);
+                }}
+                className="text-left text-neutral-700 hover:text-primary-600 transition-colors"
+              >
+                {t('nav.search')}
+              </button>
               <Link href="/account" className="text-neutral-700 hover:text-primary-600 transition-colors">
                 {t('nav.account')}
               </Link>
@@ -162,6 +174,12 @@ function Header() {
           </div>
         )}
       </div>
+      
+      {/* Search Modal */}
+      <SearchModal 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+      />
     </header>
   )
 }
