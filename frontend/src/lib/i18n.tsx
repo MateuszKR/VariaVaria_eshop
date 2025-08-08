@@ -190,6 +190,24 @@ export interface TranslationKeys {
   'about.cta.subtitle': string;
   'about.cta.shopCollection': string;
   'about.cta.browseCategories': string;
+
+  // Product Detail
+  'product.loading': string;
+  'product.notFoundTitle': string;
+  'product.notFoundMessage': string;
+  'product.backToProducts': string;
+  'product.breadcrumb.products': string;
+  'product.inStock': string;
+  'product.adding': string;
+  'product.sku': string;
+  'product.category': string;
+  'product.material': string;
+  'product.weight': string;
+  'product.dimensions': string;
+  'product.careInstructions': string;
+  'product.description': string;
+  'product.customerReviews': string;
+  'product.verifiedPurchase': string;
 }
 
 const translations: Record<Language, TranslationKeys> = {
@@ -259,6 +277,24 @@ const translations: Record<Language, TranslationKeys> = {
     'about.cta.subtitle': 'Explore our collection and discover the perfect piece of jewelry to bring luck, love, and beauty into your life.',
     'about.cta.shopCollection': 'Shop Our Collection',
     'about.cta.browseCategories': 'Browse Categories',
+
+    // Product Detail
+    'product.loading': 'Loading product...',
+    'product.notFoundTitle': 'Product Not Found',
+    'product.notFoundMessage': 'The product you are looking for does not exist.',
+    'product.backToProducts': 'Back to Products',
+    'product.breadcrumb.products': 'Products',
+    'product.inStock': 'In Stock',
+    'product.adding': 'Adding...',
+    'product.sku': 'SKU:',
+    'product.category': 'Category:',
+    'product.material': 'Material:',
+    'product.weight': 'Weight:',
+    'product.dimensions': 'Dimensions:',
+    'product.careInstructions': 'Care Instructions',
+    'product.description': 'Description',
+    'product.customerReviews': 'Customer Reviews',
+    'product.verifiedPurchase': 'Verified Purchase',
     
     // Products
     'products.title': 'VariaVaria Jewelry',
@@ -444,6 +480,24 @@ const translations: Record<Language, TranslationKeys> = {
     'about.cta.subtitle': 'Odkryj naszą kolekcję i znajdź idealną biżuterię, która przyniesie szczęście, miłość i piękno do Twojego życia.',
     'about.cta.shopCollection': 'Kup naszą kolekcję',
     'about.cta.browseCategories': 'Przeglądaj kategorie',
+
+    // Product Detail
+    'product.loading': 'Ładowanie produktu...',
+    'product.notFoundTitle': 'Nie znaleziono produktu',
+    'product.notFoundMessage': 'Produkt, którego szukasz, nie istnieje.',
+    'product.backToProducts': 'Wróć do produktów',
+    'product.breadcrumb.products': 'Produkty',
+    'product.inStock': 'W magazynie',
+    'product.adding': 'Dodawanie...',
+    'product.sku': 'SKU:',
+    'product.category': 'Kategoria:',
+    'product.material': 'Materiał:',
+    'product.weight': 'Waga:',
+    'product.dimensions': 'Wymiary:',
+    'product.careInstructions': 'Instrukcja pielęgnacji',
+    'product.description': 'Opis',
+    'product.customerReviews': 'Opinie klientów',
+    'product.verifiedPurchase': 'Zweryfikowany zakup',
     
     // Products
     'products.title': 'Biżuteria VariaVaria',

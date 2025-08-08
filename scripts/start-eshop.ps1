@@ -3,7 +3,7 @@
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "🍀 Starting Four Leaf Clover E-Shop..." -ForegroundColor Green
+Write-Host "Starting Four Leaf Clover E-Shop..." -ForegroundColor Green
 Write-Host "========================================"
 
 # Function to check if a service is healthy
@@ -62,11 +62,11 @@ function Test-DatabaseConnection {
 
 try {
     # Step 1: Clean up any existing containers
-    Write-Host "🧹 Cleaning up existing containers..."
+    Write-Host "Cleaning up existing containers..."
     docker-compose down --remove-orphans 2>$null | Out-Null
 
     # Step 2: Start database first
-    Write-Host "🗄️  Starting database..."
+    Write-Host "Starting database..."
     docker-compose up -d database
 
     # Step 3: Wait for database to be healthy
@@ -76,11 +76,11 @@ try {
     }
 
     # Step 4: Start backend services
-    Write-Host "🔧 Starting backend services..."
+    Write-Host "Starting backend services..."
     docker-compose up -d auth-service products-service orders-service
 
     # Step 5: Wait for backend services to be healthy
-    Write-Host "⏳ Waiting for backend services to be ready..."
+    Write-Host "Waiting for backend services to be ready..."
     
     if (-not (Test-ServiceHealth "Auth Service" 3001)) {
         Write-Host "❌ Auth service failed to start" -ForegroundColor Red
@@ -98,38 +98,38 @@ try {
     }
 
     # Step 6: Start frontend
-    Write-Host "🌐 Starting frontend..."
+    Write-Host "Starting frontend..."
     docker-compose up -d frontend
 
     # Step 7: Wait for frontend to be ready
-    Write-Host "⏳ Waiting for frontend to be ready..."
+    Write-Host "Waiting for frontend to be ready..."
     Start-Sleep -Seconds 10
 
     # Step 8: Start nginx (optional)
-    Write-Host "🌍 Starting nginx proxy..."
+    Write-Host "Starting nginx proxy..."
     docker-compose up -d nginx
 
     # Step 9: Final health check
-    Write-Host "🏥 Performing final health checks..."
+    Write-Host "Performing final health checks..."
     Start-Sleep -Seconds 5
 
     Write-Host ""
-    Write-Host "🎉 E-Shop startup complete!" -ForegroundColor Green
+    Write-Host "E-Shop startup complete!" -ForegroundColor Green
     Write-Host "================================"
-    Write-Host "✅ Services Status:"
-    Write-Host "   🗄️  Database: Running"
-    Write-Host "   🔐 Auth Service: http://localhost:3001"
-    Write-Host "   📦 Products Service: http://localhost:3002"
-    Write-Host "   📋 Orders Service: http://localhost:3003"
-    Write-Host "   🌐 Frontend: http://localhost:3000"
-    Write-Host "   🌍 Nginx Proxy: http://localhost:80"
+    Write-Host "Services Status:"
+    Write-Host "   Database: Running"
+    Write-Host "   Auth Service: http://localhost:3001"
+    Write-Host "   Products Service: http://localhost:3002"
+    Write-Host "   Orders Service: http://localhost:3003"
+    Write-Host "   Frontend: http://localhost:3000"
+    Write-Host "   Nginx Proxy: http://localhost:80"
     Write-Host ""
-    Write-Host "🔑 Admin Login:"
+    Write-Host "Admin Login:"
     Write-Host "   URL: http://localhost:3000/admin/login"
     Write-Host "   Email: admin@fourleafclover.com"
     Write-Host "   Password: admin123456"
     Write-Host ""
-    Write-Host "✨ Happy shopping! 🛍️" -ForegroundColor Yellow
+    Write-Host "Happy shopping!" -ForegroundColor Yellow
     
     # Optionally open the browser
     Write-Host "Opening e-shop in your browser..." -ForegroundColor Cyan

@@ -51,8 +51,10 @@ interface Product {
 interface Category {
   id: number;
   name: string;
+  namePl?: string;
   slug: string;
   description?: string;
+  descriptionPl?: string;
   imageUrl?: string;
 }
 
@@ -571,13 +573,14 @@ function Categories() {
   // Translation system for category names and descriptions
   const [translationsReady, setTranslationsReady] = useState(false);
   const [translations, setTranslations] = useState<any>({});
+  const [lang, setLang] = useState<'en' | 'pl'>('en');
   
   // Initialize translations safely
   useEffect(() => {
     try {
       const loadTranslations = async () => {
         try {
-          const savedLang = localStorage.getItem('variavaria-language') || 'en';
+          const savedLang = (localStorage.getItem('variavaria-language') as 'en' | 'pl') || 'en';
           
           const staticTranslations = {
             en: {
@@ -611,6 +614,7 @@ function Categories() {
           };
           
           setTranslations(staticTranslations[savedLang as keyof typeof staticTranslations] || staticTranslations.en);
+          setLang(savedLang);
           setTranslationsReady(true);
         } catch (error) {
           setTranslations({});
@@ -628,9 +632,9 @@ function Categories() {
       
       window.addEventListener('storage', handleStorageChange);
       
-      let currentLang = localStorage.getItem('variavaria-language') || 'en';
+      let currentLang = (localStorage.getItem('variavaria-language') as 'en' | 'pl') || 'en';
       const checkLanguage = () => {
-        const newLang = localStorage.getItem('variavaria-language') || 'en';
+        const newLang = (localStorage.getItem('variavaria-language') as 'en' | 'pl') || 'en';
         if (newLang !== currentLang) {
           currentLang = newLang;
           loadTranslations();
@@ -676,6 +680,20 @@ function Categories() {
     } catch (error) {
       return originalDescription || `Browse ${categoryName.toLowerCase()}`;
     }
+  };
+
+  const getDisplayName = (category: Category) => {
+    if (lang === 'pl') {
+      return category.namePl?.trim() || translateCategoryName(category.name);
+    }
+    return category.name;
+  };
+
+  const getDisplayDescription = (category: Category) => {
+    if (lang === 'pl') {
+      return category.descriptionPl?.trim() || translateCategoryDescription(category.name, category.description || '');
+    }
+    return category.description || '';
   };
 
   useEffect(() => {
@@ -789,20 +807,20 @@ function Categories() {
                   <div className="relative w-full h-48">
                     <Image
                       src={imageUrl}
-                      alt={category.name}
+                      alt={getDisplayName(category)}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-opacity duration-300" />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <h3 className="text-white text-xl font-bold text-center px-4">
-                        {translateCategoryName(category.name)}
+                        {getDisplayName(category)}
                       </h3>
                     </div>
                   </div>
                   <div className="p-4">
                     <p className="text-gray-600 text-sm text-center">
-                      {translateCategoryDescription(category.name, category.description || '')}
+                      {getDisplayDescription(category)}
                     </p>
                   </div>
                 </div>

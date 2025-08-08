@@ -7,7 +7,9 @@ import Image from 'next/image';
 interface Category {
   id: number;
   name: string;
+  namePl?: string;
   description: string;
+  descriptionPl?: string;
   slug: string;
   imageUrl: string;
   createdAt: string;
@@ -21,6 +23,7 @@ export default function CategoriesPage() {
   // Ultra-safe translation system with complete isolation
   const [translationsReady, setTranslationsReady] = useState(false);
   const [translations, setTranslations] = useState<any>({});
+  const [lang, setLang] = useState<'en' | 'pl'>('en');
   
   // Initialize translations safely
   useEffect(() => {
@@ -29,7 +32,7 @@ export default function CategoriesPage() {
       const loadTranslations = async () => {
         try {
           // Get the current language from localStorage
-          const savedLang = localStorage.getItem('variavaria-language') || 'en';
+          const savedLang = (localStorage.getItem('variavaria-language') as 'en' | 'pl') || 'en';
           
           // Static translations object
           const staticTranslations = {
@@ -92,6 +95,7 @@ export default function CategoriesPage() {
           };
           
           setTranslations(staticTranslations[savedLang as keyof typeof staticTranslations] || staticTranslations.en);
+          setLang(savedLang);
           setTranslationsReady(true);
         } catch (error) {
           setTranslations({}); // Empty object as fallback
@@ -113,7 +117,7 @@ export default function CategoriesPage() {
       // Also listen for manual language changes within the same window
       let currentLang = localStorage.getItem('variavaria-language') || 'en';
       const checkLanguage = () => {
-        const newLang = localStorage.getItem('variavaria-language') || 'en';
+        const newLang = (localStorage.getItem('variavaria-language') as 'en' | 'pl') || 'en';
         if (newLang !== currentLang) {
           currentLang = newLang;
           loadTranslations();
@@ -161,6 +165,21 @@ export default function CategoriesPage() {
     } catch (error) {
       return originalDescription || '';
     }
+  };
+
+  // Prefer DB-provided Polish fields when language is Polish
+  const getDisplayName = (category: Category) => {
+    if (lang === 'pl') {
+      return category.namePl?.trim() || translateCategoryName(category.name);
+    }
+    return category.name;
+  };
+
+  const getDisplayDescription = (category: Category) => {
+    if (lang === 'pl') {
+      return category.descriptionPl?.trim() || translateCategoryDescription(category.name, category.description);
+    }
+    return category.description || '';
   };
 
   useEffect(() => {
@@ -250,7 +269,7 @@ export default function CategoriesPage() {
                     {category.imageUrl ? (
                       <Image
                         src={category.imageUrl}
-                        alt={category.name}
+                        alt={getDisplayName(category)}
                         width={400}
                         height={300}
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
@@ -263,11 +282,11 @@ export default function CategoriesPage() {
                   </div>
                   <div className="p-6">
                     <h3 className="text-xl font-semibold text-neutral-900 mb-2 group-hover:text-primary-600 transition-colors">
-                      {translateCategoryName(category.name)}
+                      {getDisplayName(category)}
                     </h3>
-                    {(category.description || translateCategoryDescription(category.name, category.description)) && (
+                    {(getDisplayDescription(category)) && (
                       <p className="text-neutral-600 line-clamp-3">
-                        {translateCategoryDescription(category.name, category.description)}
+                        {getDisplayDescription(category)}
                       </p>
                     )}
                     <div className="mt-4 flex items-center text-primary-600 font-medium">

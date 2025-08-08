@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useAdminAuth } from '@/hooks/useAdminAuth'
 import AddProductModal from '@/components/AddProductModal'
+import CategoriesManager from '@/components/CategoriesManager'
 import EditProductModal from '@/components/EditProductModal'
 import { 
   PlusIcon,
@@ -586,6 +587,7 @@ export default function AdminDashboard() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [productsCount, setProductsCount] = useState(0)
   const [productsKey, setProductsKey] = useState(0)
+  const [activeTab, setActiveTab] = useState<'products' | 'categories'>('products')
 
   // Fetch products count for dashboard stats
   useEffect(() => {
@@ -694,19 +696,43 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <DashboardStats productsCount={productsCount} />
-        
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
-          <div className="lg:col-span-4">
-            <ProductManagement 
-              key={productsKey}
-              onAddProductClick={handleAddProductClick}
-              onEditProductClick={handleEditProductClick}
-            />
-          </div>
-          <div>
-            <QuickActions onAddProductClick={handleAddProductClick} />
+
+        {/* Admin Tabs */}
+        <div className="mb-6">
+          <div className="inline-flex rounded-lg border border-neutral-200 bg-white overflow-hidden">
+            <button
+              className={`px-4 py-2 text-sm font-medium ${activeTab === 'products' ? 'bg-neutral-900 text-white' : 'text-neutral-700 hover:bg-neutral-100'}`}
+              onClick={() => setActiveTab('products')}
+            >
+              Products
+            </button>
+            <button
+              className={`px-4 py-2 text-sm font-medium border-l border-neutral-200 ${activeTab === 'categories' ? 'bg-neutral-900 text-white' : 'text-neutral-700 hover:bg-neutral-100'}`}
+              onClick={() => setActiveTab('categories')}
+            >
+              Categories
+            </button>
           </div>
         </div>
+
+        {activeTab === 'products' ? (
+          <div className="grid grid-cols-1 lg:grid-cols-6 gap-8 mb-8">
+            <div className="lg:col-span-5">
+              <ProductManagement 
+                key={productsKey}
+                onAddProductClick={handleAddProductClick}
+                onEditProductClick={handleEditProductClick}
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <QuickActions onAddProductClick={handleAddProductClick} />
+            </div>
+          </div>
+        ) : (
+          <div className="mb-8">
+            <CategoriesManager />
+          </div>
+        )}
 
         <OrderManagement />
       </main>

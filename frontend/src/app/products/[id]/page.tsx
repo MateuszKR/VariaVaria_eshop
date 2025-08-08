@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useI18n } from '@/lib/i18n';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
@@ -76,6 +77,7 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const productId = params.id as string;
   const { addItem } = useCart();
+  const { t } = useI18n();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -154,7 +156,7 @@ export default function ProductDetailPage() {
         <div className="container-max section-padding py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"></div>
-            <p className="mt-4 text-neutral-600">Loading product...</p>
+            <p className="mt-4 text-neutral-600">{t('product.loading')}</p>
           </div>
         </div>
       </div>
@@ -166,10 +168,10 @@ export default function ProductDetailPage() {
       <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50">
         <div className="container-max section-padding py-12">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-neutral-900 mb-4">Product Not Found</h1>
-            <p className="text-neutral-600 mb-8">{error || 'The product you are looking for does not exist.'}</p>
+            <h1 className="text-3xl font-bold text-neutral-900 mb-4">{t('product.notFoundTitle')}</h1>
+            <p className="text-neutral-600 mb-8">{error || t('product.notFoundMessage')}</p>
             <Link href="/products" className="btn-primary">
-              Back to Products
+              {t('product.backToProducts')}
             </Link>
           </div>
         </div>
@@ -183,7 +185,7 @@ export default function ProductDetailPage() {
         {/* Breadcrumb */}
         <nav className="flex items-center space-x-2 text-sm text-neutral-600 mb-8">
           <Link href="/products" className="hover:text-primary-600 transition-colors">
-            Products
+            {t('product.breadcrumb.products')}
           </Link>
           <span>/</span>
           {product.category && (
@@ -275,8 +277,8 @@ export default function ProductDetailPage() {
                 ${product.price.toFixed(2)}
               </span>
               {product.isFeatured && (
-                <span className="bg-accent-100 text-accent-800 px-3 py-1 rounded-full text-sm font-medium">
-                  Featured
+               <span className="bg-accent-100 text-accent-800 px-3 py-1 rounded-full text-sm font-medium">
+                  {t('products.featured.badge')}
                 </span>
               )}
             </div>
@@ -286,15 +288,15 @@ export default function ProductDetailPage() {
               {isOutOfStock ? (
                 <span className="flex items-center space-x-2 text-red-600">
                   <XMarkIcon className="h-5 w-5" />
-                  <span>Out of Stock</span>
+                  <span>{t('products.outOfStock')}</span>
                 </span>
               ) : (
                 <span className="flex items-center space-x-2 text-green-600">
                   <CheckIcon className="h-5 w-5" />
-                  <span>In Stock</span>
+                  <span>{t('product.inStock')}</span>
                   {isLowStock && (
                     <span className="text-amber-600 text-sm">
-                      (Only {product.inventory.quantityAvailable} left)
+                       ({t('products.onlyLeft').replace('{count}', String(product.inventory.quantityAvailable))})
                     </span>
                   )}
                 </span>
@@ -326,7 +328,7 @@ export default function ProductDetailPage() {
                   className="btn-primary flex items-center space-x-2 flex-1"
                 >
                   <ShoppingCartIcon className="h-5 w-5" />
-                  <span>{addingToCart ? 'Adding...' : 'Add to Cart'}</span>
+                  <span>{addingToCart ? t('product.adding') : t('products.addToCart')}</span>
                 </button>
 
                 <button
@@ -346,12 +348,12 @@ export default function ProductDetailPage() {
             <div className="border-t border-neutral-200 pt-6 space-y-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="font-medium text-neutral-900">SKU:</span>
+                  <span className="font-medium text-neutral-900">{t('product.sku')}</span>
                   <span className="text-neutral-600 ml-2">{product.sku}</span>
                 </div>
                 {product.category && (
                   <div>
-                    <span className="font-medium text-neutral-900">Category:</span>
+                    <span className="font-medium text-neutral-900">{t('product.category')}</span>
                     <Link 
                       href={`/products?category=${product.category.slug}`}
                       className="text-primary-600 hover:text-primary-700 ml-2"
@@ -362,19 +364,19 @@ export default function ProductDetailPage() {
                 )}
                 {product.material && (
                   <div>
-                    <span className="font-medium text-neutral-900">Material:</span>
+                    <span className="font-medium text-neutral-900">{t('product.material')}</span>
                     <span className="text-neutral-600 ml-2">{product.material}</span>
                   </div>
                 )}
                 {product.weightGrams && (
                   <div>
-                    <span className="font-medium text-neutral-900">Weight:</span>
+                    <span className="font-medium text-neutral-900">{t('product.weight')}</span>
                     <span className="text-neutral-600 ml-2">{product.weightGrams}g</span>
                   </div>
                 )}
                 {product.dimensions && (
                   <div className="col-span-2">
-                    <span className="font-medium text-neutral-900">Dimensions:</span>
+                     <span className="font-medium text-neutral-900">{t('product.dimensions')}</span>
                     <span className="text-neutral-600 ml-2">{product.dimensions}</span>
                   </div>
                 )}
@@ -382,7 +384,7 @@ export default function ProductDetailPage() {
 
               {product.careInstructions && (
                 <div>
-                  <h3 className="font-medium text-neutral-900 mb-2">Care Instructions</h3>
+                  <h3 className="font-medium text-neutral-900 mb-2">{t('product.careInstructions')}</h3>
                   <p className="text-sm text-neutral-600">{product.careInstructions}</p>
                 </div>
               )}
@@ -393,7 +395,7 @@ export default function ProductDetailPage() {
         {/* Product Description */}
         {product.description && (
           <div className="bg-white rounded-xl shadow-soft p-8 mb-16">
-            <h2 className="text-2xl font-bold text-neutral-900 mb-4">Description</h2>
+            <h2 className="text-2xl font-bold text-neutral-900 mb-4">{t('product.description')}</h2>
             <div className="prose prose-neutral max-w-none">
               <p className="text-neutral-600 leading-relaxed">{product.description}</p>
             </div>
@@ -403,7 +405,7 @@ export default function ProductDetailPage() {
         {/* Reviews */}
         {product.reviews.length > 0 && (
           <div className="bg-white rounded-xl shadow-soft p-8">
-            <h2 className="text-2xl font-bold text-neutral-900 mb-6">Customer Reviews</h2>
+            <h2 className="text-2xl font-bold text-neutral-900 mb-6">{t('product.customerReviews')}</h2>
             <div className="space-y-6">
               {product.reviews.map((review) => (
                 <div key={review.id} className="border-b border-neutral-200 pb-6 last:border-b-0 last:pb-0">
@@ -423,7 +425,7 @@ export default function ProductDetailPage() {
                         <span className="text-sm font-medium text-neutral-900">{review.reviewerName}</span>
                         {review.isVerifiedPurchase && (
                           <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">
-                            Verified Purchase
+                            {t('product.verifiedPurchase')}
                           </span>
                         )}
                       </div>

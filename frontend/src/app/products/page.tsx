@@ -32,6 +32,7 @@ interface Product {
 interface Category {
   id: number;
   name: string;
+  namePl?: string;
   slug: string;
 }
 
@@ -41,6 +42,7 @@ function ProductsContent() {
   // Ultra-safe translation system with complete isolation
   const [translationsReady, setTranslationsReady] = useState(false);
   const [translations, setTranslations] = useState<any>({});
+  const [lang, setLang] = useState<'en' | 'pl'>('en');
   
   // Initialize translations safely
   useEffect(() => {
@@ -49,7 +51,7 @@ function ProductsContent() {
       const loadTranslations = async () => {
         try {
           // Get the current language from localStorage
-          const savedLang = localStorage.getItem('variavaria-language') || 'en';
+          const savedLang = (localStorage.getItem('variavaria-language') as 'en' | 'pl') || 'en';
           
           // Static translations object
           const staticTranslations = {
@@ -96,6 +98,7 @@ function ProductsContent() {
           };
           
           setTranslations(staticTranslations[savedLang as keyof typeof staticTranslations] || staticTranslations.en);
+          setLang(savedLang);
           setTranslationsReady(true);
         } catch (error) {
           console.warn('Error loading translations:', error);
@@ -116,9 +119,9 @@ function ProductsContent() {
       window.addEventListener('storage', handleStorageChange);
       
       // Also listen for manual language changes within the same window
-      let currentLang = localStorage.getItem('variavaria-language') || 'en';
+      let currentLang = (localStorage.getItem('variavaria-language') as 'en' | 'pl') || 'en';
       const checkLanguage = () => {
-        const newLang = localStorage.getItem('variavaria-language') || 'en';
+        const newLang = (localStorage.getItem('variavaria-language') as 'en' | 'pl') || 'en';
         if (newLang !== currentLang) {
           currentLang = newLang;
           loadTranslations();
@@ -206,19 +209,31 @@ function ProductsContent() {
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/products');
+      const params = new URLSearchParams();
+      params.set('page', String(currentPage));
+      params.set('limit', String(limit));
+      if (searchTerm && searchTerm.trim()) params.set('search', searchTerm.trim());
+      if (selectedCategory && selectedCategory.trim()) params.set('category', selectedCategory.trim());
+      if (featuredOnly) params.set('featured', 'true');
+      if (minPrice && minPrice.trim()) params.set('minPrice', minPrice.trim());
+      if (maxPrice && maxPrice.trim()) params.set('maxPrice', maxPrice.trim());
+      if (sortBy) params.set('sortBy', sortBy);
+      if (sortOrder) params.set('sortOrder', sortOrder);
+
+      const response = await fetch(`/api/products?${params.toString()}`);
       if (!response.ok) {
         throw new Error('Failed to fetch products');
       }
       const data = await response.json();
-      setProducts(data.products);
-      setTotalProducts(data.total);
+      setProducts(data.products || []);
+      setTotalProducts(data.pagination?.total ?? (data.products?.length || 0));
+      setTotalPages(data.pagination?.pages ?? 1);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [currentPage, limit, searchTerm, selectedCategory, featuredOnly, minPrice, maxPrice, sortBy, sortOrder]);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -243,12 +258,10 @@ function ProductsContent() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1);
-    fetchProducts();
   };
 
   const handleFilterChange = () => {
     setCurrentPage(1);
-    fetchProducts();
   };
 
   const clearFilters = () => {
@@ -339,7 +352,7 @@ function ProductsContent() {
                 <option value="">{tr('products.allCategories', 'All Categories')}</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.slug}>
-                    {category.name}
+                    {lang === 'pl' ? (category.namePl || category.name) : category.name}
                   </option>
                 ))}
               </select>

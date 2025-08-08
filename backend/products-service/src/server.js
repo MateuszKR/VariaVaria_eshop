@@ -23,6 +23,16 @@ const pool = new Pool({
   port: process.env.DB_PORT || 5432,
 });
 
+// Ensure Polish translation columns exist for categories
+(async () => {
+  try {
+    await pool.query('ALTER TABLE categories ADD COLUMN IF NOT EXISTS name_pl VARCHAR(100)');
+    await pool.query('ALTER TABLE categories ADD COLUMN IF NOT EXISTS description_pl TEXT');
+  } catch (err) {
+    console.warn('Category i18n columns ensure failed:', err.message);
+  }
+})();
+
 // Create uploads directory if it doesn't exist
 const uploadsDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadsDir)) {
@@ -41,6 +51,8 @@ const storage = multer.diskStorage({
     cb(null, `product-${uniqueSuffix}${extension}`);
   }
 });
+
+// (moved) category image endpoints are defined after token/admin middlewares and multer config
 
 const fileFilter = (req, file, cb) => {
   // Accept only image files
@@ -96,6 +108,14 @@ app.use(limiter);
 // JWT Secret
 const JWT_SECRET = process.env.JWT_SECRET || 'four-leaf-clover-secret-key-change-in-production';
 
+// Helper to normalize image URLs to absolute via nginx at localhost
+const getFullImageUrl = (imageUrl) => {
+  if (!imageUrl) return null;
+  if (typeof imageUrl !== 'string') return null;
+  if (imageUrl.startsWith('http')) return imageUrl;
+  return `http://localhost${imageUrl}`;
+};
+
 // Middleware to verify JWT token (optional for public routes)
 const verifyToken = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -127,6 +147,90 @@ const verifyAdmin = (req, res, next) => {
   next();
 };
 
+// Admin: Upload/replace category image
+app.post('/admin/categories/:id/image', verifyToken, verifyAdmin, upload.single('image'), async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    // Ensure category exists
+    const catCheck = await pool.query('SELECT id, image_url FROM categories WHERE id = $1', [id]);
+    if (catCheck.rows.length === 0) {
+      // Clean up uploaded file if category doesn't exist
+      fs.unlinkSync(req.file.path);
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    // Build new image URL relative to service
+    const imageUrl = `/uploads/${req.file.filename}`;
+
+    // Update category image URL
+    const result = await pool.query(
+      'UPDATE categories SET image_url = $1 WHERE id = $2 RETURNING *',
+      [imageUrl, id]
+    );
+
+    const category = result.rows[0];
+    res.status(201).json({
+      message: 'Category image uploaded successfully',
+      category: {
+        id: category.id,
+        name: category.name,
+        description: category.description,
+        namePl: category.name_pl,
+        descriptionPl: category.description_pl,
+        slug: category.slug,
+        imageUrl: getFullImageUrl(category.image_url),
+        createdAt: category.created_at
+      }
+    });
+  } catch (error) {
+    // Clean up uploaded file on error
+    if (req.file) {
+      try { fs.unlinkSync(req.file.path); } catch (_) {}
+    }
+    console.error('Upload category image error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Admin: Remove category image (set to null)
+app.delete('/admin/categories/:id/image', verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const catRes = await pool.query('SELECT image_url FROM categories WHERE id = $1', [id]);
+    if (catRes.rows.length === 0) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    const currentUrl = catRes.rows[0].image_url;
+
+    // Set image to null
+    await pool.query('UPDATE categories SET image_url = NULL WHERE id = $1', [id]);
+
+    // Attempt to delete local file if it's a local upload path
+    if (currentUrl && typeof currentUrl === 'string' && currentUrl.startsWith('/uploads/')) {
+      const localPath = path.join(uploadsDir, path.basename(currentUrl));
+      try {
+        if (fs.existsSync(localPath)) {
+          fs.unlinkSync(localPath);
+        }
+      } catch (err) {
+        // Non-fatal
+        console.warn('Failed to delete category image file:', err.message);
+      }
+    }
+
+    res.json({ message: 'Category image removed successfully' });
+  } catch (error) {
+    console.error('Delete category image error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Validation middleware
 const validateProduct = [
   body('name').trim().isLength({ min: 1 }).withMessage('Product name is required'),
@@ -145,9 +249,11 @@ const validateProduct = [
 
 const validateCategory = [
   body('name').trim().isLength({ min: 1 }).withMessage('Category name is required'),
-  body('description').optional().trim(),
+  body('description').optional({ checkFalsy: true }).trim(),
   body('slug').trim().isLength({ min: 1 }).withMessage('Slug is required'),
-  body('imageUrl').optional().isURL()
+  body('imageUrl').optional({ checkFalsy: true }).isURL().withMessage('imageUrl must be a valid URL'),
+  body('namePl').optional({ checkFalsy: true }).trim(),
+  body('descriptionPl').optional({ checkFalsy: true }).trim()
 ];
 
 // Routes
@@ -198,7 +304,7 @@ app.get('/health', (req, res) => {
 app.get('/categories', async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT id, name, description, slug, image_url, created_at FROM categories ORDER BY name'
+      'SELECT id, name, description, slug, image_url, name_pl, description_pl, created_at FROM categories ORDER BY name'
     );
 
     res.json({
@@ -206,6 +312,8 @@ app.get('/categories', async (req, res) => {
         id: category.id,
         name: category.name,
         description: category.description,
+        namePl: category.name_pl,
+        descriptionPl: category.description_pl,
         slug: category.slug,
         imageUrl: category.image_url,
         createdAt: category.created_at
@@ -224,7 +332,7 @@ app.get('/categories/:slug', async (req, res) => {
     const { slug } = req.params;
     
     const result = await pool.query(
-      'SELECT id, name, description, slug, image_url, created_at FROM categories WHERE slug = $1',
+      'SELECT id, name, description, slug, image_url, name_pl, description_pl, created_at FROM categories WHERE slug = $1',
       [slug]
     );
 
@@ -238,6 +346,8 @@ app.get('/categories/:slug', async (req, res) => {
         id: category.id,
         name: category.name,
         description: category.description,
+        namePl: category.name_pl,
+        descriptionPl: category.description_pl,
         slug: category.slug,
         imageUrl: category.image_url,
         createdAt: category.created_at
@@ -853,7 +963,7 @@ app.post('/admin/categories', verifyToken, verifyAdmin, validateCategory, async 
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, description, slug, imageUrl } = req.body;
+    const { name, description, slug, imageUrl, namePl, descriptionPl } = req.body;
 
     // Check if slug already exists
     const existingSlug = await pool.query('SELECT id FROM categories WHERE slug = $1', [slug]);
@@ -862,8 +972,8 @@ app.post('/admin/categories', verifyToken, verifyAdmin, validateCategory, async 
     }
 
     const result = await pool.query(
-      'INSERT INTO categories (name, description, slug, image_url) VALUES ($1, $2, $3, $4) RETURNING *',
-      [name, description, slug, imageUrl]
+      'INSERT INTO categories (name, description, slug, image_url, name_pl, description_pl) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [name, description || null, slug, imageUrl || null, namePl || null, descriptionPl || null]
     );
 
     const category = result.rows[0];
@@ -873,14 +983,89 @@ app.post('/admin/categories', verifyToken, verifyAdmin, validateCategory, async 
         id: category.id,
         name: category.name,
         description: category.description,
+        namePl: category.name_pl,
+        descriptionPl: category.description_pl,
         slug: category.slug,
-        imageUrl: category.image_url,
+        imageUrl: getFullImageUrl(category.image_url),
         createdAt: category.created_at
       }
     });
 
   } catch (error) {
     console.error('Create category error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Admin: Update category
+app.put('/admin/categories/:id', verifyToken, verifyAdmin, validateCategory, async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { id } = req.params;
+    const { name, description, slug, imageUrl, namePl, descriptionPl } = req.body;
+
+    // Ensure slug is unique for other records
+    const existingSlug = await pool.query('SELECT id FROM categories WHERE slug = $1 AND id != $2', [slug, id]);
+    if (existingSlug.rows.length > 0) {
+      return res.status(400).json({ error: 'Slug already exists' });
+    }
+
+    const result = await pool.query(
+      `UPDATE categories
+       SET name = $1, description = $2, slug = $3, image_url = $4, name_pl = $5, description_pl = $6
+       WHERE id = $7
+       RETURNING *`,
+      [name, description || null, slug, imageUrl || null, namePl || null, descriptionPl || null, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    const category = result.rows[0];
+    res.json({
+      message: 'Category updated successfully',
+      category: {
+        id: category.id,
+        name: category.name,
+        description: category.description,
+        namePl: category.name_pl,
+        descriptionPl: category.description_pl,
+        slug: category.slug,
+        imageUrl: getFullImageUrl(category.image_url),
+        createdAt: category.created_at
+      }
+    });
+  } catch (error) {
+    console.error('Update category error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Admin: Delete category
+app.delete('/admin/categories/:id', verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Prevent deletion if products reference this category
+    const prodCheck = await pool.query('SELECT COUNT(*) FROM products WHERE category_id = $1', [id]);
+    const prodCount = parseInt(prodCheck.rows[0].count, 10) || 0;
+    if (prodCount > 0) {
+      return res.status(400).json({ error: 'Cannot delete category with associated products. Please reassign or remove products first.' });
+    }
+
+    const result = await pool.query('DELETE FROM categories WHERE id = $1 RETURNING id', [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    res.json({ message: 'Category deleted successfully' });
+  } catch (error) {
+    console.error('Delete category error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
