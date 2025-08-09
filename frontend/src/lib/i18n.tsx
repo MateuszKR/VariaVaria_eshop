@@ -208,6 +208,23 @@ export interface TranslationKeys {
   'product.description': string;
   'product.customerReviews': string;
   'product.verifiedPurchase': string;
+
+  // Contact Page
+  'contact.title': string;
+  'contact.name': string;
+  'contact.email': string;
+  'contact.telephone': string;
+  'contact.topic': string;
+  'contact.content': string;
+  'contact.send': string;
+  'contact.sending': string;
+  'contact.success': string;
+  'contact.validation.nameRequired': string;
+  'contact.validation.emailRequired': string;
+  'contact.validation.emailInvalid': string;
+  'contact.validation.topicRequired': string;
+  'contact.validation.contentRequired': string;
+  'contact.validation.captchaRequired': string;
 }
 
 const translations: Record<Language, TranslationKeys> = {
@@ -295,6 +312,23 @@ const translations: Record<Language, TranslationKeys> = {
     'product.description': 'Description',
     'product.customerReviews': 'Customer Reviews',
     'product.verifiedPurchase': 'Verified Purchase',
+
+    // Contact Page
+    'contact.title': 'Contact Us',
+    'contact.name': 'Name',
+    'contact.email': 'Email',
+    'contact.telephone': 'Telephone',
+    'contact.topic': 'Topic',
+    'contact.content': 'Content',
+    'contact.send': 'Send',
+    'contact.sending': 'Sending...',
+    'contact.success': 'Message sent successfully',
+    'contact.validation.nameRequired': 'Name is required',
+    'contact.validation.emailRequired': 'Email is required',
+    'contact.validation.emailInvalid': 'Please enter a valid email address',
+    'contact.validation.topicRequired': 'Topic is required',
+    'contact.validation.contentRequired': 'Content is required',
+    'contact.validation.captchaRequired': 'Please complete reCAPTCHA',
     
     // Products
     'products.title': 'VariaVaria Jewelry',
@@ -498,6 +532,23 @@ const translations: Record<Language, TranslationKeys> = {
     'product.description': 'Opis',
     'product.customerReviews': 'Opinie klientów',
     'product.verifiedPurchase': 'Zweryfikowany zakup',
+
+    // Contact Page
+    'contact.title': 'Kontakt',
+    'contact.name': 'Imię i nazwisko',
+    'contact.email': 'Email',
+    'contact.telephone': 'Telefon',
+    'contact.topic': 'Temat',
+    'contact.content': 'Treść wiadomości',
+    'contact.send': 'Wyślij',
+    'contact.sending': 'Wysyłanie...',
+    'contact.success': 'Wiadomość została wysłana',
+    'contact.validation.nameRequired': 'Imię i nazwisko jest wymagane',
+    'contact.validation.emailRequired': 'Email jest wymagany',
+    'contact.validation.emailInvalid': 'Podaj poprawny adres email',
+    'contact.validation.topicRequired': 'Temat jest wymagany',
+    'contact.validation.contentRequired': 'Treść jest wymagana',
+    'contact.validation.captchaRequired': 'Potwierdź reCAPTCHA',
     
     // Products
     'products.title': 'Biżuteria VariaVaria',

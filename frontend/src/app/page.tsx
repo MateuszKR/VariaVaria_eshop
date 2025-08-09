@@ -79,7 +79,7 @@ function Header() {
                 priority
               />
             </div>
-            <span className="text-xl font-serif font-semibold text-gradient">
+            <span className="text-xl font-serif font-semibold text-black">
               VariaVaria
             </span>
           </Link>

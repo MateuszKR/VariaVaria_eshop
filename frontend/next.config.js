@@ -44,6 +44,13 @@ const nextConfig = {
     NEXT_PUBLIC_AUTH_SERVICE_URL: process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || 'http://localhost',
     NEXT_PUBLIC_PRODUCTS_SERVICE_URL: process.env.NEXT_PUBLIC_PRODUCTS_SERVICE_URL || 'http://localhost',
     NEXT_PUBLIC_ORDERS_SERVICE_URL: process.env.NEXT_PUBLIC_ORDERS_SERVICE_URL || 'http://localhost',
+    NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
+    RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_PORT: process.env.SMTP_PORT,
+    SMTP_USER: process.env.SMTP_USER,
+    SMTP_PASS: process.env.SMTP_PASS,
+    SMTP_FROM: process.env.SMTP_FROM,
   },
 };
 
