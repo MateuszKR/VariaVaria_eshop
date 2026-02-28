@@ -1,4 +1,4 @@
-// File: C:\Users\matkr\Varia_varia_online_shop\VariaVaria_eshop\frontend\src\app\categories\page.tsx
+// File: C:\Users\matkr\VariaVaria_antigravity\VariaVaria_eshop\frontend\src\app\categories\page.tsx
 import * as entry from '../../../../src/app/categories/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { SparklesIcon } from '@heroicons/react/24/outline';
 
 interface Category {
   id: number;
@@ -19,12 +20,12 @@ export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Ultra-safe translation system with complete isolation
   const [translationsReady, setTranslationsReady] = useState(false);
   const [translations, setTranslations] = useState<any>({});
   const [lang, setLang] = useState<'en' | 'pl'>('en');
-  
+
   // Initialize translations safely
   useEffect(() => {
     try {
@@ -33,7 +34,7 @@ export default function CategoriesPage() {
         try {
           // Get the current language from localStorage
           const savedLang = (localStorage.getItem('variavaria-language') as 'en' | 'pl') || 'en';
-          
+
           // Static translations object
           const staticTranslations = {
             en: {
@@ -93,7 +94,7 @@ export default function CategoriesPage() {
               'category.desc.Sets': 'Kompletne zestawy biżuterii z czterolistną koniczyną'
             }
           };
-          
+
           setTranslations(staticTranslations[savedLang as keyof typeof staticTranslations] || staticTranslations.en);
           setLang(savedLang);
           setTranslationsReady(true);
@@ -102,18 +103,18 @@ export default function CategoriesPage() {
           setTranslationsReady(true); // Still mark as ready to proceed
         }
       };
-      
+
       loadTranslations();
-      
+
       // Listen for language changes in localStorage
       const handleStorageChange = (e: StorageEvent) => {
         if (e.key === 'variavaria-language') {
           loadTranslations();
         }
       };
-      
+
       window.addEventListener('storage', handleStorageChange);
-      
+
       // Also listen for manual language changes within the same window
       let currentLang = localStorage.getItem('variavaria-language') || 'en';
       const checkLanguage = () => {
@@ -123,9 +124,9 @@ export default function CategoriesPage() {
           loadTranslations();
         }
       };
-      
+
       const interval = setInterval(checkLanguage, 1000); // Check every second
-      
+
       return () => {
         window.removeEventListener('storage', handleStorageChange);
         clearInterval(interval);
@@ -135,7 +136,7 @@ export default function CategoriesPage() {
       setTranslationsReady(true);
     }
   }, []);
-  
+
   // Safe translation function with fallback
   const tr = (key: string, fallback: string) => {
     if (!translationsReady) return fallback;
@@ -276,7 +277,7 @@ export default function CategoriesPage() {
                       />
                     ) : (
                       <div className="w-full h-48 bg-gradient-to-br from-primary-100 to-accent-100 flex items-center justify-center">
-                        <span className="text-4xl">🍀</span>
+                        <SparklesIcon className="w-10 h-10 text-primary-500" />
                       </div>
                     )}
                   </div>

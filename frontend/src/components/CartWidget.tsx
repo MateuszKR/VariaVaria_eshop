@@ -4,14 +4,16 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
-import { 
+import {
   ShoppingBagIcon,
   XMarkIcon,
   PlusIcon,
   MinusIcon,
   TrashIcon,
   SparklesIcon,
-  ArrowRightIcon
+  ArrowRightIcon,
+  TruckIcon,
+  GiftIcon
 } from '@heroicons/react/24/outline';
 import { toast } from 'react-hot-toast';
 
@@ -101,7 +103,7 @@ function CartWidgetItem({ item }: { item: any }) {
               <PlusIcon className="w-3 h-3" />
             </button>
           </div>
-          
+
           <div className="text-right">
             <div className="font-semibold text-neutral-900 text-sm">
               ${(item.price * item.quantity).toFixed(2)}
@@ -143,9 +145,8 @@ export default function CartWidget({ isOpen = false, onClose, className = '' }: 
   return (
     <div
       ref={widgetRef}
-      className={`cart-widget ${className} ${
-        isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
-      } transition-all duration-200 w-96 max-w-sm`}
+      className={`cart-widget ${className} ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+        } transition-all duration-200 w-96 max-w-sm`}
     >
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-neutral-200">
@@ -170,13 +171,12 @@ export default function CartWidget({ isOpen = false, onClose, className = '' }: 
       <div className="max-h-80 overflow-y-auto">
         {state.items.length === 0 ? (
           <div className="p-6 text-center">
-            <div className="w-16 h-16 mx-auto bg-gradient-to-br from-primary-100 to-accent-100 rounded-full flex items-center justify-center mb-3">
+            <div className="w-16 h-16 mx-auto bg-gradient-to-br from-primary-100 to-accent-100 rounded-full flex items-center justify-center mb-4">
               <ShoppingBagIcon className="w-8 h-8 text-primary-500" />
             </div>
-            <div className="text-2xl mb-2">🍀</div>
             <p className="text-neutral-600 text-sm">Your cart is empty</p>
-            <Link 
-              href="/products" 
+            <Link
+              href="/products"
               className="text-primary-600 hover:text-primary-700 text-sm font-medium mt-2 inline-block"
               onClick={onClose}
             >
@@ -226,13 +226,13 @@ export default function CartWidget({ isOpen = false, onClose, className = '' }: 
 
           {/* Free Shipping Message */}
           {state.totalPrice < 100 && (
-            <div className="text-xs text-center text-neutral-500 bg-accent-50 p-2 rounded">
-              🚚 Add ${(100 - state.totalPrice).toFixed(2)} more for free shipping!
+            <div className="text-xs text-center text-neutral-500 bg-accent-50 p-2 rounded flex items-center justify-center">
+              <TruckIcon className="w-4 h-4 mr-1" /> Add ${(100 - state.totalPrice).toFixed(2)} more for free shipping!
             </div>
           )}
           {state.totalPrice >= 100 && (
-            <div className="text-xs text-center text-green-600 bg-green-50 p-2 rounded font-medium">
-              🎉 You qualify for free shipping!
+            <div className="text-xs text-center text-green-600 bg-green-50 p-2 rounded font-medium flex items-center justify-center">
+              <GiftIcon className="w-4 h-4 mr-1" /> You qualify for free shipping!
             </div>
           )}
         </div>

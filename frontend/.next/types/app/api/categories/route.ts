@@ -1,4 +1,4 @@
-// File: C:\Users\matkr\Varia_varia_online_shop\VariaVaria_eshop\frontend\src\app\api\categories\route.ts
+// File: C:\Users\matkr\VariaVaria_antigravity\VariaVaria_eshop\frontend\src\app\api\categories\route.ts
 import * as entry from '../../../../../src/app/api/categories/route.js'
 import type { NextRequest } from 'next/server.js'
 

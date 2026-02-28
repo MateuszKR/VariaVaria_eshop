@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useI18n, Language } from '@/lib/i18n';
-import { ChevronDownIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, GlobeAltIcon, SparklesIcon } from '@heroicons/react/24/outline';
 
 const languages = [
   {
@@ -22,7 +22,7 @@ const languages = [
 // Flag component to render actual flag images
 const FlagIcon = ({ countryCode, className = '' }: { countryCode: string; className?: string }) => {
   return (
-    <span 
+    <span
       className={`inline-block w-6 h-4 rounded-sm overflow-hidden shadow-sm ${className}`}
       style={{
         backgroundImage: `url(https://flagcdn.com/w40/${countryCode.toLowerCase()}.png)`,
@@ -40,7 +40,7 @@ interface LanguageSwitcherProps {
   variant?: 'dropdown' | 'inline';
 }
 
-export default function LanguageSwitcher({ 
+export default function LanguageSwitcher({
   className = '',
   variant = 'dropdown'
 }: LanguageSwitcherProps) {
@@ -76,17 +76,15 @@ export default function LanguageSwitcher({
           <button
             key={lang.code}
             onClick={() => handleLanguageChange(lang.code)}
-            className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 group ${
-              lang.code === language
+            className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 group ${lang.code === language
                 ? 'bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-lg transform scale-105'
                 : 'text-neutral-600 hover:text-primary-600 hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 border border-transparent hover:border-primary-200 hover:shadow-md'
-            }`}
-          >
-            <FlagIcon 
-              countryCode={lang.flag} 
-              className={`group-hover:scale-110 transition-transform duration-200 ${
-                lang.code === language ? 'animate-bounce' : ''
               }`}
+          >
+            <FlagIcon
+              countryCode={lang.flag}
+              className={`group-hover:scale-110 transition-transform duration-200 ${lang.code === language ? 'animate-bounce' : ''
+                }`}
             />
             <span className="hidden sm:block">{lang.nativeName}</span>
           </button>
@@ -106,10 +104,9 @@ export default function LanguageSwitcher({
         <span className="hidden sm:block text-sm font-semibold">
           {currentLanguage.nativeName}
         </span>
-        <ChevronDownIcon 
-          className={`h-4 w-4 transition-all duration-300 group-hover:text-primary-500 ${
-            isOpen ? 'rotate-180 text-primary-600' : ''
-          }`} 
+        <ChevronDownIcon
+          className={`h-4 w-4 transition-all duration-300 group-hover:text-primary-500 ${isOpen ? 'rotate-180 text-primary-600' : ''
+            }`}
         />
       </button>
 
@@ -118,7 +115,7 @@ export default function LanguageSwitcher({
         <>
           {/* Backdrop */}
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-          
+
           {/* Dropdown */}
           <div className="absolute right-0 top-14 z-50 w-52 bg-white rounded-2xl shadow-2xl border border-neutral-200/50 py-3 backdrop-blur-sm animate-in slide-in-from-top-2 duration-200">
             <div className="px-4 py-3 border-b border-neutral-100">
@@ -127,17 +124,16 @@ export default function LanguageSwitcher({
                 <span>Language / Język</span>
               </div>
             </div>
-            
+
             {languages.map((lang) => (
               <button
                 key={lang.code}
                 onClick={() => handleLanguageChange(lang.code)}
-                className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 transition-all duration-200 group ${
-                  lang.code === language ? 'bg-gradient-to-r from-primary-50 to-accent-50 text-primary-700 border-r-4 border-primary-500' : 'text-neutral-700'
-                }`}
+                className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 transition-all duration-200 group ${lang.code === language ? 'bg-gradient-to-r from-primary-50 to-accent-50 text-primary-700 border-r-4 border-primary-500' : 'text-neutral-700'
+                  }`}
               >
-                <FlagIcon 
-                  countryCode={lang.flag} 
+                <FlagIcon
+                  countryCode={lang.flag}
                   className="drop-shadow-sm group-hover:scale-110 transition-transform duration-200 w-8 h-6"
                 />
                 <div className="flex-1">
@@ -152,12 +148,12 @@ export default function LanguageSwitcher({
                 )}
               </button>
             ))}
-            
+
             {/* Four leaf clover decoration */}
             <div className="px-4 py-3 border-t border-neutral-100 bg-gradient-to-r from-primary-25 to-accent-25">
               <div className="text-center text-xs font-medium text-neutral-500">
                 <span className="inline-flex items-center space-x-1">
-                  <span className="text-primary-500">🍀</span>
+                  <SparklesIcon className="w-4 h-4 text-primary-500" />
                   <span>VariaVaria Jewelry</span>
                 </span>
               </div>

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
+import { SparklesIcon } from '@heroicons/react/24/outline';
 
 interface Product {
   id: number;
@@ -38,12 +39,12 @@ interface Category {
 
 function ProductsContent() {
   const searchParams = useSearchParams();
-  
+
   // Ultra-safe translation system with complete isolation
   const [translationsReady, setTranslationsReady] = useState(false);
   const [translations, setTranslations] = useState<any>({});
   const [lang, setLang] = useState<'en' | 'pl'>('en');
-  
+
   // Initialize translations safely
   useEffect(() => {
     try {
@@ -52,7 +53,7 @@ function ProductsContent() {
         try {
           // Get the current language from localStorage
           const savedLang = (localStorage.getItem('variavaria-language') as 'en' | 'pl') || 'en';
-          
+
           // Static translations object
           const staticTranslations = {
             en: {
@@ -96,7 +97,7 @@ function ProductsContent() {
               'common.currency': 'zł'
             }
           };
-          
+
           setTranslations(staticTranslations[savedLang as keyof typeof staticTranslations] || staticTranslations.en);
           setLang(savedLang);
           setTranslationsReady(true);
@@ -106,18 +107,18 @@ function ProductsContent() {
           setTranslationsReady(true); // Still mark as ready to proceed
         }
       };
-      
+
       loadTranslations();
-      
+
       // Listen for language changes in localStorage
       const handleStorageChange = (e: StorageEvent) => {
         if (e.key === 'variavaria-language') {
           loadTranslations();
         }
       };
-      
+
       window.addEventListener('storage', handleStorageChange);
-      
+
       // Also listen for manual language changes within the same window
       let currentLang = (localStorage.getItem('variavaria-language') as 'en' | 'pl') || 'en';
       const checkLanguage = () => {
@@ -127,9 +128,9 @@ function ProductsContent() {
           loadTranslations();
         }
       };
-      
+
       const interval = setInterval(checkLanguage, 1000); // Check every second
-      
+
       return () => {
         window.removeEventListener('storage', handleStorageChange);
         clearInterval(interval);
@@ -140,7 +141,7 @@ function ProductsContent() {
       setTranslationsReady(true);
     }
   }, []);
-  
+
   // Safe translation function with fallback
   const tr = (key: string, fallback: string) => {
     if (!translationsReady) return fallback;
@@ -152,7 +153,7 @@ function ProductsContent() {
       return fallback;
     }
   };
-  
+
   // Ultra-safe string replacement function
   const trWithReplace = (key: string, fallback: string, replacements: Record<string, string | number>) => {
     try {
@@ -160,7 +161,7 @@ function ProductsContent() {
       if (!text || typeof text !== 'string') {
         text = fallback || '';
       }
-      
+
       // Ultra-safe replacement
       if (replacements && typeof replacements === 'object') {
         Object.entries(replacements).forEach(([placeholder, value]) => {
@@ -178,19 +179,19 @@ function ProductsContent() {
           }
         });
       }
-      
+
       return text || fallback || '';
     } catch (error) {
       console.warn('Translation with replacement error:', key, error);
       return fallback || '';
     }
   };
-  
+
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Search and filters
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
@@ -199,7 +200,7 @@ function ProductsContent() {
   const [sortOrder, setSortOrder] = useState(searchParams.get('sortOrder') || 'desc');
   const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
   const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
-  
+
   // Pagination
   const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get('page') || '1'));
   const [totalPages, setTotalPages] = useState(1);
@@ -323,7 +324,7 @@ function ProductsContent() {
                 {tr('products.searchButton', 'Search')}
               </button>
             </div>
-            
+
             {/* Filters */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
               <div className="flex items-center">
@@ -340,7 +341,7 @@ function ProductsContent() {
                   <span className="text-sm font-medium text-neutral-700">{tr('products.featuredOnly', 'Featured Only')}</span>
                 </label>
               </div>
-              
+
               <select
                 value={selectedCategory}
                 onChange={(e) => {
@@ -357,7 +358,7 @@ function ProductsContent() {
                 ))}
               </select>
             </div>
-            
+
             <div className="flex justify-between items-center">
               <button
                 type="button"
@@ -367,7 +368,7 @@ function ProductsContent() {
                 {tr('products.clearFilters', 'Clear Filters')}
               </button>
               <p className="text-neutral-600">
-                {totalProducts === 1 
+                {totalProducts === 1
                   ? trWithReplace('products.productsFound', '{count} product found', { count: String(totalProducts || 0) })
                   : trWithReplace('products.productsFoundPlural', '{count} products found', { count: String(totalProducts || 0) })
                 }
@@ -412,7 +413,7 @@ function ProductsContent() {
                       />
                     ) : (
                       <div className="w-full h-64 bg-gradient-to-br from-primary-100 to-accent-100 flex items-center justify-center">
-                        <span className="text-6xl">🍀</span>
+                        <SparklesIcon className="w-16 h-16 text-primary-500" />
                       </div>
                     )}
                   </div>

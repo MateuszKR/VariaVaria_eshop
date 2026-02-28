@@ -38,7 +38,7 @@ export default function CartDemo() {
 
   const handleAddSampleItem = (product: typeof sampleProducts[0]) => {
     addItem(product);
-    toast.success(`Added ${product.name} to cart! 🍀`);
+    toast.success(`Added ${product.name} to cart!`);
   };
 
   return (
@@ -49,7 +49,7 @@ export default function CartDemo() {
       <p className="text-neutral-600 mb-6">
         Click the buttons below to test the cart functionality with sample jewelry items.
       </p>
-      
+
       <div className="grid gap-4">
         {sampleProducts.map((product) => (
           <div key={product.id} className="flex items-center justify-between p-4 border border-neutral-200 rounded-lg">
@@ -61,12 +61,12 @@ export default function CartDemo() {
               onClick={() => handleAddSampleItem(product)}
               className="btn-primary"
             >
-              Add to Cart 🍀
+              Add to Cart
             </button>
           </div>
         ))}
       </div>
-      
+
       <div className="mt-6 p-4 bg-primary-50 rounded-lg">
         <p className="text-sm text-neutral-700">
           <strong>Cart Status:</strong> {state.totalItems} items, ${state.totalPrice.toFixed(2)} total

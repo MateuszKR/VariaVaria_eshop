@@ -1,0 +1,165 @@
+erDiagram
+    users {
+        SERIAL id PK
+        VARCHAR email UK
+        VARCHAR password_hash
+        VARCHAR first_name
+        VARCHAR last_name
+        VARCHAR phone
+        VARCHAR role
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    addresses {
+        SERIAL id PK
+        INTEGER user_id FK
+        VARCHAR type
+        VARCHAR street_address
+        VARCHAR city
+        VARCHAR postal_code
+        VARCHAR country
+        BOOLEAN is_default
+        TIMESTAMP created_at
+    }
+
+    categories {
+        SERIAL id PK
+        VARCHAR name UK
+        TEXT description
+        VARCHAR slug UK
+        VARCHAR image_url
+        VARCHAR name_pl
+        TEXT description_pl
+        TIMESTAMP created_at
+    }
+
+    products {
+        SERIAL id PK
+        VARCHAR name
+        TEXT description
+        VARCHAR short_description
+        VARCHAR sku UK
+        DECIMAL price
+        INTEGER category_id FK
+        VARCHAR material
+        DECIMAL weight_grams
+        VARCHAR dimensions
+        TEXT care_instructions
+        BOOLEAN is_active
+        BOOLEAN is_featured
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    product_images {
+        SERIAL id PK
+        INTEGER product_id FK
+        VARCHAR image_url
+        VARCHAR alt_text
+        INTEGER sort_order
+        BOOLEAN is_primary
+        TIMESTAMP created_at
+    }
+
+    inventory {
+        SERIAL id PK
+        INTEGER product_id FK
+        INTEGER quantity_available
+        INTEGER quantity_reserved
+        INTEGER reorder_level
+        TIMESTAMP last_restock_date
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    cart_items {
+        SERIAL id PK
+        INTEGER user_id FK
+        INTEGER product_id FK
+        INTEGER quantity
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    orders {
+        SERIAL id PK
+        INTEGER user_id FK
+        VARCHAR order_number UK
+        VARCHAR status
+        DECIMAL subtotal
+        DECIMAL tax_amount
+        DECIMAL shipping_amount
+        DECIMAL total_amount
+        INTEGER shipping_address_id FK
+        INTEGER billing_address_id FK
+        VARCHAR payment_method
+        VARCHAR payment_status
+        TEXT notes
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    order_items {
+        SERIAL id PK
+        INTEGER order_id FK
+        INTEGER product_id FK
+        INTEGER quantity
+        DECIMAL unit_price
+        DECIMAL total_price
+        TIMESTAMP created_at
+    }
+
+    reviews {
+        SERIAL id PK
+        INTEGER product_id FK
+        INTEGER user_id FK
+        INTEGER rating
+        VARCHAR title
+        TEXT comment
+        BOOLEAN is_verified_purchase
+        BOOLEAN is_approved
+        TIMESTAMP created_at
+    }
+
+    wishlist_items {
+        SERIAL id PK
+        INTEGER user_id FK
+        INTEGER product_id FK
+        TIMESTAMP created_at
+    }
+
+    coupons {
+        SERIAL id PK
+        VARCHAR code UK
+        VARCHAR name
+        TEXT description
+        VARCHAR discount_type
+        DECIMAL discount_value
+        DECIMAL minimum_order_amount
+        INTEGER max_usage_count
+        INTEGER current_usage_count
+        TIMESTAMP start_date
+        TIMESTAMP end_date
+        BOOLEAN is_active
+        TIMESTAMP created_at
+    }
+
+    users ||--o{ addresses : "has"
+    users ||--o{ cart_items : "has"
+    users ||--o{ orders : "places"
+    users ||--o{ reviews : "writes"
+    users ||--o{ wishlist_items : "saves"
+
+    categories ||--o{ products : "contains"
+
+    products ||--o{ product_images : "has"
+    products ||--|| inventory : "tracked by"
+    products ||--o{ cart_items : "in"
+    products ||--o{ order_items : "in"
+    products ||--o{ reviews : "receives"
+    products ||--o{ wishlist_items : "in"
+
+    orders ||--o{ order_items : "contains"
+    orders }o--|| addresses : "ships to"
+    orders }o--|| addresses : "billed to"

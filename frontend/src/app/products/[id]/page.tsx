@@ -6,16 +6,17 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
 import { toast } from 'react-hot-toast';
-import { 
-  ArrowLeftIcon, 
-  ShoppingCartIcon, 
+import {
+  ArrowLeftIcon,
+  ShoppingCartIcon,
   HeartIcon,
   ShareIcon,
   StarIcon,
   CheckIcon,
   XMarkIcon,
   ChevronLeftIcon,
-  ChevronRightIcon
+  ChevronRightIcon,
+  SparklesIcon
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon, StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 
@@ -78,7 +79,7 @@ export default function ProductDetailPage() {
   const productId = params.id as string;
   const { addItem } = useCart();
   const { t } = useI18n();
-  
+
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -95,7 +96,7 @@ export default function ProductDetailPage() {
     try {
       setLoading(true);
       const response = await fetch(`/api/products/${productId}`);
-      
+
       if (!response.ok) {
         if (response.status === 404) {
           setError('Product not found');
@@ -104,7 +105,7 @@ export default function ProductDetailPage() {
         }
         return;
       }
-      
+
       const data = await response.json();
       setProduct(data.product);
     } catch (err) {
@@ -116,9 +117,9 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = async () => {
     if (!product) return;
-    
+
     setAddingToCart(true);
-    
+
     try {
       // Add item to cart
       addItem({
@@ -131,8 +132,8 @@ export default function ProductDetailPage() {
         sku: product.sku,
         maxQuantity: product.inventory.quantityAvailable
       });
-      
-      toast.success(`Added ${quantity} ${quantity === 1 ? 'item' : 'items'} to cart! 🍀`);
+
+      toast.success(`Added ${quantity} ${quantity === 1 ? 'item' : 'items'} to cart!`);
     } catch (error) {
       toast.error('Failed to add item to cart');
     } finally {
@@ -212,7 +213,7 @@ export default function ProductDetailPage() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-accent-100">
-                  <span className="text-8xl">🍀</span>
+                  <SparklesIcon className="w-24 h-24 text-primary-500" />
                 </div>
               )}
             </div>
@@ -224,11 +225,10 @@ export default function ProductDetailPage() {
                   <button
                     key={image.id}
                     onClick={() => setSelectedImageIndex(index)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
-                      selectedImageIndex === index 
-                        ? 'border-primary-500' 
+                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${selectedImageIndex === index
+                        ? 'border-primary-500'
                         : 'border-transparent hover:border-neutral-300'
-                    }`}
+                      }`}
                   >
                     <img
                       src={getImageSrc(image.url)}
@@ -257,11 +257,10 @@ export default function ProductDetailPage() {
                   {[...Array(5)].map((_, i) => (
                     <StarSolidIcon
                       key={i}
-                      className={`h-5 w-5 ${
-                        i < Math.floor(product.rating.average) 
-                          ? 'text-accent-500' 
+                      className={`h-5 w-5 ${i < Math.floor(product.rating.average)
+                          ? 'text-accent-500'
                           : 'text-neutral-300'
-                      }`}
+                        }`}
                     />
                   ))}
                 </div>
@@ -277,7 +276,7 @@ export default function ProductDetailPage() {
                 ${product.price.toFixed(2)}
               </span>
               {product.isFeatured && (
-               <span className="bg-accent-100 text-accent-800 px-3 py-1 rounded-full text-sm font-medium">
+                <span className="bg-accent-100 text-accent-800 px-3 py-1 rounded-full text-sm font-medium">
                   {t('products.featured.badge')}
                 </span>
               )}
@@ -296,7 +295,7 @@ export default function ProductDetailPage() {
                   <span>{t('product.inStock')}</span>
                   {isLowStock && (
                     <span className="text-amber-600 text-sm">
-                       ({t('products.onlyLeft').replace('{count}', String(product.inventory.quantityAvailable))})
+                      ({t('products.onlyLeft').replace('{count}', String(product.inventory.quantityAvailable))})
                     </span>
                   )}
                 </span>
@@ -354,7 +353,7 @@ export default function ProductDetailPage() {
                 {product.category && (
                   <div>
                     <span className="font-medium text-neutral-900">{t('product.category')}</span>
-                    <Link 
+                    <Link
                       href={`/products?category=${product.category.slug}`}
                       className="text-primary-600 hover:text-primary-700 ml-2"
                     >
@@ -376,7 +375,7 @@ export default function ProductDetailPage() {
                 )}
                 {product.dimensions && (
                   <div className="col-span-2">
-                     <span className="font-medium text-neutral-900">{t('product.dimensions')}</span>
+                    <span className="font-medium text-neutral-900">{t('product.dimensions')}</span>
                     <span className="text-neutral-600 ml-2">{product.dimensions}</span>
                   </div>
                 )}
@@ -416,9 +415,8 @@ export default function ProductDetailPage() {
                           {[...Array(5)].map((_, i) => (
                             <StarSolidIcon
                               key={i}
-                              className={`h-4 w-4 ${
-                                i < review.rating ? 'text-accent-500' : 'text-neutral-300'
-                              }`}
+                              className={`h-4 w-4 ${i < review.rating ? 'text-accent-500' : 'text-neutral-300'
+                                }`}
                             />
                           ))}
                         </div>

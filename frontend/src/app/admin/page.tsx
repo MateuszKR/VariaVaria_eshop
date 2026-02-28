@@ -6,7 +6,7 @@ import { useAdminAuth } from '@/hooks/useAdminAuth'
 import AddProductModal from '@/components/AddProductModal'
 import CategoriesManager from '@/components/CategoriesManager'
 import EditProductModal from '@/components/EditProductModal'
-import { 
+import {
   PlusIcon,
   PencilIcon,
   TrashIcon,
@@ -22,7 +22,8 @@ import {
   CheckCircleIcon,
   XCircleIcon,
   ArrowRightOnRectangleIcon,
-  UserIcon
+  UserIcon,
+  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline'
 
 interface Product {
@@ -98,7 +99,7 @@ const mockOrders: Order[] = [
   }
 ]
 
-function DashboardStats({ productsCount }: { productsCount: number }) {
+function DashboardStats({ activeProductsCount, recentProductsCount }: { activeProductsCount: number, recentProductsCount: number }) {
   const stats = [
     {
       title: 'Total Revenue',
@@ -115,9 +116,9 @@ function DashboardStats({ productsCount }: { productsCount: number }) {
       color: 'text-blue-600'
     },
     {
-      title: 'Products',
-      value: productsCount.toString(),
-      change: '+3',
+      title: 'Active Products',
+      value: activeProductsCount.toString(),
+      change: `+${recentProductsCount} in 24h`,
       icon: CubeIcon,
       color: 'text-purple-600'
     },
@@ -150,10 +151,10 @@ function DashboardStats({ productsCount }: { productsCount: number }) {
   )
 }
 
-function ProductManagement({ 
-  onAddProductClick, 
-  onEditProductClick 
-}: { 
+function ProductManagement({
+  onAddProductClick,
+  onEditProductClick
+}: {
   onAddProductClick: () => void;
   onEditProductClick: (product: Product) => void;
 }) {
@@ -166,7 +167,7 @@ function ProductManagement({
   const fetchProducts = async () => {
     setLoading(true)
     setError('')
-    
+
     try {
       const token = localStorage.getItem('adminToken')
       if (!token) {
@@ -178,11 +179,11 @@ function ProductManagement({
           'Authorization': `Bearer ${token}`,
         },
       })
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch products')
       }
-      
+
       const data = await response.json()
       setProducts(data.products || [])
     } catch (err) {
@@ -199,8 +200,8 @@ function ProductManagement({
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.sku.toLowerCase().includes(searchTerm.toLowerCase())
-    
+      product.sku.toLowerCase().includes(searchTerm.toLowerCase())
+
     let matchesStatus = true
     if (statusFilter === 'active') {
       matchesStatus = product.isActive && product.quantityAvailable > 0
@@ -211,7 +212,7 @@ function ProductManagement({
     } else if (statusFilter === 'out_of_stock') {
       matchesStatus = product.quantityAvailable === 0
     }
-    
+
     return matchesSearch && matchesStatus
   })
 
@@ -296,7 +297,7 @@ function ProductManagement({
             <h2 className="text-xl font-semibold text-neutral-900">Product Management</h2>
             <p className="text-neutral-600">Manage your jewelry inventory ({products.length} products)</p>
           </div>
-          <button 
+          <button
             onClick={onAddProductClick}
             className="btn-primary flex items-center space-x-2"
           >
@@ -304,7 +305,7 @@ function ProductManagement({
             <span>Add Product</span>
           </button>
         </div>
-        
+
         <div className="flex flex-col sm:flex-row gap-4 mt-6">
           <div className="relative flex-1">
             <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-3 text-neutral-400" />
@@ -316,7 +317,7 @@ function ProductManagement({
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <select 
+          <select
             className="input-field sm:w-48"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -332,107 +333,107 @@ function ProductManagement({
 
       <div className="overflow-x-auto overflow-y-visible" style={{ transform: 'rotateX(180deg)' }}>
         <div className="inline-block min-w-full align-middle" style={{ transform: 'rotateX(180deg)' }}>
-        <table className="w-full min-w-[1000px]">
-          <thead className="bg-neutral-50">
-            <tr>
-              <th className="text-left py-3 px-4 font-medium text-neutral-900 w-80">Product</th>
-              <th className="text-left py-3 px-3 font-medium text-neutral-900 w-32">SKU</th>
-              <th className="text-left py-3 px-3 font-medium text-neutral-900 w-32">Category</th>
-              <th className="text-left py-3 px-3 font-medium text-neutral-900 w-24">Price</th>
-              <th className="text-left py-3 px-3 font-medium text-neutral-900 w-20">Stock</th>
-              <th className="text-left py-3 px-3 font-medium text-neutral-900 w-28">Status</th>
-              <th className="text-left py-3 px-4 font-medium text-neutral-900 w-32">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-neutral-200">
-            {filteredProducts.length === 0 ? (
+          <table className="w-full min-w-[1000px]">
+            <thead className="bg-neutral-50">
               <tr>
-                <td colSpan={7} className="py-8 px-6 text-center text-neutral-500">
-                  {searchTerm || statusFilter !== 'all' ? 'No products match your filters' : 'No products found'}
-                </td>
+                <th className="text-left py-3 px-4 font-medium text-neutral-900 w-80">Product</th>
+                <th className="text-left py-3 px-3 font-medium text-neutral-900 w-32">SKU</th>
+                <th className="text-left py-3 px-3 font-medium text-neutral-900 w-32">Category</th>
+                <th className="text-left py-3 px-3 font-medium text-neutral-900 w-24">Price</th>
+                <th className="text-left py-3 px-3 font-medium text-neutral-900 w-20">Stock</th>
+                <th className="text-left py-3 px-3 font-medium text-neutral-900 w-28">Status</th>
+                <th className="text-left py-3 px-4 font-medium text-neutral-900 w-32">Actions</th>
               </tr>
-            ) : (
-              filteredProducts.map((product) => {
-                const productStatus = getProductStatus(product)
-                return (
-                  <tr key={product.id} className="hover:bg-neutral-50">
-                    <td className="py-4 px-4 w-80">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 relative rounded-lg overflow-hidden bg-neutral-100 flex-shrink-0">
-                          {product.primaryImage ? (
-                            <img
-                              src={product.primaryImage.url}
-                              alt={product.primaryImage.alt}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                e.currentTarget.style.display = 'none';
-                                e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                              }}
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-neutral-400">
-                              <CubeIcon className="h-5 w-5" />
+            </thead>
+            <tbody className="divide-y divide-neutral-200">
+              {filteredProducts.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-8 px-6 text-center text-neutral-500">
+                    {searchTerm || statusFilter !== 'all' ? 'No products match your filters' : 'No products found'}
+                  </td>
+                </tr>
+              ) : (
+                filteredProducts.map((product) => {
+                  const productStatus = getProductStatus(product)
+                  return (
+                    <tr key={product.id} className="hover:bg-neutral-50">
+                      <td className="py-4 px-4 w-80">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 relative rounded-lg overflow-hidden bg-neutral-100 flex-shrink-0">
+                            {product.primaryImage ? (
+                              <img
+                                src={product.primaryImage.url}
+                                alt={product.primaryImage.alt}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                                }}
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-neutral-400">
+                                <CubeIcon className="h-5 w-5" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="font-medium text-neutral-900 truncate">{product.name}</div>
+                            <div className="text-xs text-neutral-500">
+                              {new Date(product.createdAt).toLocaleDateString()}
                             </div>
-                          )}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="font-medium text-neutral-900 truncate">{product.name}</div>
-                          <div className="text-xs text-neutral-500">
-                            {new Date(product.createdAt).toLocaleDateString()}
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-3 text-neutral-900 text-sm w-32 truncate">{product.sku}</td>
-                    <td className="py-4 px-3 text-neutral-600 text-sm w-32 truncate">{product.categoryName || 'Uncategorized'}</td>
-                    <td className="py-4 px-3 font-medium text-neutral-900 text-sm w-24">${product.price.toFixed(2)}</td>
-                    <td className="py-4 px-3 w-20">
-                      <div className="flex items-center space-x-1">
-                        <span className="font-medium text-neutral-900 text-sm">{product.quantityAvailable}</span>
-                        {product.quantityAvailable <= 5 && product.quantityAvailable > 0 && (
-                          <span className="text-yellow-600 text-xs">⚠️</span>
-                        )}
-                        {product.quantityAvailable === 0 && (
-                          <span className="text-red-600 text-xs">❌</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="py-4 px-3 w-28">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${productStatus.color}`}>
-                        {getStatusText(productStatus.status)}
-                      </span>
-                    </td>
-                    <td className="py-4 px-4 w-32">
-                      <div className="flex items-center space-x-1">
-                        <button 
-                          onClick={() => window.open(`/products/${product.id}`, '_blank')}
-                          className="p-1.5 text-neutral-600 hover:text-blue-600 transition-colors rounded hover:bg-blue-50"
-                          title="View Details"
-                        >
-                          <EyeIcon className="h-4 w-4" />
-                        </button>
-                        <button 
-                          onClick={() => onEditProductClick(product)}
-                          className="p-1.5 text-neutral-600 hover:text-green-600 transition-colors rounded hover:bg-green-50"
-                          title="Edit Product"
-                        >
-                          <PencilIcon className="h-4 w-4" />
-                        </button>
-                        <button 
-                          onClick={() => deleteProduct(product.id, product.name)}
-                          className="p-1.5 text-neutral-600 hover:text-red-600 transition-colors rounded hover:bg-red-50"
-                          title="Delete Product"
-                        >
-                          <TrashIcon className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })
-            )}
-          </tbody>
-        </table>
+                      </td>
+                      <td className="py-4 px-3 text-neutral-900 text-sm w-32 truncate">{product.sku}</td>
+                      <td className="py-4 px-3 text-neutral-600 text-sm w-32 truncate">{product.categoryName || 'Uncategorized'}</td>
+                      <td className="py-4 px-3 font-medium text-neutral-900 text-sm w-24">${product.price.toFixed(2)}</td>
+                      <td className="py-4 px-3 w-20">
+                        <div className="flex items-center space-x-1">
+                          <span className="font-medium text-neutral-900 text-sm">{product.quantityAvailable}</span>
+                          {product.quantityAvailable <= 5 && product.quantityAvailable > 0 && (
+                            <ExclamationTriangleIcon className="h-4 w-4 text-yellow-600" />
+                          )}
+                          {product.quantityAvailable === 0 && (
+                            <XCircleIcon className="h-4 w-4 text-red-600" />
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-4 px-3 w-28">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${productStatus.color}`}>
+                          {getStatusText(productStatus.status)}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4 w-32">
+                        <div className="flex items-center space-x-1">
+                          <button
+                            onClick={() => window.open(`/products/${product.id}`, '_blank')}
+                            className="p-1.5 text-neutral-600 hover:text-blue-600 transition-colors rounded hover:bg-blue-50"
+                            title="View Details"
+                          >
+                            <EyeIcon className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => onEditProductClick(product)}
+                            className="p-1.5 text-neutral-600 hover:text-green-600 transition-colors rounded hover:bg-green-50"
+                            title="Edit Product"
+                          >
+                            <PencilIcon className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => deleteProduct(product.id, product.name)}
+                            className="p-1.5 text-neutral-600 hover:text-red-600 transition-colors rounded hover:bg-red-50"
+                            title="Delete Product"
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -485,66 +486,66 @@ function OrderManagement() {
 
       <div className="overflow-x-auto" style={{ transform: 'rotateX(180deg)' }}>
         <div style={{ transform: 'rotateX(180deg)' }}>
-        <table className="w-full">
-          <thead className="bg-neutral-50">
-            <tr>
-              <th className="text-left py-3 px-6 font-medium text-neutral-900">Order</th>
-              <th className="text-left py-3 px-6 font-medium text-neutral-900">Customer</th>
-              <th className="text-left py-3 px-6 font-medium text-neutral-900">Items</th>
-              <th className="text-left py-3 px-6 font-medium text-neutral-900">Total</th>
-              <th className="text-left py-3 px-6 font-medium text-neutral-900">Status</th>
-              <th className="text-left py-3 px-6 font-medium text-neutral-900">Date</th>
-              <th className="text-left py-3 px-6 font-medium text-neutral-900">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-neutral-200">
-            {orders.map((order) => {
-              const StatusIcon = getStatusIcon(order.status)
-              return (
-                <tr key={order.id} className="hover:bg-neutral-50">
-                  <td className="py-4 px-6">
-                    <div className="font-medium text-neutral-900">{order.orderNumber}</div>
-                  </td>
-                  <td className="py-4 px-6">
-                    <div>
-                      <div className="font-medium text-neutral-900">{order.customerName}</div>
-                      <div className="text-sm text-neutral-500">{order.customerEmail}</div>
-                    </div>
-                  </td>
-                  <td className="py-4 px-6 text-neutral-600">{order.itemCount} items</td>
-                  <td className="py-4 px-6 font-medium text-neutral-900">${order.total}</td>
-                  <td className="py-4 px-6">
-                    <div className="flex items-center space-x-2">
-                      <StatusIcon className="h-4 w-4" />
-                      <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
-                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="py-4 px-6 text-neutral-600">{order.createdAt}</td>
-                  <td className="py-4 px-6">
-                    <div className="flex items-center space-x-2">
-                      <button className="p-2 text-neutral-600 hover:text-blue-600 transition-colors">
-                        <EyeIcon className="h-4 w-4" />
-                      </button>
-                      <select 
-                        className="text-sm border border-neutral-300 rounded px-2 py-1"
-                        value={order.status}
-                        onChange={(e) => updateOrderStatus(order.id, e.target.value)}
-                      >
-                        <option value="pending">Pending</option>
-                        <option value="confirmed">Confirmed</option>
-                        <option value="shipped">Shipped</option>
-                        <option value="delivered">Delivered</option>
-                        <option value="cancelled">Cancelled</option>
-                      </select>
-                    </div>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+          <table className="w-full">
+            <thead className="bg-neutral-50">
+              <tr>
+                <th className="text-left py-3 px-6 font-medium text-neutral-900">Order</th>
+                <th className="text-left py-3 px-6 font-medium text-neutral-900">Customer</th>
+                <th className="text-left py-3 px-6 font-medium text-neutral-900">Items</th>
+                <th className="text-left py-3 px-6 font-medium text-neutral-900">Total</th>
+                <th className="text-left py-3 px-6 font-medium text-neutral-900">Status</th>
+                <th className="text-left py-3 px-6 font-medium text-neutral-900">Date</th>
+                <th className="text-left py-3 px-6 font-medium text-neutral-900">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-neutral-200">
+              {orders.map((order) => {
+                const StatusIcon = getStatusIcon(order.status)
+                return (
+                  <tr key={order.id} className="hover:bg-neutral-50">
+                    <td className="py-4 px-6">
+                      <div className="font-medium text-neutral-900">{order.orderNumber}</div>
+                    </td>
+                    <td className="py-4 px-6">
+                      <div>
+                        <div className="font-medium text-neutral-900">{order.customerName}</div>
+                        <div className="text-sm text-neutral-500">{order.customerEmail}</div>
+                      </div>
+                    </td>
+                    <td className="py-4 px-6 text-neutral-600">{order.itemCount} items</td>
+                    <td className="py-4 px-6 font-medium text-neutral-900">${order.total}</td>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center space-x-2">
+                        <StatusIcon className="h-4 w-4" />
+                        <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+                          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="py-4 px-6 text-neutral-600">{order.createdAt}</td>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center space-x-2">
+                        <button className="p-2 text-neutral-600 hover:text-blue-600 transition-colors">
+                          <EyeIcon className="h-4 w-4" />
+                        </button>
+                        <select
+                          className="text-sm border border-neutral-300 rounded px-2 py-1"
+                          value={order.status}
+                          onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="confirmed">Confirmed</option>
+                          <option value="shipped">Shipped</option>
+                          <option value="delivered">Delivered</option>
+                          <option value="cancelled">Cancelled</option>
+                        </select>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -556,7 +557,7 @@ function QuickActions({ onAddProductClick }: { onAddProductClick: () => void }) 
     <div className="card p-6">
       <h3 className="text-lg font-semibold text-neutral-900 mb-4">Quick Actions</h3>
       <div className="space-y-3">
-        <button 
+        <button
           onClick={onAddProductClick}
           className="btn-primary flex items-center justify-center space-x-2 py-3 w-full"
         >
@@ -585,28 +586,47 @@ export default function AdminDashboard() {
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false)
   const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
-  const [productsCount, setProductsCount] = useState(0)
+  const [activeProductsCount, setActiveProductsCount] = useState(0)
+  const [recentProductsCount, setRecentProductsCount] = useState(0)
   const [productsKey, setProductsKey] = useState(0)
   const [activeTab, setActiveTab] = useState<'products' | 'categories'>('products')
 
-  // Fetch products count for dashboard stats
+  // Fetch products stats for dashboard
   useEffect(() => {
-    const fetchProductsCount = async () => {
+    const fetchProductsStats = async () => {
       try {
-        const response = await fetch(`/api/products?limit=1`)
+        const token = localStorage.getItem('adminToken')
+        if (!token) return
+
+        const response = await fetch(`/api/admin/products?limit=1000`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        })
         if (response.ok) {
           const data = await response.json()
-          setProductsCount(data.pagination?.totalItems || 0)
+          const products = data.products || []
+
+          // Count active products
+          const active = products.filter((p: Product) => p.isActive).length
+
+          // Count recent products (last 24h)
+          const now = new Date()
+          const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+          const recent = products.filter((p: Product) => new Date(p.createdAt) >= yesterday).length
+
+          setActiveProductsCount(active)
+          setRecentProductsCount(recent)
         }
       } catch (err) {
-        console.error('Failed to fetch products count:', err)
+        console.error('Failed to fetch products stats:', err)
       }
     }
 
     if (isAuthenticated) {
-      fetchProductsCount()
+      fetchProductsStats()
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated, productsKey])
 
   const handleAddProductClick = () => {
     setIsAddProductModalOpen(true)
@@ -620,7 +640,7 @@ export default function AdminDashboard() {
   const handleProductAdded = () => {
     // Close the modal first
     setIsAddProductModalOpen(false)
-    
+
     // Force ProductManagement component to refresh its products list
     setProductsKey(prev => prev + 1)
   }
@@ -629,7 +649,7 @@ export default function AdminDashboard() {
     // Close the modal first
     setIsEditProductModalOpen(false)
     setEditingProduct(null)
-    
+
     // Force ProductManagement component to refresh its products list
     // We'll use a key prop to force re-render
     setProductsKey(prev => prev + 1)
@@ -695,7 +715,10 @@ export default function AdminDashboard() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <DashboardStats productsCount={productsCount} />
+        <DashboardStats
+          activeProductsCount={activeProductsCount}
+          recentProductsCount={recentProductsCount}
+        />
 
         {/* Admin Tabs */}
         <div className="mb-6">
@@ -718,7 +741,7 @@ export default function AdminDashboard() {
         {activeTab === 'products' ? (
           <div className="grid grid-cols-1 lg:grid-cols-6 gap-8 mb-8">
             <div className="lg:col-span-5">
-              <ProductManagement 
+              <ProductManagement
                 key={productsKey}
                 onAddProductClick={handleAddProductClick}
                 onEditProductClick={handleEditProductClick}

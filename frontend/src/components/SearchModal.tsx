@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, MagnifyingGlassIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 import { useI18n } from '@/lib/i18n';
 
@@ -118,7 +118,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    
+
     // Debounce search
     const timeoutId = setTimeout(() => {
       handleSearch(value);
@@ -148,7 +148,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
-      <div 
+      <div
         ref={modalRef}
         className="fixed inset-x-4 top-4 mx-auto max-w-2xl bg-white rounded-lg shadow-2xl border border-neutral-200"
       >
@@ -208,7 +208,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                           />
                         ) : (
                           <div className="w-full h-full bg-neutral-200 flex items-center justify-center">
-                            <span className="text-neutral-400 text-xs">📷</span>
+                            <PhotoIcon className="h-6 w-6 text-neutral-400" />
                           </div>
                         )}
                       </div>
@@ -241,12 +241,12 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 <p className="text-neutral-600 mb-4">
                   {t('products.noProductsMessage')}
                 </p>
-                                 <button
-                   onClick={() => router.push('/products')}
-                   className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
-                 >
-                   {t('products.featured.browseAll')}
-                 </button>
+                <button
+                  onClick={() => router.push('/products')}
+                  className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+                >
+                  {t('products.featured.browseAll')}
+                </button>
               </div>
             )
           ) : (

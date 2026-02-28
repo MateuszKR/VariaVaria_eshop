@@ -3,10 +3,20 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useI18n } from '@/lib/i18n';
+import {
+  SparklesIcon,
+  ShieldCheckIcon,
+  GlobeAltIcon,
+  HeartIcon,
+  WrenchScrewdriverIcon,
+  HandThumbUpIcon,
+  SunIcon,
+  StarIcon
+} from '@heroicons/react/24/outline';
 
 export default function AboutPage() {
   const { t } = useI18n();
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50">
       {/* Hero Section */}
@@ -51,7 +61,7 @@ export default function AboutPage() {
             </div>
           </div>
           <div className="bg-gradient-to-br from-primary-100 to-accent-100 rounded-xl p-8 text-center">
-            <div className="text-8xl mb-4">🍀</div>
+            <SparklesIcon className="w-20 h-20 text-primary-500 mx-auto mb-4" />
             <blockquote className="text-lg italic text-neutral-700">
               "{t('about.ourStory.quote')}"
             </blockquote>
@@ -72,7 +82,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">✨</span>
+                <SparklesIcon className="w-8 h-8 text-primary-600" />
               </div>
               <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.values.quality.title')}</h3>
               <p className="text-neutral-600">
@@ -81,7 +91,7 @@ export default function AboutPage() {
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🤝</span>
+                <ShieldCheckIcon className="w-8 h-8 text-primary-600" />
               </div>
               <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.values.authenticity.title')}</h3>
               <p className="text-neutral-600">
@@ -90,7 +100,7 @@ export default function AboutPage() {
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🌱</span>
+                <GlobeAltIcon className="w-8 h-8 text-primary-600" />
               </div>
               <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.values.sustainability.title')}</h3>
               <p className="text-neutral-600">
@@ -99,7 +109,7 @@ export default function AboutPage() {
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">💝</span>
+                <HeartIcon className="w-8 h-8 text-primary-600" />
               </div>
               <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.values.meaning.title')}</h3>
               <p className="text-neutral-600">
@@ -114,7 +124,7 @@ export default function AboutPage() {
       <section className="container-max section-padding py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="bg-gradient-to-br from-accent-100 to-primary-100 rounded-xl p-8 text-center order-2 lg:order-1">
-            <div className="text-8xl mb-4">⚒️</div>
+            <WrenchScrewdriverIcon className="w-20 h-20 text-neutral-600 mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-neutral-900 mb-4">{t('about.craftsmanship.excellence.title')}</h3>
             <p className="text-neutral-600">
               {t('about.craftsmanship.excellence.description')}
@@ -177,28 +187,28 @@ export default function AboutPage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="text-center card p-6">
-            <div className="text-4xl mb-4">🙏</div>
+            <HandThumbUpIcon className="w-10 h-10 text-primary-500 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.symbolism.faith.title')}</h3>
             <p className="text-neutral-600">
               {t('about.symbolism.faith.description')}
             </p>
           </div>
           <div className="text-center card p-6">
-            <div className="text-4xl mb-4">🌅</div>
+            <SunIcon className="w-10 h-10 text-primary-500 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.symbolism.hope.title')}</h3>
             <p className="text-neutral-600">
               {t('about.symbolism.hope.description')}
             </p>
           </div>
           <div className="text-center card p-6">
-            <div className="text-4xl mb-4">💕</div>
+            <HeartIcon className="w-10 h-10 text-primary-500 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.symbolism.love.title')}</h3>
             <p className="text-neutral-600">
               {t('about.symbolism.love.description')}
             </p>
           </div>
           <div className="text-center card p-6">
-            <div className="text-4xl mb-4">🌟</div>
+            <StarIcon className="w-10 h-10 text-primary-500 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-neutral-900 mb-2">{t('about.symbolism.luck.title')}</h3>
             <p className="text-neutral-600">
               {t('about.symbolism.luck.description')}

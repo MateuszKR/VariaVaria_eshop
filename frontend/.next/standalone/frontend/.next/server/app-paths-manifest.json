@@ -1,14 +1,23 @@
 {
   "/_not-found": "app/_not-found.js",
-  "/admin/login/page": "app/admin/login/page.js",
-  "/api/categories/route": "app/api/categories/route.js",
   "/about/page": "app/about/page.js",
   "/admin/page": "app/admin/page.js",
+  "/api/admin/categories/[id]/image/route": "app/api/admin/categories/[id]/image/route.js",
+  "/api/admin/categories/route": "app/api/admin/categories/route.js",
+  "/api/admin/categories/[id]/route": "app/api/admin/categories/[id]/route.js",
+  "/admin/login/page": "app/admin/login/page.js",
+  "/api/admin/products/[id]/route": "app/api/admin/products/[id]/route.js",
+  "/api/admin/products/[id]/images/url/route": "app/api/admin/products/[id]/images/url/route.js",
+  "/api/contact/route": "app/api/contact/route.js",
+  "/api/admin/products/route": "app/api/admin/products/route.js",
+  "/api/categories/route": "app/api/categories/route.js",
   "/api/products/[id]/route": "app/api/products/[id]/route.js",
+  "/api/admin/products/[id]/images/route": "app/api/admin/products/[id]/images/route.js",
   "/api/products/route": "app/api/products/route.js",
   "/cart/page": "app/cart/page.js",
-  "/categories/page": "app/categories/page.js",
   "/products/[id]/page": "app/products/[id]/page.js",
+  "/categories/page": "app/categories/page.js",
   "/page": "app/page.js",
-  "/products/page": "app/products/page.js"
+  "/products/page": "app/products/page.js",
+  "/contact/page": "app/contact/page.js"
 }

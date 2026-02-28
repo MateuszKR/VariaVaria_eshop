@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /admin/
+Disallow: /cart
+Disallow: /api/
+
+Sitemap: https://variavaria.com/sitemap.xml

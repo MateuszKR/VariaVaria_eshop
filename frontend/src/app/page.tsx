@@ -2,24 +2,16 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import FooterSection from '@/components/ui/footer'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { 
-  ShoppingBagIcon, 
-  UserIcon, 
-  MagnifyingGlassIcon,
-  Bars3Icon,
-  XMarkIcon,
-  StarIcon,
+import {
   HeartIcon,
   ShieldCheckIcon,
   TruckIcon,
   SparklesIcon
 } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
-import CartWidget, { CartIcon } from '@/components/CartWidget'
-import LanguageSwitcher from '@/components/LanguageSwitcher'
-import SearchModal from '@/components/SearchModal'
 import { useI18n } from '@/lib/i18n'
 
 interface Product {
@@ -58,153 +50,46 @@ interface Category {
   imageUrl?: string;
 }
 
-function Header() {
-  const { t } = useI18n()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isCartOpen, setIsCartOpen] = useState(false)
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
 
-  return (
-    <header className="sticky top-0 z-50 glass-effect border-b border-neutral-200">
-      <div className="container-max section-padding">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3">
-            <div className="relative w-10 h-10">
-              <Image
-                src="/varia-varia-logo.jpg"
-                alt="VariaVaria Logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-            <span className="text-xl font-serif font-semibold text-black">
-              VariaVaria
-            </span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/products" className="text-neutral-700 hover:text-primary-600 transition-colors">
-              {t('nav.products')}
-            </Link>
-            <Link href="/categories" className="text-neutral-700 hover:text-primary-600 transition-colors">
-              {t('nav.categories')}
-            </Link>
-            <Link href="/about" className="text-neutral-700 hover:text-primary-600 transition-colors">
-              {t('nav.about')}
-            </Link>
-            <Link href="/contact" className="text-neutral-700 hover:text-primary-600 transition-colors">
-              {t('nav.contact')}
-            </Link>
-          </nav>
-
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-2 relative">
-            <button 
-              className="p-2 text-neutral-700 hover:text-primary-600 transition-colors"
-              title={t('nav.search')}
-              onClick={() => setIsSearchOpen(true)}
-            >
-              <MagnifyingGlassIcon className="h-5 w-5" />
-            </button>
-            <Link 
-              href="/account" 
-              className="p-2 text-neutral-700 hover:text-primary-600 transition-colors"
-              title={t('nav.account')}
-            >
-              <UserIcon className="h-5 w-5" />
-            </Link>
-            <LanguageSwitcher />
-            <div className="relative">
-              <CartIcon onClick={() => setIsCartOpen(!isCartOpen)} />
-              <CartWidget 
-                isOpen={isCartOpen} 
-                onClose={() => setIsCartOpen(false)}
-                className="absolute right-0 top-12 z-50"
-              />
-            </div>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden p-2"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <XMarkIcon className="h-6 w-6" /> : <Bars3Icon className="h-6 w-6" />}
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-neutral-200 mt-4">
-            <nav className="flex flex-col space-y-3">
-              <Link href="/products" className="text-neutral-700 hover:text-primary-600 transition-colors">
-                {t('nav.products')}
-              </Link>
-              <Link href="/categories" className="text-neutral-700 hover:text-primary-600 transition-colors">
-                {t('nav.categories')}
-              </Link>
-              <Link href="/about" className="text-neutral-700 hover:text-primary-600 transition-colors">
-                {t('nav.about')}
-              </Link>
-              <Link href="/contact" className="text-neutral-700 hover:text-primary-600 transition-colors">
-                {t('nav.contact')}
-              </Link>
-              <hr className="border-neutral-200" />
-              <button 
-                onClick={() => {
-                  setIsSearchOpen(true);
-                  setIsMenuOpen(false);
-                }}
-                className="text-left text-neutral-700 hover:text-primary-600 transition-colors"
-              >
-                {t('nav.search')}
-              </button>
-              <Link href="/account" className="text-neutral-700 hover:text-primary-600 transition-colors">
-                {t('nav.account')}
-              </Link>
-              <Link href="/cart" className="text-neutral-700 hover:text-primary-600 transition-colors">
-                {t('nav.cart')}
-              </Link>
-              <hr className="border-neutral-200" />
-              <div className="px-2">
-                <LanguageSwitcher variant="inline" />
-              </div>
-            </nav>
-          </div>
-        )}
-      </div>
-      
-      {/* Search Modal */}
-      <SearchModal 
-        isOpen={isSearchOpen} 
-        onClose={() => setIsSearchOpen(false)} 
-      />
-    </header>
-  )
-}
 
 function Hero() {
-  const { t } = useI18n()
-  
+  const { t, language } = useI18n()
+
   return (
-    <section className="hero-gradient py-20 lg:py-32">
-      <div className="container-max section-padding">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-4xl lg:text-6xl font-serif font-bold text-neutral-900 leading-tight">
-                {t('hero.title').split(' ').slice(0, -2).join(' ')} 
-                <span className="text-gradient block">{t('hero.subtitle')}</span>
+    <section>
+      {/* Full-width image scaled to 130px tall — entire image visible, no cropping */}
+      <div className="w-full">
+        <Image
+          src={language === 'pl' ? '/hero-banner-pl.png' : '/hero-banner.png'}
+          alt={language === 'pl'
+            ? 'VariaVaria — Prawdziwe Ręcznie Zbierane Czterolistne Koniczynki'
+            : 'VariaVaria — Genuine Handpicked 4 Leaf Clovers'}
+          width={800}
+          height={200}
+          className="w-full h-[320px] object-cover object-center"
+          priority
+        />
+      </div>
+
+      {/* Hero content on gradient background below the image */}
+      <div className="hero-gradient py-6 lg:py-8">
+        <div className="container-max section-padding">
+          <div className="text-center mx-auto max-w-3xl space-y-4">
+
+            <div className="space-y-1">
+              <h1 className="text-3xl lg:text-4xl font-serif font-bold text-neutral-900 leading-tight">
+                {t('hero.title').split(' ').slice(0, -2).join(' ')}
               </h1>
-              <p className="text-xl text-neutral-600 leading-relaxed">
-                {t('hero.description')}
-              </p>
+              <span className="text-gradient text-3xl lg:text-4xl font-serif font-bold block leading-tight">
+                {t('hero.subtitle')}
+              </span>
             </div>
-            
-            <div className="flex flex-col sm:flex-row gap-4">
+
+            <p className="text-xl text-neutral-700 leading-relaxed max-w-2xl mx-auto">
+              {t('hero.description')}
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/products" className="btn-primary">
                 {t('hero.shopNow')}
               </Link>
@@ -213,38 +98,21 @@ function Hero() {
               </Link>
             </div>
 
-            <div className="flex items-center space-x-8 pt-8">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-neutral-900">500+</div>
-                <div className="text-sm text-neutral-600">{t('hero.customers')}</div>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <div className="bg-white/80 backdrop-blur-sm rounded-full px-5 py-2 shadow-sm text-center">
+                <span className="text-2xl font-bold text-neutral-900">500+</span>
+                <span className="text-sm text-neutral-600 ml-2">{t('hero.customers')}</span>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-neutral-900">4.9</div>
-                <div className="text-sm text-neutral-600">{t('hero.rating')}</div>
+              <div className="bg-white/80 backdrop-blur-sm rounded-full px-5 py-2 shadow-sm text-center">
+                <span className="text-2xl font-bold text-neutral-900">4.9</span>
+                <span className="text-sm text-neutral-600 ml-2">{t('hero.rating')}</span>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-neutral-900">100%</div>
-                <div className="text-sm text-neutral-600">{t('hero.handcrafted')}</div>
+              <div className="bg-white/80 backdrop-blur-sm rounded-full px-5 py-2 shadow-sm text-center">
+                <span className="text-2xl font-bold text-neutral-900">100%</span>
+                <span className="text-sm text-neutral-600 ml-2">{t('hero.handcrafted')}</span>
               </div>
             </div>
-          </div>
 
-          <div className="relative">
-            <div className="aspect-square relative rounded-3xl overflow-hidden shadow-2xl">
-              <Image
-                src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600"
-                alt="Beautiful four-leaf clover necklace"
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-            <Link 
-              href="/products?featured=true" 
-              className="absolute -top-4 -left-4 bg-accent-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-accent-600 transition-colors cursor-pointer"
-            >
-              ✨ {t('hero.featured')}
-            </Link>
           </div>
         </div>
       </div>
@@ -257,18 +125,18 @@ function ProductCard({ product }: { product: Product }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
   const [imageError, setImageError] = useState(false)
   const router = useRouter()
-  
+
   // Translation system for category names
   const [translationsReady, setTranslationsReady] = useState(false);
   const [translations, setTranslations] = useState<any>({});
-  
+
   // Initialize translations safely
   useEffect(() => {
     try {
       const loadTranslations = async () => {
         try {
           const savedLang = localStorage.getItem('variavaria-language') || 'en';
-          
+
           const staticTranslations = {
             en: {
               'category.Rings': 'Rings',
@@ -287,7 +155,7 @@ function ProductCard({ product }: { product: Product }) {
               'category.Sets': 'Komplety'
             }
           };
-          
+
           setTranslations(staticTranslations[savedLang as keyof typeof staticTranslations] || staticTranslations.en);
           setTranslationsReady(true);
         } catch (error) {
@@ -295,17 +163,17 @@ function ProductCard({ product }: { product: Product }) {
           setTranslationsReady(true);
         }
       };
-      
+
       loadTranslations();
-      
+
       const handleStorageChange = (e: StorageEvent) => {
         if (e.key === 'variavaria-language') {
           loadTranslations();
         }
       };
-      
+
       window.addEventListener('storage', handleStorageChange);
-      
+
       let currentLang = localStorage.getItem('variavaria-language') || 'en';
       const checkLanguage = () => {
         const newLang = localStorage.getItem('variavaria-language') || 'en';
@@ -314,9 +182,9 @@ function ProductCard({ product }: { product: Product }) {
           loadTranslations();
         }
       };
-      
+
       const interval = setInterval(checkLanguage, 1000);
-      
+
       return () => {
         window.removeEventListener('storage', handleStorageChange);
         clearInterval(interval);
@@ -326,7 +194,7 @@ function ProductCard({ product }: { product: Product }) {
       setTranslationsReady(true);
     }
   }, []);
-  
+
   // Helper function for category name translation
   const translateCategoryName = (categoryName: string) => {
     if (!translationsReady) return categoryName;
@@ -358,8 +226,8 @@ function ProductCard({ product }: { product: Product }) {
   };
 
   return (
-    <div 
-      className="product-card hover-lift cursor-pointer group" 
+    <div
+      className="product-card hover-lift cursor-pointer group"
       onClick={handleCardClick}
     >
       {/* Image Section - About half height */}
@@ -378,7 +246,7 @@ function ProductCard({ product }: { product: Product }) {
             </span>
           </div>
         )}
-        
+
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
           {product.isFeatured && (
@@ -394,7 +262,7 @@ function ProductCard({ product }: { product: Product }) {
         </div>
 
         {/* Wishlist Button */}
-        <button 
+        <button
           className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors z-10"
           onClick={handleWishlistClick}
         >
@@ -418,7 +286,7 @@ function ProductCard({ product }: { product: Product }) {
         <h3 className="font-medium text-neutral-900 line-clamp-2">
           {product.name}
         </h3>
-        
+
         {product.category && (
           <p className="text-sm text-neutral-500">
             {translateCategoryName(product.category.name)}
@@ -460,11 +328,11 @@ function FeaturedProducts() {
       try {
         setLoading(true);
         const response = await fetch(`/api/products?featured=true&limit=4`);
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch featured products');
         }
-        
+
         const data = await response.json();
         setFeaturedProducts(data.products || []);
       } catch (err) {
@@ -569,19 +437,19 @@ function Categories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Translation system for category names and descriptions
   const [translationsReady, setTranslationsReady] = useState(false);
   const [translations, setTranslations] = useState<any>({});
   const [lang, setLang] = useState<'en' | 'pl'>('en');
-  
+
   // Initialize translations safely
   useEffect(() => {
     try {
       const loadTranslations = async () => {
         try {
           const savedLang = (localStorage.getItem('variavaria-language') as 'en' | 'pl') || 'en';
-          
+
           const staticTranslations = {
             en: {
               'category.Rings': 'Rings',
@@ -612,7 +480,7 @@ function Categories() {
               'category.desc.Sets': 'Kompletne zestawy biżuterii z czterolistną koniczyną'
             }
           };
-          
+
           setTranslations(staticTranslations[savedLang as keyof typeof staticTranslations] || staticTranslations.en);
           setLang(savedLang);
           setTranslationsReady(true);
@@ -621,17 +489,17 @@ function Categories() {
           setTranslationsReady(true);
         }
       };
-      
+
       loadTranslations();
-      
+
       const handleStorageChange = (e: StorageEvent) => {
         if (e.key === 'variavaria-language') {
           loadTranslations();
         }
       };
-      
+
       window.addEventListener('storage', handleStorageChange);
-      
+
       let currentLang = (localStorage.getItem('variavaria-language') as 'en' | 'pl') || 'en';
       const checkLanguage = () => {
         const newLang = (localStorage.getItem('variavaria-language') as 'en' | 'pl') || 'en';
@@ -640,9 +508,9 @@ function Categories() {
           loadTranslations();
         }
       };
-      
+
       const interval = setInterval(checkLanguage, 1000);
-      
+
       return () => {
         window.removeEventListener('storage', handleStorageChange);
         clearInterval(interval);
@@ -652,7 +520,7 @@ function Categories() {
       setTranslationsReady(true);
     }
   }, []);
-  
+
   // Helper functions for translation
   const tr = (key: string, fallback: string) => {
     if (!translationsReady) return fallback;
@@ -701,11 +569,11 @@ function Categories() {
       try {
         setLoading(true);
         const response = await fetch(`/api/categories`);
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch categories');
         }
-        
+
         const data = await response.json();
         setCategories(data.categories || []);
       } catch (err) {
@@ -778,7 +646,7 @@ function Categories() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((category) => {
-            
+
             // Fallback images for each category type
             const getFallbackImage = (slug: string) => {
               const fallbacks: Record<string, string> = {
@@ -795,12 +663,12 @@ function Categories() {
             const imageUrl = category.imageUrl || getFallbackImage(category.slug);
 
             return (
-              <Link 
-                key={category.slug} 
+              <Link
+                key={category.slug}
                 href={`/products?category=${category.slug}`}
                 className="block group"
               >
-                <div 
+                <div
                   className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
                   style={{ minHeight: '300px' }}
                 >
@@ -828,7 +696,7 @@ function Categories() {
             );
           })}
         </div>
-        
+
       </div>
     </section>
   )
@@ -836,7 +704,7 @@ function Categories() {
 
 function Features() {
   const { t } = useI18n()
-  
+
   const features = [
     {
       icon: ShieldCheckIcon,
@@ -885,18 +753,18 @@ function Features() {
 
 function Footer() {
   const { t } = useI18n();
-  
+
   // Translation system for category names in footer
   const [translationsReady, setTranslationsReady] = useState(false);
   const [translations, setTranslations] = useState<any>({});
-  
+
   // Initialize translations safely
   useEffect(() => {
     try {
       const loadTranslations = async () => {
         try {
           const savedLang = localStorage.getItem('variavaria-language') || 'en';
-          
+
           const staticTranslations = {
             en: {
               'category.Rings': 'Rings',
@@ -911,7 +779,7 @@ function Footer() {
               'category.Bracelets': 'Bransoletki'
             }
           };
-          
+
           setTranslations(staticTranslations[savedLang as keyof typeof staticTranslations] || staticTranslations.en);
           setTranslationsReady(true);
         } catch (error) {
@@ -919,17 +787,17 @@ function Footer() {
           setTranslationsReady(true);
         }
       };
-      
+
       loadTranslations();
-      
+
       const handleStorageChange = (e: StorageEvent) => {
         if (e.key === 'variavaria-language') {
           loadTranslations();
         }
       };
-      
+
       window.addEventListener('storage', handleStorageChange);
-      
+
       let currentLang = localStorage.getItem('variavaria-language') || 'en';
       const checkLanguage = () => {
         const newLang = localStorage.getItem('variavaria-language') || 'en';
@@ -938,9 +806,9 @@ function Footer() {
           loadTranslations();
         }
       };
-      
+
       const interval = setInterval(checkLanguage, 1000);
-      
+
       return () => {
         window.removeEventListener('storage', handleStorageChange);
         clearInterval(interval);
@@ -950,7 +818,7 @@ function Footer() {
       setTranslationsReady(true);
     }
   }, []);
-  
+
   // Helper function for category name translation
   const translateCategoryName = (categoryName: string) => {
     if (!translationsReady) return categoryName;
@@ -1027,15 +895,14 @@ function Footer() {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen">
-      <Header />
+    <>
       <main>
         <Hero />
         <FeaturedProducts />
         <Categories />
         <Features />
       </main>
-      <Footer />
-    </div>
+      <FooterSection />
+    </>
   )
 } 

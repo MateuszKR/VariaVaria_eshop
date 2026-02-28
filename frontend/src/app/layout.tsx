@@ -3,12 +3,14 @@ import { Inter, Playfair_Display } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
 import { CartProvider } from '@/contexts/CartContext'
 import { I18nProvider } from '@/lib/i18n'
+import NavbarWrapper from '@/components/NavbarWrapper'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://variavaria.com'),
   title: 'VariaVaria Jewelry | Handcrafted Lucky Jewelry',
   description: 'Discover beautiful handcrafted jewelry featuring four-leaf clovers. Each piece is carefully made to bring you luck and style.',
   keywords: ['jewelry', 'four-leaf clover', 'handcrafted', 'lucky jewelry', 'rings', 'necklaces', 'earrings', 'bracelets'],
@@ -17,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'VariaVaria Jewelry | Handcrafted Lucky Jewelry',
     description: 'Discover beautiful handcrafted jewelry featuring four-leaf clovers. Each piece is carefully made to bring you luck and style.',
-    url: 'https://variavariajewelry.com',
+    url: 'https://variavaria.com',
     siteName: 'VariaVaria Jewelry',
     locale: 'en_US',
     type: 'website',
@@ -78,10 +80,11 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <I18nProvider>
           <CartProvider>
+            <NavbarWrapper />
             <div className="min-h-screen bg-neutral-50">
               {children}
             </div>
-            <Toaster 
+            <Toaster
               position="top-right"
               toastOptions={{
                 duration: 4000,

@@ -6,23 +6,25 @@ import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
 import { useRouter } from 'next/navigation';
 import { useI18n } from '@/lib/i18n';
-import { 
-  PlusIcon, 
-  MinusIcon, 
-  TrashIcon, 
+import {
+  PlusIcon,
+  MinusIcon,
+  TrashIcon,
   ShoppingBagIcon,
   ArrowLeftIcon,
   HeartIcon,
   SparklesIcon,
   CreditCardIcon,
   LockClosedIcon,
-  TruckIcon
+  TruckIcon,
+  GiftIcon,
+  TagIcon
 } from '@heroicons/react/24/outline';
 import { toast } from 'react-hot-toast';
 
 function Header() {
   const { t } = useI18n()
-  
+
   return (
     <header className="sticky top-0 z-50 glass-effect border-b border-neutral-200">
       <div className="container-max section-padding">
@@ -41,7 +43,7 @@ function Header() {
               VariaVaria
             </span>
           </Link>
-          
+
           <nav className="flex items-center space-x-6">
             <Link href="/products" className="text-neutral-700 hover:text-primary-600 transition-colors">
               {t('cart.continueShopping')}
@@ -144,7 +146,7 @@ function CartItem({ item }: { item: any }) {
                 <span className="text-xs text-orange-600">Max available</span>
               )}
             </div>
-            
+
             <div className="text-right">
               <div className="font-serif font-bold text-lg text-neutral-900">
                 ${(item.price * item.quantity).toFixed(2)}
@@ -203,7 +205,7 @@ function CartSummary() {
         <h2 className="text-2xl font-serif font-bold text-neutral-900">
           Order Summary
         </h2>
-        <div className="text-4xl">🍀</div>
+        <SparklesIcon className="w-8 h-8 text-primary-500" />
       </div>
 
       {/* Promo Code */}
@@ -251,8 +253,8 @@ function CartSummary() {
           </div>
         )}
         {subtotal > 100 && shipping === 0 && (
-          <div className="text-sm text-green-600 font-medium">
-            🎉 Free shipping on orders over $100!
+          <div className="text-sm text-green-600 font-medium flex items-center gap-1">
+            <GiftIcon className="w-4 h-4" /> Free shipping on orders over $100!
           </div>
         )}
       </div>
@@ -273,7 +275,7 @@ function CartSummary() {
           <LockClosedIcon className="w-5 h-5" />
           <span>Secure Checkout</span>
         </button>
-        
+
         <div className="flex items-center justify-center space-x-4 text-sm text-neutral-500">
           <div className="flex items-center space-x-1">
             <CreditCardIcon className="w-4 h-4" />
@@ -303,28 +305,27 @@ function EmptyCart() {
         <div className="w-24 h-24 mx-auto bg-gradient-to-br from-primary-100 to-accent-100 rounded-full flex items-center justify-center mb-4">
           <ShoppingBagIcon className="w-12 h-12 text-primary-500" />
         </div>
-        <div className="text-6xl mb-4">🍀</div>
         <h2 className="text-2xl font-serif font-bold text-neutral-900 mb-2">
           Your cart is empty
         </h2>
         <p className="text-neutral-600 max-w-md mx-auto">
-          Discover our beautiful collection of handcrafted four-leaf clover jewelry 
+          Discover our beautiful collection of handcrafted four-leaf clover jewelry
           and start filling your cart with luck and elegance.
         </p>
       </div>
-      
+
       <div className="space-y-4">
         <Link href="/products" className="btn-primary inline-flex items-center space-x-2">
           <ArrowLeftIcon className="w-5 h-5" />
           <span>Continue Shopping</span>
         </Link>
-        
+
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/products?featured=true" className="btn-secondary">
-            ✨ Featured Items
+          <Link href="/products?featured=true" className="btn-secondary flex items-center gap-2">
+            <SparklesIcon className="w-4 h-4" /> Featured Items
           </Link>
-          <Link href="/categories" className="btn-secondary">
-            🏷️ Browse Categories
+          <Link href="/categories" className="btn-secondary flex items-center gap-2">
+            <TagIcon className="w-4 h-4" /> Browse Categories
           </Link>
         </div>
       </div>
@@ -347,7 +348,7 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50">
       <Header />
-      
+
       <div className="container-max section-padding py-8">
         {state.items.length === 0 ? (
           <EmptyCart />
@@ -376,7 +377,7 @@ export default function CartPage() {
                     <span>Continue Shopping</span>
                   </Link>
                 </div>
-                
+
                 {state.items.map((item) => (
                   <CartItem key={item.id} item={item} />
                 ))}
