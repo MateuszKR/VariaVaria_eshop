@@ -1,0 +1,61 @@
+# VariaVaria E-shop — Railway.app deployment
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# MONOREPO — 5 Railway services to create in the dashboard
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# Step 1 — Add a PostgreSQL database plugin
+#   Dashboard → New → Database → PostgreSQL
+#   Railway provides DATABASE_URL and individual credentials automatically.
+#   After first deploy, open a DB shell and run:
+#     \i database/schema.sql
+#     \i database/sample-data.sql   (optional seed data)
+#
+# Step 2 — Create 4 services from this GitHub repo:
+#
+#   Service          Root Directory              railway.toml
+#   ─────────────── ─────────────────────────── ─────────────────────────────
+#   auth-service    backend/auth-service        backend/auth-service/railway.toml
+#   products-service backend/products-service   backend/products-service/railway.toml
+#   orders-service  backend/orders-service      backend/orders-service/railway.toml
+#   frontend        frontend                    frontend/railway.toml
+#
+#   For each service:
+#     New Service → GitHub Repo → select repo
+#     Settings → Source → Root Directory → (set path from table above)
+#
+# Step 3 — Set shared variables on auth, products, and orders services
+#   (reference the PostgreSQL plugin using Railway variable references)
+#
+#   DB_HOST      = ${{Postgres.PGHOST}}
+#   DB_PORT      = ${{Postgres.PGPORT}}
+#   DB_NAME      = ${{Postgres.PGDATABASE}}
+#   DB_USER      = ${{Postgres.PGUSER}}
+#   DB_PASSWORD  = ${{Postgres.PGPASSWORD}}
+#   NODE_ENV     = production
+#   JWT_SECRET   = <generate once with: openssl rand -hex 32>
+#                  (same value on all three backend services)
+#
+# Step 4 — Set frontend variables
+#   Deploy the three backend services first to get their public URLs, then:
+#
+#   NEXT_PUBLIC_AUTH_SERVICE_URL     = https://<auth-service>.up.railway.app
+#   NEXT_PUBLIC_PRODUCTS_SERVICE_URL = https://<products-service>.up.railway.app
+#   NEXT_PUBLIC_ORDERS_SERVICE_URL   = https://<orders-service>.up.railway.app
+#   NODE_ENV                         = production
+#   NEXT_TELEMETRY_DISABLED          = 1
+#
+# Step 5 — Volumes (for product image uploads)
+#   products-service → Settings → Volumes → Mount path: /app/uploads
+#
+# ══════════════════════════════════════════════════════════════════════════════
+# NOTE: Nginx is NOT deployed on Railway — Railway provides TLS termination
+#       and public HTTPS endpoints for each service automatically.
+# ══════════════════════════════════════════════════════════════════════════════
+
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10

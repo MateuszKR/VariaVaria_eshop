@@ -1,0 +1,24 @@
+# VariaVaria — Products Service
+# Railway dashboard: Root Directory = "backend/products-service"
+#
+# Required variables (Railway → Variables):
+#   DB_HOST      = ${{Postgres.PGHOST}}
+#   DB_PORT      = ${{Postgres.PGPORT}}
+#   DB_NAME      = ${{Postgres.PGDATABASE}}
+#   DB_USER      = ${{Postgres.PGUSER}}
+#   DB_PASSWORD  = ${{Postgres.PGPASSWORD}}
+#   JWT_SECRET   = <shared secret — same on auth-service and orders-service>
+#   NODE_ENV     = production
+#
+# Volume (Railway → Volumes):
+#   Mount path: /app/uploads   (persistent storage for product images)
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 60
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
